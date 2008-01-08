@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="net.todd.biblestudy.rcp.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Main Perspective"
+            class="net.todd.biblestudy.rcp.MainPerspective"
+            id="net.todd.biblestudy.MainPerspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="net.todd.biblestudy.rcp.application"
+            name="Bible Study Tool">
+         <property
+               name="windowImages"
+               value="icons/alt_window_16.gif,icons/alt_window_32.gif">
+         </property>
+         <property
+               name="appName"
+               value="Bible Study Tool">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="global"
+         name="Global Actions"
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="net.todd.biblestudy.rcp.GlobalActionSet"
+            label="Global Actions"
+            visible="true">
+         <action
+               class="net.todd.biblestudy.rcp.actions.SaveNoteAction"
+               icon="icons/floppy.png"
+               id="net.todd.biblestudy.rcp.SaveNoteAction"
+               label="Save Note"
+               toolbarPath="main/global">
+         </action>
+         <action
+               class="net.todd.biblestudy.rcp.actions.NewNoteAction"
+               icon="icons/folder_open.png"
+               id="net.todd.biblestudy.rcp.NewNoteAction"
+               label="Open Note"
+               style="push"
+               toolbarPath="main/global"
+               tooltip="Create New Note">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            class="net.todd.biblestudy.rcp.views.NoteView"
+            id="net.todd.biblestudy.rcp.NoteView"
+            name="NoteView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="net.todd.biblestudy.rcp.NoteViewContributions"
+            targetID="net.todd.biblestudy.rcp.NoteView">
+         <action
+               class="net.todd.biblestudy.rcp.actions.DeleteNoteAction"
+               icon="icons/delete.png"
+               id="net.todd.biblestudy.rcp.action1"
+               label="Delete Note"
+               style="push"
+               toolbarPath="noteAction/delete"
+               tooltip="Delete Note">
+         </action>
+      </viewContribution>
+   </extension>
+
+</plugin>

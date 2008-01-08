@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Verse">
+
+	<typeAlias alias="Link" type="net.todd.biblestudy.db.Link" />
+
+	<resultMap id="linkResult" class="Link">
+		<result property="linkId" column="L_ID" />
+		<result property="containingNoteId" column="L_NOTE_ID" />
+		<result property="linkToNoteName" column="L_TO_NOTE_NAME" />
+		<result property="start" column="L_START" />
+		<result property="end" column="L_END" />
+	</resultMap>
+
+	<insert id="createLink" parameterClass="Link">
+		INSERT INTO LINKS (
+			L_NOTE_ID, 
+			L_TO_NOTE_NAME, 
+			L_START, 
+			L_END
+		) values (
+			#containingNoteId#, 
+			#linkToNoteName#, 
+			#start#, 
+			#end#
+		)
+		
+		<selectKey resultClass="int" keyProperty="linkId">
+	    	SELECT @@IDENTITY AS ID
+  		</selectKey>
+	</insert>
+	
+	<delete id="deleteLink" parameterClass="Link">
+		DELETE 
+		FROM		LINKS
+		WHERE		L_ID=#linkId#
+	</delete>
+
+	<select id="getAllLinksForNote" parameterClass="java.lang.Integer" resultClass="Link">
+		SELECT 		L_ID as linkId,
+					L_NOTE_ID as containingNoteId,
+					L_TO_NOTE_NAME as linkToNoteName,
+					L_START as start,
+					L_END as end
+		FROM		LINKS
+		WHERE		L_NOTE_ID=#value#
+	</select>
+
+	<update id="updateLink" parameterClass="Link">
+		UPDATE 	LINKS
+		SET 	L_NOTE_ID=#containingNoteId#,
+				L_TO_NOTE_NAME=#linkToNoteName#,
+				L_START=#start#,
+				L_END=#end#
+		WHERE	L_ID=#linkId#
+	</update>
+
+</sqlMap>

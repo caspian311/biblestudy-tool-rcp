@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Version">
+
+	<typeAlias alias="Version" type="net.todd.biblestudy.db.Version" />
+
+	<resultMap id="versionResult" class="Version">
+		<result property="versionId" column="VERSION_ID" />
+		<result property="versionName" column="VERSION_TEXT" />
+	</resultMap>
+
+	<select id="getVersionByName" parameterClass="string" resultMap="versionResult">
+		SELECT		*
+		FROM		VERSIONS
+		WHERE		VERSION_TEXT=#value#
+	</select>
+
+</sqlMap>

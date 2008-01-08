@@ -1,0 +1,44 @@
+package net.todd.biblestudy.rcp.views;
+
+import net.todd.biblestudy.rcp.models.INoteModel;
+import net.todd.biblestudy.rcp.models.NoteModel;
+import net.todd.biblestudy.rcp.presenters.NewNoteDialogPresenter;
+import net.todd.biblestudy.rcp.presenters.NotePresenter;
+import net.todd.biblestudy.rcp.util.ViewHelper;
+
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+
+public class ViewerImpl implements IViewer
+{
+	@Override
+	public void openNewActionDialog()
+	{
+		new NewNoteDialogPresenter();
+	}
+
+	@Override
+	public void openNewNoteView(final String noteName)
+	{
+		ViewHelper.runWithBusyIndicator(new Runnable() 
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					INoteModel noteModel = new NoteModel();
+					noteModel.populateNoteInfo(noteName);
+
+					INoteView noteView = (INoteView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(NoteView.ID, noteName, IWorkbenchPage.VIEW_ACTIVATE);
+					new NotePresenter(noteView, noteModel);
+				}
+				catch (PartInitException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+}
