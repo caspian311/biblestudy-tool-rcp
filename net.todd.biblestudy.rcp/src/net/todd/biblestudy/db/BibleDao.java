@@ -6,7 +6,10 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 
 public class BibleDao extends BaseDao implements IBibleDao
 {
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.db.IBibleDao#getVerseById(java.lang.Integer)
+	 */
 	public Verse getVerseById(Integer id) throws SQLException
 	{
 		SqlMapClient sqlMapConfig = getSqlMapConfig();

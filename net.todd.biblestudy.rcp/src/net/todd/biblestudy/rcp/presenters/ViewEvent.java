@@ -19,14 +19,27 @@ public class ViewEvent extends EventObject
 	public static final String NOTE_DO_DISPOSE = "note.doDispose";
 	public static final String NOTE_SAVE = "note.save";
 	public static final String NOTE_DELETE = "note.delete";
+	public static final String NOTE_HOVERING = "note.hovering";
+	public static final String NOTE_CLICKED = "note.clicked";
 
 	public static final String CREATE_LINK_DIALOG_OPENED = "createLink.dialogOpened";
 	public static final String CREATE_LINK_DIALOG_CLOSED = "createLink.dialogClosed";
 	public static final String CREATE_LINK_DO_CREATE_LINK = "createLink.doCreateLink";
 
 
+	private Object data;
+	
 	public ViewEvent(Object source)
 	{
 		super(source);
+	}
+
+	public Object getData()
+	{
+		return data;
+	}
+	public void setData(Object data)
+	{
+		this.data = data;
 	}
 }

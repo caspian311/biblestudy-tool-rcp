@@ -28,7 +28,6 @@ public class NotePresenterTest
 		noteView = new MockNoteView();
 		noteModel = new NoteModelHarness()
 		{
-			@Override
 			protected Note getSampleNote()
 			{
 				Note note = new Note();
@@ -75,12 +74,10 @@ class MockNoteView implements INoteView
 	private Point selectionPoint;
 	private String selectionText;
 
-	@Override
 	public void addNoteViewListener(INoteListener noteListener)
 	{
 	}
 
-	@Override
 	public Point getLastClickedCoordinates()
 	{
 		return null;
@@ -91,7 +88,6 @@ class MockNoteView implements INoteView
 		selectionText = text;
 	}
 	
-	@Override
 	public String getSelectedText()
 	{
 		return selectionText;
@@ -102,13 +98,11 @@ class MockNoteView implements INoteView
 		selectionPoint = new Point(x, y);
 	}
 	
-	@Override
 	public Point getSelectionPoint()
 	{
 		return selectionPoint;
 	}
 
-	@Override
 	public void removeNoteViewListener(INoteListener noteListener)
 	{
 	}
@@ -118,7 +112,6 @@ class MockNoteView implements INoteView
 		return contentText;
 	}
 	
-	@Override
 	public void setContentText(String text)
 	{
 		contentText = text;
@@ -129,34 +122,40 @@ class MockNoteView implements INoteView
 		return viewTitle;
 	}
 	
-	@Override
 	public void setViewTitle(String title)
 	{
 		viewTitle = title;
 	}
 
-	@Override
 	public void showRightClickPopup(int x, int y)
 	{
 	}
 
-	@Override
 	public void saveNote()
 	{
 	}
 
-	@Override
 	public void closeView(String secondardId)
 	{
 	}
 
-	@Override
 	public void deleteNote()
 	{
 	}
 
-	@Override
 	public void replaceNoteStyles(List<NoteStyle> list)
 	{
+	}
+
+	public void changeCursorToPointer()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void changeCursorToText()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

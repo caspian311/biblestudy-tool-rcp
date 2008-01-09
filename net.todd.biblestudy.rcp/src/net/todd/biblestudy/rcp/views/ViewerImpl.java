@@ -12,18 +12,27 @@ import org.eclipse.ui.PlatformUI;
 
 public class ViewerImpl implements IViewer
 {
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.IViewer#openNewActionDialog()
+	 */
 	public void openNewActionDialog()
 	{
 		new NewNoteDialogPresenter();
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.IViewer#openNewNoteView(java.lang.String)
+	 */
 	public void openNewNoteView(final String noteName)
 	{
 		ViewHelper.runWithBusyIndicator(new Runnable() 
 		{
-			@Override
+			/*
+			 * (non-Javadoc)
+			 * @see java.lang.Runnable#run()
+			 */
 			public void run()
 			{
 				try

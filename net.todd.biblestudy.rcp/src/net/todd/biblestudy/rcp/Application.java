@@ -12,7 +12,6 @@ public class Application implements IApplication
 	 * (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
-	@Override
 	public Object start(IApplicationContext context) throws Exception
 	{
 		Display display = PlatformUI.createDisplay();
@@ -35,7 +34,6 @@ public class Application implements IApplication
 	 * (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
-	@Override
 	public void stop()
 	{
 		final IWorkbench workbench = PlatformUI.getWorkbench();

@@ -13,17 +13,19 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IViewReference;
@@ -35,8 +37,6 @@ public class NoteView extends ViewPart implements INoteView
 	public static final String ID = "net.todd.biblestudy.rcp.NoteView"; 
 	
 	EventListenerList eventListeners = new EventListenerList();
-
-	private StyledText content;
 
 	private Menu rightClickTextMenu;
 
@@ -99,24 +99,28 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		
-//		textViewer = new TextViewer(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-//		textViewer.setDocument(new Document());
-//		
-//		textViewer.getTextWidget();
+		textViewer = new TextViewer(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		textViewer.setDocument(new Document());
+		textViewer.getTextWidget().setLayoutData(gridData);
 		
-		content = new StyledText(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		content.setLayoutData(gridData);
-		content.addModifyListener(new ModifyListener() 
+		textViewer.getTextWidget().setLayoutData(gridData);
+		textViewer.getTextWidget().addModifyListener(new ModifyListener() 
 		{
-			@Override
+			/*
+			 * (non-Javadoc)
+			 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+			 */
 			public void modifyText(ModifyEvent e)
 			{
 				fireEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
 			}
 		});
-		content.addMouseListener(new MouseAdapter() 
+		textViewer.getTextWidget().addMouseListener(new MouseAdapter() 
 		{
-			@Override
+			/*
+			 * (non-Javadoc)
+			 * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+			 */
 			public void mouseUp(MouseEvent e)
 			{
 				if (e.button == 3) 
@@ -124,6 +128,34 @@ public class NoteView extends ViewPart implements INoteView
 					lastClickedCoordinates = new Point(e.x, e.y);
 					fireEvent(new ViewEvent(ViewEvent.NOTE_SHOW_RIGHT_CLICK_MENU));
 				}
+				if (e.button == 1)
+				{
+					Point point = new Point(e.x, e.y);
+					
+					int offset = textViewer.getTextWidget().getOffsetAtLocation(point);
+					
+					ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
+					viewEvent.setData(offset);
+					fireEvent(viewEvent);
+				}
+			}
+		});
+		textViewer.getTextWidget().addMouseMoveListener(new MouseMoveListener()
+		{
+
+			/*
+			 * (non-Javadoc)
+			 * @see org.eclipse.swt.events.MouseMoveListener#mouseMove(org.eclipse.swt.events.MouseEvent)
+			 */
+			public void mouseMove(MouseEvent e)
+			{
+				Point point = new Point(e.x, e.y);
+				
+				int offset = textViewer.getTextWidget().getOffsetAtLocation(point);
+				
+				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_HOVERING);
+				viewEvent.setData(offset);
+				fireEvent(viewEvent);
 			}
 		});
 	}
@@ -143,7 +175,7 @@ public class NoteView extends ViewPart implements INoteView
 	 */
 	public void showRightClickPopup(int x, int y)
 	{
-		String selectionText = content.getSelectionText();
+		String selectionText = textViewer.getTextWidget().getSelectionText();
 		
 		if (selectionText == null || selectionText.length() != 0)
 		{
@@ -175,13 +207,13 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		if (text != null)
 		{
-			content.setText(text);
+			textViewer.getTextWidget().setText(text);
 		}
 	}
 	
 	public String getContentText()
 	{
-		return content.getText();
+		return textViewer.getTextWidget().getText();
 	}
 
 	/*
@@ -193,7 +225,10 @@ public class NoteView extends ViewPart implements INoteView
 		setPartName(title);
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.WorkbenchPart#dispose()
+	 */
 	public void dispose()
 	{
 		fireEvent(new ViewEvent(ViewEvent.NOTE_CLOSE));
@@ -201,51 +236,72 @@ public class NoteView extends ViewPart implements INoteView
 		super.dispose();
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#removeNoteViewListener(net.todd.biblestudy.rcp.presenters.INoteListener)
+	 */
 	public void removeNoteViewListener(INoteListener noteListener)
 	{
 		eventListeners.remove(INoteListener.class, noteListener);
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#getSelectedText()
+	 */
 	public String getSelectedText()
 	{
-		return content.getSelectionText();
+		return textViewer.getTextWidget().getSelectionText();
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#getSelectionPoint()
+	 */
 	public Point getSelectionPoint()
 	{
-		return content.getSelection();
+		return textViewer.getTextWidget().getSelection();
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#saveNote()
+	 */
 	public void saveNote()
 	{
 		fireEvent(new ViewEvent(ViewEvent.NOTE_SAVE));
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#deleteNote()
+	 */
 	public void deleteNote()
 	{
 		fireEvent(new ViewEvent(ViewEvent.NOTE_DELETE));
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#closeView(java.lang.String)
+	 */
 	public void closeView(String secondaryId)
 	{
 		IViewReference viewReference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(ID, secondaryId);
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(viewReference);
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#replaceNoteStyles(java.util.List)
+	 */
 	public void replaceNoteStyles(List<NoteStyle> styleList)
 	{
 		for (NoteStyle style : styleList)
 		{
 			StyleRange styleRange = convertToStyleRange(style);
 			
-			content.setStyleRange(styleRange);
+			textViewer.getTextWidget().setStyleRange(styleRange);
 		}
 	}
 	
@@ -258,14 +314,24 @@ public class NoteView extends ViewPart implements INoteView
 		
 		return styleRange;
 	}
-	
-//	public int promptForSave()
-//	{
-//		Shell shell = Display.getCurrent().getActiveShell();
-//		MessageBox messageBox = new MessageBox(shell, SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
-//		messageBox.setMessage("Changes have been made to this note without saving.\nIf you close this note now, you will lose all your data.\nContinue?");
-//		messageBox.setText("Are you sure you want to close this note?");
-//		
-//		return messageBox.open();
-//	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#changeCursorToPointer()
+	 */
+	public void changeCursorToPointer()
+	{
+		Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_HAND);
+		textViewer.getTextWidget().setCursor(cursor);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#changeCursorToText()
+	 */
+	public void changeCursorToText()
+	{
+		Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_IBEAM);
+		textViewer.getTextWidget().setCursor(cursor);
+	}
 }

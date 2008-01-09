@@ -2,11 +2,13 @@ package net.todd.biblestudy.rcp.presenters;
 
 import java.util.List;
 
+import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.CreateLinkDialog;
 import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
 import net.todd.biblestudy.rcp.views.INoteView;
+import net.todd.biblestudy.rcp.views.ViewerFactory;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
@@ -27,7 +29,10 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		noteView.addNoteViewListener(this);
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.presenters.INoteListener#handleEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
+	 */
 	public void handleEvent(ViewEvent event)
 	{
 		String source = (String)event.getSource();
@@ -55,6 +60,38 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		else if (source.equals(ViewEvent.NOTE_DELETE))
 		{
 			handleNoteDeleted();
+		}
+		else if (source.equals(ViewEvent.NOTE_HOVERING))
+		{
+			handleNoteHovering(((Integer)event.getData()).intValue());
+		}
+		else if (source.equals(ViewEvent.NOTE_CLICKED))
+		{
+			handleNoteClicked(((Integer)event.getData()).intValue());
+		}
+	}
+
+	private void handleNoteClicked(Integer offset)
+	{
+		Link link = noteModel.getLinkAtOffset(offset);
+		
+		if (link != null)
+		{
+			ViewerFactory.getViewer().openNewNoteView(link.getLinkToNoteName());
+		}
+	}
+
+	private void handleNoteHovering(int offset)
+	{
+		Link link = noteModel.getLinkAtOffset(offset);
+		
+		if (link != null)
+		{
+			noteView.changeCursorToPointer();
+		}
+		else
+		{
+			noteView.changeCursorToText();
 		}
 	}
 
@@ -155,7 +192,10 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		return noteStylesForRange;
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.presenters.ICreateLinkListener#handleCreateLinkEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
+	 */
 	public void handleCreateLinkEvent(ViewEvent viewEvent)
 	{
 		String source = (String)viewEvent.getSource();

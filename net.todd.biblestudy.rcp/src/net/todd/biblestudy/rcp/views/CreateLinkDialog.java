@@ -36,13 +36,19 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 		}
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#addCreateLinkListener(net.todd.biblestudy.rcp.presenters.ICreateLinkListener)
+	 */
 	public void addCreateLinkListener(ICreateLinkListener createLinklistener)
 	{
 		eventListeners.add(ICreateLinkListener.class, createLinklistener);
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+	 */
 	protected Control createDialogArea(Composite parent)
 	{
 		GridLayout layout = new GridLayout(1, false);
@@ -75,12 +81,18 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 		return parent;
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#openDialog()
+	 */
 	public void openDialog()
 	{
 		Display.getDefault().asyncExec(new Runnable()
 		{
-			@Override
+			/*
+			 * (non-Javadoc)
+			 * @see java.lang.Runnable#run()
+			 */
 			public void run()
 			{
 				open();
@@ -88,7 +100,10 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 		});
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#close()
+	 */
 	public boolean close()
 	{
 		fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_DIALOG_CLOSED));
@@ -96,31 +111,46 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 		return super.close();
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#removeCreateLinkListener(net.todd.biblestudy.rcp.presenters.ICreateLinkListener)
+	 */
 	public void removeCreateLinkListener(ICreateLinkListener createLinkListener)
 	{
 		eventListeners.remove(ICreateLinkListener.class, createLinkListener);
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#setSelectedLinkText(java.lang.String)
+	 */
 	public void setSelectedLinkText(String selectionText)
 	{
 		linkTextField.setText(selectionText);
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#closeDialog()
+	 */
 	public void closeDialog()
 	{
 		close();
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#getLinkText()
+	 */
 	public String getLinkText()
 	{
 		return linkTextField != null ? linkTextField.getText() : null;
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+	 */
 	protected void okPressed()
 	{
 		fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_DO_CREATE_LINK));

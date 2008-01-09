@@ -22,7 +22,10 @@ public class NoteModel implements INoteModel
 	private List<Link> links = new ArrayList<Link>();
 	private Date timestampFromDB;
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#populateNoteInfo(java.lang.String)
+	 */
 	public void populateNoteInfo(String noteName)
 	{
 		try
@@ -68,13 +71,19 @@ public class NoteModel implements INoteModel
 		return new LinkDao();
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#getNote()
+	 */
 	public Note getNote()
 	{
 		return note;
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#isDocumentDirty()
+	 */
 	public boolean isDocumentDirty()
 	{
 		return isLatestFromDBSameAsCurrent() == false;
@@ -121,7 +130,10 @@ public class NoteModel implements INoteModel
 		return style;
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#addLink(java.lang.String, int, int)
+	 */
 	public void addLink(String noteName, int start, int stop)
 	{
 		Link link = new Link();
@@ -134,7 +146,10 @@ public class NoteModel implements INoteModel
 		getNote().setLastModified(new Date());
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#saveNoteAndLinks()
+	 */
 	public void saveNoteAndLinks()
 	{
 		try
@@ -166,7 +181,10 @@ public class NoteModel implements INoteModel
 		return new NoteDao();
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#deleteNoteAndLinks()
+	 */
 	public void deleteNoteAndLinks()
 	{
 		try
@@ -192,7 +210,10 @@ public class NoteModel implements INoteModel
 		getLinks().clear();
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#updateContent(java.lang.String)
+	 */
 	public void updateContent(String newContentText)
 	{
 		if (getNote().getText() != null)
@@ -284,5 +305,22 @@ public class NoteModel implements INoteModel
 	protected int findLocationOfNewText(String newContentText)
 	{
 		return StringUtils.indexOfDifference(getNote().getText(), newContentText);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#getLinkAtOffset(int)
+	 */
+	public Link getLinkAtOffset(int offset)
+	{
+		for (Link link : links)
+		{
+			if (offset >= link.getStart() && offset <= link.getEnd())
+			{
+				return link;
+			}
+		}
+		
+		return null;
 	}
 }

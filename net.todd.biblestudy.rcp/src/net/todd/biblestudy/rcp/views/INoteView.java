@@ -23,4 +23,6 @@ public interface INoteView
 	public void deleteNote();
 	public void closeView(String secondaryId);
 	public void replaceNoteStyles(List<NoteStyle> list);
+	public void changeCursorToPointer();
+	public void changeCursorToText();
 }

@@ -23,7 +23,6 @@ public class NoteDao extends BaseDao implements INoteDao
 	 * (non-Javadoc)
 	 * @see net.todd.biblestudy.db.INoteDao#createNote(java.lang.String)
 	 */	
-	@Override
 	public Note createNote(String newNoteName) throws SQLException
 	{
 		Note note = new Note();
@@ -35,7 +34,10 @@ public class NoteDao extends BaseDao implements INoteDao
 		return (Note)sqlMapConfig.insert("createNewNote", note);
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.db.INoteDao#saveNote(net.todd.biblestudy.db.Note)
+	 */
 	public void saveNote(Note note) throws SQLException
 	{
 		SqlMapClient sqlMapConfig = getSqlMapConfig();
@@ -43,7 +45,10 @@ public class NoteDao extends BaseDao implements INoteDao
 		sqlMapConfig.update("updateNote", note);
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.db.INoteDao#deleteNote(net.todd.biblestudy.db.Note)
+	 */
 	public void deleteNote(Note note) throws SQLException
 	{
 		SqlMapClient sqlMapConfig = getSqlMapConfig();

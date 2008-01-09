@@ -11,17 +11,26 @@ import org.eclipse.ui.PlatformUI;
 
 public class SaveNoteAction implements IWorkbenchWindowActionDelegate
 {
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+	 */
 	public void dispose()
 	{
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
+	 */
 	public void init(IWorkbenchWindow window)
 	{
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	 */
 	public void run(IAction action)
 	{
 		IWorkbenchPart activePart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
@@ -34,7 +43,10 @@ public class SaveNoteAction implements IWorkbenchWindowActionDelegate
 		}
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+	 */
 	public void selectionChanged(IAction action, ISelection selection)
 	{
 	}

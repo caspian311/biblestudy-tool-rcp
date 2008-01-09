@@ -11,7 +11,10 @@ public class DeleteNoteAction implements IViewActionDelegate
 {
 	private INoteView view;
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
+	 */
 	public void init(IViewPart view)
 	{
 		if (view instanceof INoteView)
@@ -20,13 +23,19 @@ public class DeleteNoteAction implements IViewActionDelegate
 		}
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	 */
 	public void run(IAction action)
 	{
 		view.deleteNote();
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+	 */
 	public void selectionChanged(IAction action, ISelection selection)
 	{
 	}

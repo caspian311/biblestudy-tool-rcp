@@ -117,7 +117,10 @@ public class NewNoteDialog extends Dialog implements INewNoteDialog
 		}
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INewNoteDialog#closeDialog()
+	 */
 	public void closeDialog()
 	{
 		close();
@@ -128,13 +131,19 @@ public class NewNoteDialog extends Dialog implements INewNoteDialog
 		eventListeners.remove(INewNoteEventListener.class, listener);
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INewNoteDialog#getNewNoteName()
+	 */
 	public String getNewNoteName()
 	{
 		return newNoteName;
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INewNoteDialog#openDialog()
+	 */
 	public void openDialog()
 	{
 		open();

@@ -22,7 +22,6 @@ public class NewNoteDialogPresenter implements INewNoteEventListener
 	 * (non-Javadoc)
 	 * @see net.todd.biblestudy.rcp.presenters.EventListener#handleEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
 	 */
-	@Override
 	public void handleEvent(ViewEvent e)
 	{
 		String source = (String)e.getSource();
@@ -52,7 +51,10 @@ public class NewNoteDialogPresenter implements INewNoteEventListener
 		
 		ViewHelper.runWithBusyIndicator(new Runnable()
 		{
-			@Override
+			/*
+			 * (non-Javadoc)
+			 * @see java.lang.Runnable#run()
+			 */
 			public void run()
 			{
 				ViewerFactory.getViewer().openNewNoteView(newNoteName);
