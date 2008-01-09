@@ -1,6 +1,9 @@
 package net.todd.biblestudy.rcp.models;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.Date;
+
 import net.todd.biblestudy.db.Note;
 
 import org.junit.Before;
@@ -18,7 +21,10 @@ public class UpdatingLinksInNoteModelTest
 			@Override
 			protected Note getSampleNote()
 			{
-				return new Note();
+				Note note = new Note();
+				note.setLastModified(new Date());
+				
+				return note;
 			}
 		};
 		

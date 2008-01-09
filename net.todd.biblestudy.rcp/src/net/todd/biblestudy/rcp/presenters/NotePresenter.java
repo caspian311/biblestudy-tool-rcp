@@ -22,9 +22,9 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		this.noteView = noteView;
 		this.noteModel = noteModel;
 		
-		noteView.addNoteViewListener(this);
-		
 		handleOpenNote();
+		
+		noteView.addNoteViewListener(this);
 	}
 
 	@Override

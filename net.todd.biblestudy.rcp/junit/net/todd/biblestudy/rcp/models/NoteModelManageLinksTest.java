@@ -3,6 +3,7 @@ package net.todd.biblestudy.rcp.models;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.List;
 
 import net.todd.biblestudy.db.Note;
@@ -28,6 +29,7 @@ public class NoteModelManageLinksTest
 				note.setName("Test");
 				note.setNoteId(new Integer(1));
 				note.setText(ORIGINAL_NOTE_CONTENT);
+				note.setLastModified(new Date());
 				return note;
 			}
 		};
