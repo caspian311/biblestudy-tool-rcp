@@ -123,12 +123,12 @@ public class NoteView extends ViewPart implements INoteView
 			 */
 			public void mouseUp(MouseEvent e)
 			{
-				if (e.button == 3) 
-				{	// right-click
+				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.CTRL))
+				{	// right-click and ctrl+mouse1 for macs
 					lastClickedCoordinates = new Point(e.x, e.y);
 					fireEvent(new ViewEvent(ViewEvent.NOTE_SHOW_RIGHT_CLICK_MENU));
 				}
-				if (e.button == 1)
+				if (e.stateMask == SWT.BUTTON1)
 				{
 					Point point = new Point(e.x, e.y);
 					
@@ -142,7 +142,6 @@ public class NoteView extends ViewPart implements INoteView
 		});
 		textViewer.getTextWidget().addMouseMoveListener(new MouseMoveListener()
 		{
-
 			/*
 			 * (non-Javadoc)
 			 * @see org.eclipse.swt.events.MouseMoveListener#mouseMove(org.eclipse.swt.events.MouseEvent)
