@@ -36,7 +36,7 @@ public class NoteView extends ViewPart implements INoteView
 {
 	public static final String ID = "net.todd.biblestudy.rcp.NoteView"; 
 	
-	EventListenerList eventListeners = new EventListenerList();
+	private EventListenerList eventListeners = new EventListenerList();
 
 	private Menu rightClickTextMenu;
 

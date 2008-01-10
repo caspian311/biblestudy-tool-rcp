@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.1"?>
 
-<product name="Bible Study Tool" id="net.todd.biblestudy.rcp.product" application="net.todd.biblestudy.rcp.application" useFeatures="false">
+<product name="Bible Study Tool" id="net.todd.biblestudy.rcp.product" application="net.todd.biblestudy.rcp.application" useFeatures="true">
 
    <configIni use="default"/>
 
@@ -48,5 +48,9 @@
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
    </plugins>
+
+   <features>
+      <feature id="net.todd.biblestudy.feature" version="1.0.0"/>
+   </features>
 
 </product>

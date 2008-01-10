@@ -1,10 +1,10 @@
 package net.todd.biblestudy.rcp.views;
 
+import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.NoteModel;
 import net.todd.biblestudy.rcp.presenters.NewNoteDialogPresenter;
 import net.todd.biblestudy.rcp.presenters.NotePresenter;
-import net.todd.biblestudy.rcp.util.ViewHelper;
 
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;

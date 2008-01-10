@@ -1,6 +1,6 @@
 package net.todd.biblestudy.rcp.presenters;
 
-import net.todd.biblestudy.rcp.util.ViewHelper;
+import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.views.INewNoteDialog;
 import net.todd.biblestudy.rcp.views.NewNoteDialog;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
