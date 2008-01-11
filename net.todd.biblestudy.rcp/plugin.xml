@@ -66,6 +66,7 @@
       <view
             allowMultiple="true"
             class="net.todd.biblestudy.rcp.views.NoteView"
+            icon="icons/text_file.png"
             id="net.todd.biblestudy.rcp.NoteView"
             name="NoteView">
       </view>
