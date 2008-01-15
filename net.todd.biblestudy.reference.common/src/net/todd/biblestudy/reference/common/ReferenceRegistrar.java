@@ -1,7 +1,9 @@
 package net.todd.biblestudy.reference.common;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class ReferenceRegistrar
 {
@@ -28,5 +30,15 @@ public class ReferenceRegistrar
 		System.out.println("datasource registered: " + dataSource.getId());
 		
 		registedReferences.put(dataSource.getId(), dataSource);
+	}
+
+	public void unregisterAll()
+	{
+		registedReferences.clear();
+	}
+	
+	public Set<ReferenceDataSource> getAllDataSources()
+	{
+		return new HashSet<ReferenceDataSource>(registedReferences.values());
 	}
 }

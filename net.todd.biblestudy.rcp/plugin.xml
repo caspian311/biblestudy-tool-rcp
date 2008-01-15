@@ -40,7 +40,7 @@
          name="Global Actions"
          point="org.eclipse.ui.actionSets">
       <actionSet
-            id="net.todd.biblestudy.rcp.GlobalActionSet"
+            id="net.todd.biblestudy.GlobalActionSet"
             label="Global Actions"
             visible="true">
          <action

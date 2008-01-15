@@ -1,0 +1,42 @@
+package net.todd.biblestudy.reference.common.models;
+
+import java.util.List;
+import java.util.Set;
+
+import net.todd.biblestudy.reference.common.ReferenceDataSource;
+import net.todd.biblestudy.reference.common.ReferenceRegistrar;
+import net.todd.biblestudy.reference.common.ReferenceSearchResults;
+
+public class ReferenceModel implements IReferenceModel
+{
+	public Set<ReferenceDataSource> getAllDataSources()
+	{
+		return ReferenceRegistrar.getInstance().getAllDataSources();
+	}
+
+	public List<ReferenceSearchResults> performSearch(String searchText, String referenceShortName)
+	{
+		ReferenceDataSource dataSource = getDataSourceByShortName(referenceShortName);
+		
+		return dataSource.search(searchText);
+	}
+
+	protected ReferenceDataSource getDataSourceByShortName(String referenceShortName)
+	{
+		ReferenceDataSource targetDataSource = null;
+		
+		if (referenceShortName != null)
+		{
+			for (ReferenceDataSource dataSource : getAllDataSources())
+			{
+				if (referenceShortName.equals(dataSource.getShortName()))
+				{
+					targetDataSource = dataSource;
+					break;
+				}
+			}
+		}
+		
+		return targetDataSource;
+	}
+}

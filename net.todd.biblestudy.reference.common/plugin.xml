@@ -14,7 +14,7 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            id="net.todd.biblestudy.reference.common.actionSet1"
+            id="net.todd.biblestudy.reference.GlobalActionSet"
             label="Global Actions"
             visible="true">
          <action

@@ -67,7 +67,7 @@
          unpack="false"/>
 
    <plugin
-         id="net.todd.biblestudy.db"
+         id="net.todd.biblestudy.reference.nasb"
          download-size="0"
          install-size="0"
          version="0.0.0"

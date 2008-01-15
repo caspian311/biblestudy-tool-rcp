@@ -1,6 +1,10 @@
 package net.todd.biblestudy.reference.common;
 
-public abstract class ReferenceDataSource
+import java.util.List;
+
+public interface ReferenceDataSource
 {
-	abstract public String getId();
+	public String getId();
+	public String getShortName();
+	public List<ReferenceSearchResults> search(String searchText);
 }
