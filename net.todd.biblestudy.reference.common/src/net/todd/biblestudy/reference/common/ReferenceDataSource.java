@@ -6,5 +6,5 @@ public interface ReferenceDataSource
 {
 	public String getId();
 	public String getShortName();
-	public List<ReferenceSearchResults> search(String searchText);
+	public List<ReferenceSearchResult> search(String searchText);
 }

@@ -8,6 +8,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Export-Package: net.todd.biblestudy.common,
+ org.apache.commons.lang,
  org.junit
 Bundle-ClassPath: lib/junit-4.4.jar,
- .
+ .,
+ lib/commons-lang-2.3.jar

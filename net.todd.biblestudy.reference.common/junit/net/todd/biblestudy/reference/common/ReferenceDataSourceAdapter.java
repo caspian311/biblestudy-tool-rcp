@@ -14,7 +14,7 @@ public abstract class ReferenceDataSourceAdapter implements ReferenceDataSource
 		return null;
 	}
 
-	public List<ReferenceSearchResults> search(String searchText)
+	public List<ReferenceSearchResult> search(String searchText)
 	{
 		return null;
 	}

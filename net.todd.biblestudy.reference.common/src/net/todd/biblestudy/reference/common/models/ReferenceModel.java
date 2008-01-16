@@ -5,7 +5,7 @@ import java.util.Set;
 
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
 import net.todd.biblestudy.reference.common.ReferenceRegistrar;
-import net.todd.biblestudy.reference.common.ReferenceSearchResults;
+import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 
 public class ReferenceModel implements IReferenceModel
 {
@@ -14,11 +14,18 @@ public class ReferenceModel implements IReferenceModel
 		return ReferenceRegistrar.getInstance().getAllDataSources();
 	}
 
-	public List<ReferenceSearchResults> performSearch(String searchText, String referenceShortName)
+	public List<ReferenceSearchResult> performSearch(String searchText, String referenceShortName)
 	{
 		ReferenceDataSource dataSource = getDataSourceByShortName(referenceShortName);
 		
-		return dataSource.search(searchText);
+		List<ReferenceSearchResult> search = null;
+		
+		if (dataSource != null)
+		{
+			search = dataSource.search(searchText);
+		}
+		
+		return search;
 	}
 
 	protected ReferenceDataSource getDataSourceByShortName(String referenceShortName)

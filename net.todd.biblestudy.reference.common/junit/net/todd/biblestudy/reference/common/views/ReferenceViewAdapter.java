@@ -2,7 +2,7 @@ package net.todd.biblestudy.reference.common.views;
 
 import java.util.List;
 
-import net.todd.biblestudy.reference.common.ReferenceSearchResults;
+import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 import net.todd.biblestudy.reference.common.presenters.IReferenceViewListener;
 
 public abstract class ReferenceViewAdapter implements IReferenceView
@@ -33,7 +33,11 @@ public abstract class ReferenceViewAdapter implements IReferenceView
 	{
 	}
 
-	public void setResults(ReferenceSearchResults[] results)
+	public void setResults(ReferenceSearchResult[] results)
+	{
+	}
+	
+	public void popupErrorMessage(String errorNoSearchInfoGiven)
 	{
 	}
 }

@@ -5,30 +5,31 @@ import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
-import net.todd.biblestudy.reference.common.ReferenceSearchResults;
+import net.todd.biblestudy.common.ViewHelper;
+import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 import net.todd.biblestudy.reference.common.presenters.IReferenceViewListener;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 public class ReferenceView extends ViewPart implements IReferenceView
 {
-	private static final String INITIAL_SEARCH_TEXT = "Search...";
+	public static final String INITIAL_COMBO_BOX_TEXT = "Select a Reference Source...";
+	public static final String INITIAL_SEARCH_TEXT = "Search...";
 
 	private EventListenerList eventListeners = new EventListenerList();
 
@@ -47,18 +48,42 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	@Override
 	public void createPartControl(Composite parent)
 	{
-		createControls(parent);
-		createResultsArea(parent);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginBottom = 2;
+		layout.marginTop = 2;
+		layout.marginLeft = 2;
+		layout.marginRight = 2;
+		
+		Composite composite = new Composite(parent, SWT.NONE);
+		
+		composite.setLayout(layout);
+		
+		createControls(composite);
+		createResultsArea(composite);
 	}
 
 	private void createResultsArea(Composite parent)
 	{
-		resultsTableViewer = new TableViewer(parent, SWT.BORDER);
+		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
 		resultsTableViewer.setLabelProvider(new ResultsTableLabelProvider());
 		resultsTableViewer.setContentProvider(new ArrayContentProvider());
+		
+		Table table = resultsTableViewer.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		table.setHeaderVisible(true);
+		
+		TableColumn column1 = new TableColumn(table, SWT.LEFT);
+		column1.setText("Reference");
+		column1.setWidth(100);
+		
+		TableColumn column2 = new TableColumn(table, SWT.LEFT);
+		column2.setText("Text");
+		column2.setWidth(200);
+		
+		table.pack();
 	}
 	
-	public void setResults(ReferenceSearchResults[] results)
+	public void setResults(ReferenceSearchResult[] results)
 	{
 		resultsTableViewer.setInput(results);
 	}
@@ -111,7 +136,7 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		
 		referenceCombo = new Combo(composite, SWT.BORDER | SWT.DROP_DOWN);
 		referenceCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 2, 0));
-		referenceCombo.setText("Select a Reference Source...");
+		referenceCombo.setText(INITIAL_COMBO_BOX_TEXT);
 	}
 
 	@Override
@@ -165,33 +190,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		return lookupText.getText();
 	}
 	
-	class ResultsTableLabelProvider implements ITableLabelProvider
+	public void popupErrorMessage(String error)
 	{
-		public Image getColumnImage(Object element, int columnIndex)
-		{
-			return null;
-		}
-
-		public String getColumnText(Object element, int columnIndex)
-		{
-			return null;
-		}
-
-		public void addListener(ILabelProviderListener listener)
-		{
-		}
-
-		public void dispose()
-		{
-		}
-
-		public boolean isLabelProperty(Object element, String property)
-		{
-			return false;
-		}
-
-		public void removeListener(ILabelProviderListener listener)
-		{
-		}
+		ViewHelper.showError(new Exception(error));
 	}
 }

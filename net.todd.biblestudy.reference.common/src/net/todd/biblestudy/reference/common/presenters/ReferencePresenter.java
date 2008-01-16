@@ -7,14 +7,18 @@ import java.util.List;
 import java.util.Set;
 
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
-import net.todd.biblestudy.reference.common.ReferenceSearchResults;
+import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 import net.todd.biblestudy.reference.common.models.IReferenceModel;
 import net.todd.biblestudy.reference.common.models.ReferenceModel;
 import net.todd.biblestudy.reference.common.views.IReferenceView;
+import net.todd.biblestudy.reference.common.views.ReferenceView;
 import net.todd.biblestudy.reference.common.views.ReferenceViewEvent;
+
+import org.apache.commons.lang.StringUtils;
 
 public class ReferencePresenter implements IReferenceViewListener
 {
+	private static final String ERROR_NO_SEARCH_INFO_GIVEN = "Please specify a search query and a source";
 	private IReferenceView referenceView;
 	private IReferenceModel referenceModel;
 
@@ -51,9 +55,30 @@ public class ReferencePresenter implements IReferenceViewListener
 		String searchText = referenceView.getLookupText();
 		String referenceShortName = referenceView.getReferenceSourceId();
 		
-		List<ReferenceSearchResults> results = getReferenceModel().performSearch(searchText, referenceShortName);
+		if (ReferenceView.INITIAL_SEARCH_TEXT.equals(searchText))
+		{
+			searchText = null;
+		}
+		if (ReferenceView.INITIAL_COMBO_BOX_TEXT.equals(referenceShortName))
+		{
+			referenceShortName = null;
+		}
 		
-		ReferenceSearchResults[] resultsArray = new ReferenceSearchResults[results.size()];
+		if (StringUtils.isEmpty(searchText) || StringUtils.isEmpty(referenceShortName))
+		{
+			referenceView.popupErrorMessage(ERROR_NO_SEARCH_INFO_GIVEN);
+		}
+		else
+		{
+			doSearch(searchText, referenceShortName);
+		}
+	}
+
+	protected void doSearch(String searchText, String referenceShortName)
+	{
+		List<ReferenceSearchResult> results = getReferenceModel().performSearch(searchText, referenceShortName);
+		
+		ReferenceSearchResult[] resultsArray = new ReferenceSearchResult[results.size()];
 		results.toArray(resultsArray);
 		
 		referenceView.setResults(resultsArray);
@@ -79,7 +104,7 @@ public class ReferencePresenter implements IReferenceViewListener
 		referenceView.setDataSourcesInDropDown(sortedList);
 	}
 
-	private void handleViewDisposed()
+	protected void handleViewDisposed()
 	{
 		referenceView.removeReferenceViewListener(this);
 	}

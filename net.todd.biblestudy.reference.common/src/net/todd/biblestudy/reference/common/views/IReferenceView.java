@@ -2,7 +2,7 @@ package net.todd.biblestudy.reference.common.views;
 
 import java.util.List;
 
-import net.todd.biblestudy.reference.common.ReferenceSearchResults;
+import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 import net.todd.biblestudy.reference.common.presenters.IReferenceViewListener;
 
 public interface IReferenceView
@@ -13,5 +13,6 @@ public interface IReferenceView
 	public void setDataSourcesInDropDown(List<String> ids);
 	public String getReferenceSourceId();
 	public String getLookupText();
-	public void setResults(ReferenceSearchResults[] results);
+	public void setResults(ReferenceSearchResult[] results);
+	public void popupErrorMessage(String errorNoSearchInfoGiven);
 }
