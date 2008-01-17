@@ -3,10 +3,12 @@ package net.todd.converter.nasb;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -19,22 +21,28 @@ public class ConverterTest
 		converter.setBibVersion("NASB");
 		
 		String oldLine = "Gen 1:1 In the beginning God created the heavens and the earth.";
-		String newLine = converter.convertLine(oldLine);
+		String[] newLine = converter.convertLine(oldLine);
 		
 		assertNotNull(newLine);
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_REF, BIB_TEXT) VALUES ('NASB', 'Gen 1:1', 'In the beginning God created the heavens and the earth.');", newLine);
+		assertEquals(2, newLine.length);
+		assertEquals("Gen", newLine[0]);
+		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', 'Gen', 1, 1, 'In the beginning God created the heavens and the earth.');", newLine[1]);
 		
 		String oldLine2 = "Song 1:1 The Song of Songs, which is Solomon's.";
-		String newLine2 = converter.convertLine(oldLine2);
+		String[] newLine2 = converter.convertLine(oldLine2);
 		
 		assertNotNull(newLine2);
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_REF, BIB_TEXT) VALUES ('NASB', 'Song 1:1', 'The Song of Songs, which is Solomon\'s.');", newLine2);
+		assertEquals(2, newLine2.length);
+		assertEquals("Song", newLine2[0]);
+		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', 'Song', 1, 1, 'The Song of Songs, which is Solomon\\\'s.');", newLine2[1]);
 		
 		String oldLine3 = "1 Chr 1:1 Adam, Seth, Enosh,";
-		String newLine3 = converter.convertLine(oldLine3);
+		String[] newLine3 = converter.convertLine(oldLine3);
 		
 		assertNotNull(newLine3);
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_REF, BIB_TEXT) VALUES ('NASB', '1 Chr 1:1', 'Adam, Seth, Enosh,');", newLine3);
+		assertEquals(2, newLine3.length);
+		assertEquals("1 Chr", newLine3[0]);
+		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', '1 Chr', 1, 1, 'Adam, Seth, Enosh,');", newLine3[1]);
 	}
 	
 	@Test
@@ -44,7 +52,7 @@ public class ConverterTest
 		converter.setBibVersion("NASB");
 		
 		String oldLine = "| Whatever...";
-		String newLine = converter.convertLine(oldLine);
+		String[] newLine = converter.convertLine(oldLine);
 		
 		assertNull(newLine);
 	}
@@ -56,7 +64,7 @@ public class ConverterTest
 		converter.setBibVersion("NASB");
 		
 		String oldLine = null;
-		String newLine = converter.convertLine(oldLine);
+		String newLine[] = converter.convertLine(oldLine);
 		
 		assertNull(newLine);
 		
@@ -65,6 +73,7 @@ public class ConverterTest
 		
 		assertNull(newLine);
 	}
+	
 	@Test
 	public void testConvertFile() throws Exception
 	{
@@ -74,17 +83,17 @@ public class ConverterTest
 		URI fileUri = this.getClass().getResource("sample_verse.txt").toURI();
 		
 		File file = new File(fileUri);
-		List<String> sqlLines = converter.convertFile(file);
+		Map<String, List<String>> sqlLines = converter.convertFile(file);
 		
 		assertNotNull(sqlLines);
-		assertEquals(3, sqlLines.size());
+		assertEquals(3, sqlLines.keySet().size());
 
-		String sqlLine1 = sqlLines.get(0);
-		String sqlLine2 = sqlLines.get(1);
-		String sqlLine3 = sqlLines.get(2);
+		assertTrue(sqlLines.keySet().contains("Gen"));
+		assertTrue(sqlLines.keySet().contains("1 Chr"));
+		assertTrue(sqlLines.keySet().contains("Song"));
 		
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_REF, BIB_TEXT) VALUES ('NASB', 'Gen 1:1', 'In the beginning God created the heavens and the earth.');", sqlLine1);
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_REF, BIB_TEXT) VALUES ('NASB', '1 Chr 1:1', 'Adam, Seth, Enosh,');", sqlLine2);
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_REF, BIB_TEXT) VALUES ('NASB', 'Song 1:1', 'The Song of Songs, which is Solomon\'s.');", sqlLine3);
+		assertTrue(sqlLines.get("Gen").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', 'Gen', 1, 1, 'In the beginning God created the heavens and the earth.');"));
+		assertTrue(sqlLines.get("1 Chr").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', '1 Chr', 1, 1, 'Adam, Seth, Enosh,');"));
+		assertTrue(sqlLines.get("Song").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', 'Song', 1, 1, 'The Song of Songs, which is Solomon\\\'s.');"));
 	}
 }

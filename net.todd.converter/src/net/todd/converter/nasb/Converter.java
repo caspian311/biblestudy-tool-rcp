@@ -3,8 +3,11 @@ package net.todd.converter.nasb;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,32 +17,44 @@ public class Converter
 {
 	private String bibVersion;
 
-	protected String convertLine(String oldLine)
+	protected String[] convertLine(String oldLine)
 	{
-		String line = null;
+		String[] line = null;
 		
 		if (isValidLine(oldLine))
 		{
+			line = new String[2];
+			
 			StringBuffer sb = new StringBuffer();
 			
-			sb.append("INSERT INTO BIBLE (BIB_VERSION, BIB_REF, BIB_TEXT) VALUES (");
+			sb.append("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES (");
 			
 			addVersion(sb);
 			
-			String reference = getReference(oldLine);
+			Reference reference = getReference(oldLine);
 			
-			sb.append("'").append(reference).append("', ");
+			sb
+				.append("'").append(reference.getBook()).append("', ")
+				.append(reference.getChapter()).append(", ")
+				.append(reference.getVerse()).append(", ");
 			
 			String text = getText(reference, oldLine);
+			text = fixText(text);
 			
 			sb.append("'").append(text).append("'");
 			
 			sb.append(");");
 			
-			line = sb.toString();
+			line[0] = reference.getBook();
+			line[1] = sb.toString();
 		}
 		
 		return line;
+	}
+
+	private String fixText(String text)
+	{
+		return text.replaceAll("'", "\\\\\\'");
 	}
 
 	private boolean isValidLine(String oldLine)
@@ -57,14 +72,14 @@ public class Converter
 		return isValidLine;
 	}
 
-	private String getText(String reference, String oldLine)
+	private String getText(Reference reference, String oldLine)
 	{
-		String refAndSpace = reference + " ";
+		String refAndSpace = reference.toString() + " ";
 		
 		return oldLine.substring(refAndSpace.length());
 	}
 
-	private String getReference(String oldLine)
+	private Reference getReference(String oldLine)
 	{
 		StringTokenizer tokenizer = new StringTokenizer(oldLine);
 		
@@ -72,11 +87,31 @@ public class Converter
 		String secondToken = tokenizer.nextToken();
 		String thirdToken = tokenizer.nextToken();
 		
-		String reference = firstToken + " " + secondToken;
+		Reference reference = new Reference();
 		
 		if (StringUtils.isNumeric(firstToken))
 		{
-			reference += " " + thirdToken;
+			reference.setBook(firstToken + " " + secondToken);
+			
+			StringTokenizer chapVersTokenizer = new StringTokenizer(thirdToken, ":");
+			
+			int chapter = Integer.parseInt(chapVersTokenizer.nextToken());
+			int verse = Integer.parseInt(chapVersTokenizer.nextToken());
+			
+			reference.setChapter(chapter);
+			reference.setVerse(verse);
+		}
+		else
+		{
+			reference.setBook(firstToken);
+			
+			StringTokenizer chapVersTokenizer = new StringTokenizer(secondToken, ":");
+			
+			int chapter = Integer.parseInt(chapVersTokenizer.nextToken());
+			int verse = Integer.parseInt(chapVersTokenizer.nextToken());
+			
+			reference.setChapter(chapter);
+			reference.setVerse(verse);
 		}
 		
 		return reference;
@@ -97,9 +132,9 @@ public class Converter
 		return bibVersion;
 	}
 
-	protected List<String> convertFile(File file)
+	protected Map<String, List<String>> convertFile(File file)
 	{
-		List<String> lines = new ArrayList<String>();
+		Map<String, List<String>> bookAndText = new HashMap<String, List<String>>();
 		
 		try
 		{
@@ -109,11 +144,23 @@ public class Converter
 			
 			while ((lineFromFile = reader.readLine()) != null)
 			{
-				String sqlLine = convertLine(lineFromFile);
+				String[] sqlLine = convertLine(lineFromFile);
 				
 				if (sqlLine != null)
 				{
-					lines.add(sqlLine);
+					String book = sqlLine[0];
+					String text = sqlLine[1];
+					
+					List<String> listOfVersesInBook = bookAndText.get(book);
+					
+					if (listOfVersesInBook == null)
+					{
+						listOfVersesInBook = new ArrayList<String>();
+					}
+					
+					listOfVersesInBook.add(text);
+					
+					bookAndText.put(book, listOfVersesInBook);
 				}
 			}
 		}
@@ -122,18 +169,60 @@ public class Converter
 			e.printStackTrace();
 		}
 		
-		return lines;
+		return bookAndText;
 	}
 	
 	public static void main(String[] args) throws Exception
 	{
-		Converter converter = new Converter();
-		converter.setBibVersion("NASB");
-		List<String> sqlLines = converter.convertFile(new File(converter.getClass().getResource("nasb.txt").toURI()));
-		
-		for (String line : sqlLines)
+		if (args.length != 2)
 		{
-			System.out.println(line);
+			System.out.println("Usage: Converter <input_file> <output_directory>");
+		}
+		else
+		{
+			File inputFile = new File(args[0]);
+			File outputDirectoryFile = new File(args[1]);
+			
+			validateInputAndOutput(inputFile, outputDirectoryFile);
+			
+			Converter converter = new Converter();
+			converter.setBibVersion("NASB");
+			Map<String, List<String>> booksAndText = converter.convertFile(inputFile);
+			
+			for (String book : booksAndText.keySet())
+			{
+				String outputFilename = outputDirectoryFile.getAbsolutePath() + File.separator + book + ".sql";
+				
+				File outputFile = new File(outputFilename);
+				outputFile.createNewFile();
+				
+				FileWriter fileWriter = new FileWriter(outputFile);
+				
+				for (String sqlOfVerse : booksAndText.get(book))
+				{
+					fileWriter.write(sqlOfVerse + "\n");
+				}
+				
+				fileWriter.flush();
+				fileWriter.close();
+			}
+		}
+		
+	}
+
+	private static void validateInputAndOutput(File inputFile, File outputDirectory) throws Exception
+	{
+		if (inputFile.exists() == false)
+		{
+			throw new Exception("Invalid input file.");
+		}
+		if (outputDirectory.isDirectory() == false)
+		{
+			throw new Exception("Output directory is not a directory.");
+		}
+		if (inputFile.canRead() == false)
+		{
+			throw new Exception("Cannot read from input file.");
 		}
 	}
 }
