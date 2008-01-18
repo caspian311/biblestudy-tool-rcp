@@ -3,8 +3,8 @@ package net.todd.biblestudy.reference.common.models;
 import java.util.List;
 import java.util.Set;
 
+import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
-import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 
 public abstract class ReferenceModelAdapter implements IReferenceModel
 {
@@ -13,7 +13,7 @@ public abstract class ReferenceModelAdapter implements IReferenceModel
 		return null;
 	}
 
-	public List<ReferenceSearchResult> performSearch(String searchText, String referenceShortName)
+	public List<BibleVerse> performSearch(String searchText, String referenceShortName)
 	{
 		return null;
 	}

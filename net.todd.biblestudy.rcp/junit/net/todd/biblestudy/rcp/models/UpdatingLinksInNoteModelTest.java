@@ -98,7 +98,7 @@ public class UpdatingLinksInNoteModelTest
 	@Test
 	public void testLocationAndLengthOfNewTextWhenAddingSameLetterToFront() throws Exception
 	{
-		// TODO: fix this...
+		// FIXME: this needs a fixin'
 		noteModel.getNote().setText("abcd");
 		
 		String newContent = "aabcd";

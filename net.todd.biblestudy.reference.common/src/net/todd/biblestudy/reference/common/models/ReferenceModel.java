@@ -3,9 +3,9 @@ package net.todd.biblestudy.reference.common.models;
 import java.util.List;
 import java.util.Set;
 
+import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
 import net.todd.biblestudy.reference.common.ReferenceRegistrar;
-import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 
 public class ReferenceModel implements IReferenceModel
 {
@@ -14,11 +14,11 @@ public class ReferenceModel implements IReferenceModel
 		return ReferenceRegistrar.getInstance().getAllDataSources();
 	}
 
-	public List<ReferenceSearchResult> performSearch(String searchText, String referenceShortName)
+	public List<BibleVerse> performSearch(String searchText, String referenceShortName)
 	{
 		ReferenceDataSource dataSource = getDataSourceByShortName(referenceShortName);
 		
-		List<ReferenceSearchResult> search = null;
+		List<BibleVerse> search = null;
 		
 		if (dataSource != null)
 		{

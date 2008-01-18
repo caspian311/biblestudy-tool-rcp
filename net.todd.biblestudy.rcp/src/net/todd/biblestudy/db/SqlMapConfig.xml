@@ -11,8 +11,6 @@
 		</dataSource>
 	</transactionManager>
 
-	<sqlMap resource="net/todd/biblestudy/db/Verse.xml" />
-	<sqlMap resource="net/todd/biblestudy/db/Version.xml" />
 	<sqlMap resource="net/todd/biblestudy/db/Note.xml" />
 	<sqlMap resource="net/todd/biblestudy/db/Link.xml" />
 

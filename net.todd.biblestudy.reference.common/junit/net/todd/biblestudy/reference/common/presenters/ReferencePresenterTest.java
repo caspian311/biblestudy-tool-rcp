@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.todd.biblestudy.reference.common.BibleVerse;
+import net.todd.biblestudy.reference.common.IBibleDao;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
-import net.todd.biblestudy.reference.common.ReferenceDataSourceAdapter;
-import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 import net.todd.biblestudy.reference.common.models.IReferenceModel;
 import net.todd.biblestudy.reference.common.models.ReferenceModelAdapter;
 import net.todd.biblestudy.reference.common.views.ReferenceView;
@@ -51,9 +51,9 @@ public class ReferencePresenterTest
 					}
 					
 					@Override
-					public List<ReferenceSearchResult> performSearch(String searchText, String referenceShortName)
+					public List<BibleVerse> performSearch(String searchText, String referenceShortName)
 					{
-						return new ArrayList<ReferenceSearchResult>();
+						return new ArrayList<BibleVerse>();
 					}
 				};
 			}
@@ -77,7 +77,26 @@ public class ReferencePresenterTest
 		assertTrue(dataSourcesInDorpDown.isEmpty());
 		
 		
-		dataSources.add(new ReferenceDataSourceAdapter() {});
+		dataSources.add(new ReferenceDataSource() 
+		{
+			@Override
+			protected IBibleDao getBibleDao()
+			{
+				return null;
+			}
+
+			@Override
+			public String getId()
+			{
+				return null;
+			}
+
+			@Override
+			public String getShortName()
+			{
+				return null;
+			}
+		});
 		
 		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_OPENED));
 		

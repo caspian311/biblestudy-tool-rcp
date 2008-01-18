@@ -149,13 +149,9 @@ class MockNoteView implements INoteView
 
 	public void changeCursorToPointer()
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void changeCursorToText()
 	{
-		// TODO Auto-generated method stub
-		
 	}
 }

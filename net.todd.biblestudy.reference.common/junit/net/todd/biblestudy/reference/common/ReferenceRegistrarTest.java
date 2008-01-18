@@ -18,7 +18,25 @@ public class ReferenceRegistrarTest
 	@Before
 	public void setup()
 	{
-		dataSource1 = new ReferenceDataSourceAdapter() {};
+		dataSource1 = new ReferenceDataSource() {
+
+			@Override
+			protected IBibleDao getBibleDao()
+			{
+				return null;
+			}
+
+			@Override
+			public String getId()
+			{
+				return null;
+			}
+
+			@Override
+			public String getShortName()
+			{
+				return null;
+			}};
 	}
 	
 	@After

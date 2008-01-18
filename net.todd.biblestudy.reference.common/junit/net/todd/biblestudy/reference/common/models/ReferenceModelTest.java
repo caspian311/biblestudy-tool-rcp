@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import net.todd.biblestudy.reference.common.IBibleDao;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
-import net.todd.biblestudy.reference.common.ReferenceDataSourceAdapter;
 import net.todd.biblestudy.reference.common.ReferenceRegistrar;
 
 import org.junit.After;
@@ -44,7 +44,7 @@ public class ReferenceModelTest
 	@Test
 	public void testGetAllDataSourcesWhenSomethingIsRegistered() throws Exception
 	{
-		ReferenceRegistrar.getInstance().register(new ReferenceDataSourceAdapter() 
+		ReferenceRegistrar.getInstance().register(new ReferenceDataSource() 
 		{
 			@Override
 			public String getId()
@@ -56,6 +56,12 @@ public class ReferenceModelTest
 			public String getShortName()
 			{
 				return "testShortName";
+			}
+
+			@Override
+			protected IBibleDao getBibleDao()
+			{
+				return null;
 			}
 		});
 		
@@ -82,7 +88,7 @@ public class ReferenceModelTest
 	@Test
 	public void testGetDataSourceByShortName() throws Exception
 	{
-		ReferenceRegistrar.getInstance().register(new ReferenceDataSourceAdapter() 
+		ReferenceRegistrar.getInstance().register(new ReferenceDataSource() 
 		{
 			@Override
 			public String getId()
@@ -95,9 +101,15 @@ public class ReferenceModelTest
 			{
 				return "testShortName1";
 			}
+
+			@Override
+			protected IBibleDao getBibleDao()
+			{
+				return null;
+			}
 		});
 		
-		ReferenceRegistrar.getInstance().register(new ReferenceDataSourceAdapter() 
+		ReferenceRegistrar.getInstance().register(new ReferenceDataSource() 
 		{
 			@Override
 			public String getId()
@@ -109,6 +121,12 @@ public class ReferenceModelTest
 			public String getShortName()
 			{
 				return "testShortName2";
+			}
+
+			@Override
+			protected IBibleDao getBibleDao()
+			{
+				return null;
 			}
 		});
 		

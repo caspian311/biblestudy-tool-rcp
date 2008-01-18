@@ -1,12 +1,12 @@
 package net.todd.biblestudy.reference.common.views;
 
-import net.todd.biblestudy.reference.common.ReferenceSearchResult;
+import net.todd.biblestudy.reference.common.BibleVerse;
 
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-public class ResultsTableLabelProvider implements ITableLabelProvider
+public class ResultsTableLabelProvider extends LabelProvider implements ITableLabelProvider
 {
 	public Image getColumnImage(Object element, int columnIndex)
 	{
@@ -15,13 +15,13 @@ public class ResultsTableLabelProvider implements ITableLabelProvider
 
 	public String getColumnText(Object element, int columnIndex)
 	{
-		ReferenceSearchResult result = (ReferenceSearchResult)element;
+		BibleVerse result = (BibleVerse)element;
 		
 		String text = null;
 		
 		if (columnIndex == 0)
 		{
-			text = result.getReference();
+			text = result.getReference().toString();
 		}
 		else if (columnIndex == 1)
 		{
@@ -29,22 +29,5 @@ public class ResultsTableLabelProvider implements ITableLabelProvider
 		}
 		
 		return text;
-	}
-
-	public void addListener(ILabelProviderListener listener)
-	{
-	}
-
-	public void dispose()
-	{
-	}
-
-	public boolean isLabelProperty(Object element, String property)
-	{
-		return false;
-	}
-
-	public void removeListener(ILabelProviderListener listener)
-	{
 	}
 }

@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
-import net.todd.biblestudy.reference.common.ReferenceSearchResult;
 import net.todd.biblestudy.reference.common.models.IReferenceModel;
 import net.todd.biblestudy.reference.common.models.ReferenceModel;
 import net.todd.biblestudy.reference.common.views.IReferenceView;
@@ -76,9 +76,9 @@ public class ReferencePresenter implements IReferenceViewListener
 
 	protected void doSearch(String searchText, String referenceShortName)
 	{
-		List<ReferenceSearchResult> results = getReferenceModel().performSearch(searchText, referenceShortName);
+		List<BibleVerse> results = getReferenceModel().performSearch(searchText, referenceShortName);
 		
-		ReferenceSearchResult[] resultsArray = new ReferenceSearchResult[results.size()];
+		BibleVerse[] resultsArray = new BibleVerse[results.size()];
 		results.toArray(resultsArray);
 		
 		referenceView.setResults(resultsArray);

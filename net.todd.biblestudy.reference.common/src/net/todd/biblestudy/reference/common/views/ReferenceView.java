@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.event.EventListenerList;
 
 import net.todd.biblestudy.common.ViewHelper;
-import net.todd.biblestudy.reference.common.ReferenceSearchResult;
+import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.presenters.IReferenceViewListener;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -28,6 +28,10 @@ import org.eclipse.ui.part.ViewPart;
 
 public class ReferenceView extends ViewPart implements IReferenceView
 {
+	private static final int TEXT_COLUMN_WIDTH = 200;
+	private static final String TEXT_COLUMN_HEADER = "Text";
+	private static final String REFERENCE_COLUMN_HEADER = "Reference";
+	private static final int REFERENCE_COLUMN_WIDTH = 100;
 	public static final String INITIAL_COMBO_BOX_TEXT = "Select a Reference Source...";
 	public static final String INITIAL_SEARCH_TEXT = "Search...";
 
@@ -71,19 +75,20 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		Table table = resultsTableViewer.getTable();
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
 		
 		TableColumn column1 = new TableColumn(table, SWT.LEFT);
-		column1.setText("Reference");
-		column1.setWidth(100);
+		column1.setText(REFERENCE_COLUMN_HEADER);
+		column1.setWidth(REFERENCE_COLUMN_WIDTH);
 		
-		TableColumn column2 = new TableColumn(table, SWT.LEFT);
-		column2.setText("Text");
-		column2.setWidth(200);
+		TableColumn column2 = new TableColumn(table, SWT.WRAP | SWT.LEFT);
+		column2.setText(TEXT_COLUMN_HEADER);
+		column2.setWidth(TEXT_COLUMN_WIDTH);
 		
 		table.pack();
 	}
 	
-	public void setResults(ReferenceSearchResult[] results)
+	public void setResults(BibleVerse[] results)
 	{
 		resultsTableViewer.setInput(results);
 	}
