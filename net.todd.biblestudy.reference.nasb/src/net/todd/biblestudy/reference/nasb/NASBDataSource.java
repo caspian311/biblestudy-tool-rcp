@@ -1,39 +1,28 @@
 package net.todd.biblestudy.reference.nasb;
 
-import java.util.List;
-
+import net.todd.biblestudy.reference.common.IBibleDao;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
-import net.todd.biblestudy.reference.common.ReferenceSearchResults;
+import net.todd.biblestudy.reference.nasb.data.NASBibleDao;
 
-public class NASBDataSource implements ReferenceDataSource
+public class NASBDataSource extends ReferenceDataSource
 {
 	private static final String ID = "net.todd.biblestudy.reference.nasb";
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.reference.common.ReferenceDataSource#getId()
-	 */
+	@Override
 	public String getId()
 	{
 		return ID;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.reference.common.ReferenceDataSource#getShortName()
-	 */
+	@Override
 	public String getShortName()
 	{
 		return "NASB";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.reference.common.ReferenceDataSource#search(java.lang.String)
-	 */
-	public List<ReferenceSearchResults> search(String searchText)
+	@Override
+	protected IBibleDao getBibleDao()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new NASBibleDao();
 	}
 }
