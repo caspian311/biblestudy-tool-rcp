@@ -9,6 +9,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -26,6 +28,12 @@ public class NewNoteDialog extends Dialog implements INewNoteDialog
 	public NewNoteDialog(Shell shell)
 	{
 		super(shell);
+	}
+	
+	@Override
+	protected Point getInitialSize()
+	{
+		return new Point(250, 100);
 	}
 	
 	EventListenerList eventListeners = new EventListenerList();
@@ -46,11 +54,14 @@ public class NewNoteDialog extends Dialog implements INewNoteDialog
 		
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(gridLayout);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		textLabel = new Label(composite, SWT.NORMAL);
 		textLabel.setText("Note Name:");
+		textLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		
 		newNoteText = new Text(composite, SWT.BORDER);
+		newNoteText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		newNoteText.addKeyListener(new KeyAdapter()
 		{
 			@Override
