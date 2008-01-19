@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 public class Converter
 {
 	private String bibVersion;
+	private int counter = 0;
 
 	protected String[] convertLine(String oldLine)
 	{
@@ -23,11 +24,13 @@ public class Converter
 		
 		if (isValidLine(oldLine))
 		{
+			counter++;
+			
 			line = new String[2];
 			
 			StringBuffer sb = new StringBuffer();
 			
-			sb.append("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES (");
+			sb.append("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES (");
 			
 			addVersion(sb);
 			
@@ -41,8 +44,9 @@ public class Converter
 			String text = getText(reference, oldLine);
 			text = fixText(text);
 			
-			sb.append("'").append(text).append("'");
+			sb.append("'").append(text).append("', ");
 			
+			sb.append(counter);
 			sb.append(");");
 			
 			line[0] = reference.getBook();
@@ -189,6 +193,12 @@ public class Converter
 			converter.setBibVersion("NASB");
 			Map<String, List<String>> booksAndText = converter.convertFile(inputFile);
 			
+			String masterFilename = inputFile.getParentFile().getAbsolutePath() + File.separator + "master.sql";
+			
+			File masterFile = new File(masterFilename);
+			masterFile.createNewFile();
+			FileWriter masterWriter = new FileWriter(masterFile);
+			
 			for (String book : booksAndText.keySet())
 			{
 				String outputFilename = outputDirectoryFile.getAbsolutePath() + File.separator + book + ".sql";
@@ -200,12 +210,18 @@ public class Converter
 				
 				for (String sqlOfVerse : booksAndText.get(book))
 				{
-					fileWriter.write(sqlOfVerse + "\n");
+					String content = sqlOfVerse + "\n";
+					
+					fileWriter.write(content);
+					masterWriter.write(content);
 				}
 				
 				fileWriter.flush();
 				fileWriter.close();
 			}
+			
+			masterWriter.flush();
+			masterWriter.close();
 		}
 		
 	}

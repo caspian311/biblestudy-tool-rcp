@@ -26,7 +26,7 @@ public class ConverterTest
 		assertNotNull(newLine);
 		assertEquals(2, newLine.length);
 		assertEquals("Gen", newLine[0]);
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', 'Gen', 1, 1, 'In the beginning God created the heavens and the earth.');", newLine[1]);
+		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Gen', 1, 1, 'In the beginning God created the heavens and the earth.', 1);", newLine[1]);
 		
 		String oldLine2 = "Song 1:1 The Song of Songs, which is Solomon's.";
 		String[] newLine2 = converter.convertLine(oldLine2);
@@ -34,7 +34,7 @@ public class ConverterTest
 		assertNotNull(newLine2);
 		assertEquals(2, newLine2.length);
 		assertEquals("Song", newLine2[0]);
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', 'Song', 1, 1, 'The Song of Songs, which is Solomon\\\'s.');", newLine2[1]);
+		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Song', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 2);", newLine2[1]);
 		
 		String oldLine3 = "1 Chr 1:1 Adam, Seth, Enosh,";
 		String[] newLine3 = converter.convertLine(oldLine3);
@@ -42,7 +42,7 @@ public class ConverterTest
 		assertNotNull(newLine3);
 		assertEquals(2, newLine3.length);
 		assertEquals("1 Chr", newLine3[0]);
-		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', '1 Chr', 1, 1, 'Adam, Seth, Enosh,');", newLine3[1]);
+		assertEquals("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', '1 Chr', 1, 1, 'Adam, Seth, Enosh,', 3);", newLine3[1]);
 	}
 	
 	@Test
@@ -92,8 +92,8 @@ public class ConverterTest
 		assertTrue(sqlLines.keySet().contains("1 Chr"));
 		assertTrue(sqlLines.keySet().contains("Song"));
 		
-		assertTrue(sqlLines.get("Gen").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', 'Gen', 1, 1, 'In the beginning God created the heavens and the earth.');"));
-		assertTrue(sqlLines.get("1 Chr").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', '1 Chr', 1, 1, 'Adam, Seth, Enosh,');"));
-		assertTrue(sqlLines.get("Song").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT) VALUES ('NASB', 'Song', 1, 1, 'The Song of Songs, which is Solomon\\\'s.');"));
+		assertTrue(sqlLines.get("Gen").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Gen', 1, 1, 'In the beginning God created the heavens and the earth.', 1);"));
+		assertTrue(sqlLines.get("1 Chr").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', '1 Chr', 1, 1, 'Adam, Seth, Enosh,', 2);"));
+		assertTrue(sqlLines.get("Song").contains("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Song', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 3);"));
 	}
 }

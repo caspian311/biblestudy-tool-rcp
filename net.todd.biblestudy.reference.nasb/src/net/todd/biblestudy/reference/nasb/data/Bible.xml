@@ -17,6 +17,7 @@
 		SELECT		BIBLE.*
 		FROM		BIBLE
 		WHERE		BIB_TEXT like '%$value$%'
+		ORDER BY	BIB_SEQUENCE_ID
 	</select>
 	
 	<select id="referenceLookup" parameterClass="net.todd.biblestudy.reference.common.Reference" resultMap="bibleResult">
@@ -25,6 +26,7 @@
 		WHERE		BIB_BOOK like #book#
 		AND			BIB_CHAPTER = #chapter#
 		AND			BIB_VERSE = #verse#
+		ORDER BY	BIB_SEQUENCE_ID
 	</select>
 
 </sqlMap>
