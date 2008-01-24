@@ -7,12 +7,16 @@ import javax.swing.event.EventListenerList;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.presenters.INoteListener;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
+import net.todd.biblestudy.reference.common.ReferenceTransfer;
 
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.TextViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -44,7 +48,7 @@ public class NoteView extends ViewPart implements INoteView
 	
 	private Composite parent;
 
-	private ITextViewer textViewer;
+	private StyledText noteContentText;
 
 	@Override
 	public void createPartControl(Composite parent)
@@ -99,12 +103,11 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		
-		textViewer = new TextViewer(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		textViewer.setDocument(new Document());
-		textViewer.getTextWidget().setLayoutData(gridData);
+		noteContentText = new StyledText(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		noteContentText.setLayoutData(gridData);
 		
-		textViewer.getTextWidget().setLayoutData(gridData);
-		textViewer.getTextWidget().addModifyListener(new ModifyListener() 
+		noteContentText.setLayoutData(gridData);
+		noteContentText.addModifyListener(new ModifyListener() 
 		{
 			/*
 			 * (non-Javadoc)
@@ -115,12 +118,16 @@ public class NoteView extends ViewPart implements INoteView
 				fireEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
 			}
 		});
-		textViewer.getTextWidget().addMouseListener(new MouseAdapter() 
+		
+		setupMouseListeners();
+		makeDropable();
+	}
+
+	private void setupMouseListeners()
+	{
+		noteContentText.addMouseListener(new MouseAdapter() 
 		{
-			/*
-			 * (non-Javadoc)
-			 * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
-			 */
+			@Override
 			public void mouseUp(MouseEvent e)
 			{
 				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.CTRL))
@@ -132,7 +139,7 @@ public class NoteView extends ViewPart implements INoteView
 				{
 					Point point = new Point(e.x, e.y);
 					
-					int offset = textViewer.getTextWidget().getOffsetAtLocation(point);
+					int offset = noteContentText.getOffsetAtLocation(point);
 					
 					ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
 					viewEvent.setData(offset);
@@ -140,7 +147,7 @@ public class NoteView extends ViewPart implements INoteView
 				}
 			}
 		});
-		textViewer.getTextWidget().addMouseMoveListener(new MouseMoveListener()
+		noteContentText.addMouseMoveListener(new MouseMoveListener()
 		{
 			/*
 			 * (non-Javadoc)
@@ -148,19 +155,109 @@ public class NoteView extends ViewPart implements INoteView
 			 */
 			public void mouseMove(MouseEvent e)
 			{
+				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_HOVERING);
+				
 				Point point = new Point(e.x, e.y);
 				
-				int offset = textViewer.getTextWidget().getOffsetAtLocation(point);
+				try
+				{
+					Integer offset = new Integer(noteContentText.getOffsetAtLocation(point));
+					viewEvent.setData(offset);
+				}
+				catch (IllegalArgumentException ex)
+				{
+				}
 				
-				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_HOVERING);
-				viewEvent.setData(offset);
 				fireEvent(viewEvent);
 			}
 		});
 	}
 
+	private void makeDropable()
+	{
+		DropTarget dropTarget = new DropTarget(noteContentText, DND.DROP_MOVE);
+		dropTarget.setTransfer(new Transfer[] {ReferenceTransfer.getInstance()});
+		dropTarget.addDropListener(new DropTargetAdapter()
+		{
+			@Override
+			public void drop(DropTargetEvent event)
+			{
+				printEvent(event);
+				System.out.println("woot");
+				
+				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_INSERT_REFERENCE);
+				viewEvent.setData(event.data);
+				fireEvent(viewEvent);
+			}
+		});
+		
+//		DropTarget dropTarget = new DropTarget(noteContentText, DND.DROP_MOVE);
+//		dropTarget.setTransfer(new Transfer[] {TextTransfer.getInstance()});
+//		dropTarget.addDropListener(new DropTargetAdapter()
+//		{
+//			@Override
+//			public void drop(DropTargetEvent event)
+//			{
+//				printEvent(event);
+//				System.out.println("woot");
+//				
+//				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_INSERT_REFERENCE);
+//				viewEvent.setData(event.data);
+//				fireEvent(viewEvent);
+//			}
+//		});
+	}
+	
+	private void printEvent(DropTargetEvent e)
+	{
+		StringBuffer sb = new StringBuffer();
+		sb.append("widget; ");
+		sb.append(e.widget);
+		sb.append(", time: ");
+		sb.append(e.time);
+		sb.append(", x: ");
+		sb.append(e.x);
+		sb.append(", y: ");
+		sb.append(e.y);
+		sb.append(", item: ");
+		sb.append(e.item);
+		sb.append(", operations: ");
+		sb.append(e.operations);
+		sb.append(", operation: ");
+		sb.append(e.detail);
+		sb.append(", feedback: ");
+		sb.append(e.feedback);
+		if (e.dataTypes != null)
+		{
+			for (int i = 0; i < e.dataTypes.length; i++)
+			{
+				sb.append(", dataType ");
+				sb.append(i);
+				sb.append(": ");
+				sb.append(e.dataTypes[i].type);
+			}
+		}
+		else
+		{
+			sb.append(", dataTypes: none");
+		}
+		sb.append(", currentDataType: ");
+		sb.append(e.currentDataType);
+		sb.append(", data: ");
+		sb.append(e.data);
+		sb.append("\n");
+		
+		System.out.println(sb.toString());
+	}
+	
+	public int getCurrentCarretPosition()
+	{
+		return noteContentText.getCaretOffset();
+	}
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.todd.biblestudy.rcp.views.INoteView#getLastClickedCoordinates()
 	 */
 	public Point getLastClickedCoordinates()
@@ -174,7 +271,7 @@ public class NoteView extends ViewPart implements INoteView
 	 */
 	public void showRightClickPopup(int x, int y)
 	{
-		String selectionText = textViewer.getTextWidget().getSelectionText();
+		String selectionText = noteContentText.getSelectionText();
 		
 		if (selectionText == null || selectionText.length() != 0)
 		{
@@ -206,13 +303,13 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		if (text != null)
 		{
-			textViewer.getTextWidget().setText(text);
+			noteContentText.setText(text);
 		}
 	}
 	
 	public String getContentText()
 	{
-		return textViewer.getTextWidget().getText();
+		return noteContentText.getText();
 	}
 
 	/*
@@ -250,7 +347,7 @@ public class NoteView extends ViewPart implements INoteView
 	 */
 	public String getSelectedText()
 	{
-		return textViewer.getTextWidget().getSelectionText();
+		return noteContentText.getSelectionText();
 	}
 
 	/*
@@ -259,7 +356,7 @@ public class NoteView extends ViewPart implements INoteView
 	 */
 	public Point getSelectionPoint()
 	{
-		return textViewer.getTextWidget().getSelection();
+		return noteContentText.getSelection();
 	}
 
 	/*
@@ -300,7 +397,7 @@ public class NoteView extends ViewPart implements INoteView
 		{
 			StyleRange styleRange = convertToStyleRange(style);
 			
-			textViewer.getTextWidget().setStyleRange(styleRange);
+			noteContentText.setStyleRange(styleRange);
 		}
 	}
 	
@@ -321,7 +418,7 @@ public class NoteView extends ViewPart implements INoteView
 	public void changeCursorToPointer()
 	{
 		Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_HAND);
-		textViewer.getTextWidget().setCursor(cursor);
+		noteContentText.setCursor(cursor);
 	}
 
 	/*
@@ -331,6 +428,6 @@ public class NoteView extends ViewPart implements INoteView
 	public void changeCursorToText()
 	{
 		Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_IBEAM);
-		textViewer.getTextWidget().setCursor(cursor);
+		noteContentText.setCursor(cursor);
 	}
 }

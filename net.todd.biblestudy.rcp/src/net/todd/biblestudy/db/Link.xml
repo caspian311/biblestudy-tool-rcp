@@ -8,6 +8,7 @@
 		<result property="linkId" column="L_ID" />
 		<result property="containingNoteId" column="L_NOTE_ID" />
 		<result property="linkToNoteName" column="L_TO_NOTE_NAME" />
+		<result property="linkToReference" column="L_TO_REFERENCE" />
 		<result property="start" column="L_START" />
 		<result property="end" column="L_END" />
 	</resultMap>
@@ -16,11 +17,13 @@
 		INSERT INTO LINKS (
 			L_NOTE_ID, 
 			L_TO_NOTE_NAME, 
+			L_TO_REFERENCE,
 			L_START, 
 			L_END
 		) values (
 			#containingNoteId#, 
 			#linkToNoteName#, 
+			#linkToReference#,
 			#start#, 
 			#end#
 		)
@@ -40,6 +43,7 @@
 		SELECT 		L_ID as linkId,
 					L_NOTE_ID as containingNoteId,
 					L_TO_NOTE_NAME as linkToNoteName,
+					L_TO_REFERENCE as linkToReference,
 					L_START as start,
 					L_END as end
 		FROM		LINKS
@@ -50,6 +54,7 @@
 		UPDATE 	LINKS
 		SET 	L_NOTE_ID=#containingNoteId#,
 				L_TO_NOTE_NAME=#linkToNoteName#,
+				L_TO_REFERENCE=#linkToReference#,
 				L_START=#start#,
 				L_END=#end#
 		WHERE	L_ID=#linkId#

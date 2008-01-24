@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -14,6 +12,9 @@ import net.todd.biblestudy.db.LinkDao;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteDao;
 import net.todd.biblestudy.db.NoteStyle;
+import net.todd.biblestudy.reference.common.Reference;
+
+import org.apache.commons.lang.StringUtils;
 
 public class NoteModel implements INoteModel
 {
@@ -134,7 +135,7 @@ public class NoteModel implements INoteModel
 	 * (non-Javadoc)
 	 * @see net.todd.biblestudy.rcp.models.INoteModel#addLink(java.lang.String, int, int)
 	 */
-	public void addLink(String noteName, int start, int stop)
+	public void addLinkToNote(String noteName, int start, int stop)
 	{
 		Link link = new Link();
 		link.setContainingNoteId(getNote().getNoteId());
@@ -142,6 +143,22 @@ public class NoteModel implements INoteModel
 		link.setStart(start);
 		link.setEnd(stop);
 		
+		addLink(link);
+	}
+
+	public void addLinkToReference(Reference reference, int start, int stop)
+	{
+		Link link = new Link();
+		link.setContainingNoteId(getNote().getNoteId());
+		link.setLinkToReference(reference.toString());
+		link.setStart(start);
+		link.setEnd(stop);
+		
+		addLink(link);
+	}
+	
+	private void addLink(Link link)
+	{
 		getLinks().add(link);
 		getNote().setLastModified(new Date());
 	}

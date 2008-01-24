@@ -9,6 +9,10 @@ import net.todd.biblestudy.rcp.views.CreateLinkDialog;
 import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
 import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
+import net.todd.biblestudy.reference.common.BibleVerse;
+import net.todd.biblestudy.reference.common.InvalidReferenceException;
+import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.common.views.ReferenceViewerFactory;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
@@ -63,12 +67,42 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		}
 		else if (source.equals(ViewEvent.NOTE_HOVERING))
 		{
-			handleNoteHovering(((Integer)event.getData()).intValue());
+			handleNoteHovering(((Integer)event.getData()));
 		}
 		else if (source.equals(ViewEvent.NOTE_CLICKED))
 		{
 			handleNoteClicked(((Integer)event.getData()).intValue());
 		}
+		else if (source.equals(ViewEvent.NOTE_INSERT_REFERENCE))
+		{
+			handleInsertReference((BibleVerse)event.getData());
+		}
+	}
+
+	private void handleInsertReference(BibleVerse data)
+	{
+		int currentCarretPosition = noteView.getCurrentCarretPosition();
+		
+		String linkContent = data.getReference().toString();
+
+		String noteText = noteModel.getNote().getText();
+		String beginning = noteText.substring(0, currentCarretPosition);
+		String ending = noteText.substring(currentCarretPosition);
+		
+		String newNoteText = beginning + linkContent + ending;
+		
+		noteView.setContentText(newNoteText);
+		
+		try
+		{
+			Reference reference = new Reference(linkContent);
+			addLinkToReferenceAndUpdateView(reference, currentCarretPosition, currentCarretPosition + linkContent.length());
+		}
+		catch (InvalidReferenceException e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void handleNoteClicked(Integer offset)
@@ -77,17 +111,39 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		
 		if (link != null)
 		{
-			ViewerFactory.getViewer().openNewNoteView(link.getLinkToNoteName());
+			if (link.getLinkToNoteName() != null)
+			{
+				ViewerFactory.getViewer().openNewNoteView(link.getLinkToNoteName());
+			}
+			else if (link.getLinkToReference() != null)
+			{
+				try
+				{
+					Reference reference = new Reference(link.getLinkToReference());
+					ReferenceViewerFactory.getViewer().openReferenceView(reference);
+				}
+				catch (InvalidReferenceException e)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
-	private void handleNoteHovering(int offset)
+	private void handleNoteHovering(Integer offset)
 	{
-		Link link = noteModel.getLinkAtOffset(offset);
-		
-		if (link != null)
+		if (offset != null)
 		{
-			noteView.changeCursorToPointer();
+			Link link = noteModel.getLinkAtOffset(offset);
+			
+			if (link != null)
+			{
+				noteView.changeCursorToPointer();
+			}
+			else
+			{
+				noteView.changeCursorToText();
+			}
 		}
 		else
 		{
@@ -222,12 +278,25 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		int start = selection.x;
 		int stop = selection.y;
 		
-		noteModel.addLink(linkText, start, stop);
+		addLinkToNoteAndUpdateView(linkText, start, stop);
+		
+		createLinkDialog.closeDialog();
+	}
+
+	private void addLinkToNoteAndUpdateView(String linkText, int start, int stop)
+	{
+		noteModel.addLinkToNote(linkText, start, stop);
 		
 		updateStylesOnView();
 		updateDocumentTitle();
+	}
+	
+	private void addLinkToReferenceAndUpdateView(Reference reference, int start, int stop)
+	{
+		noteModel.addLinkToReference(reference, start, stop);
 		
-		createLinkDialog.closeDialog();
+		updateStylesOnView();
+		updateDocumentTitle();
 	}
 
 	private void handleCreateLinkDialogClosed()

@@ -13,6 +13,7 @@ public interface IReferenceView
 	public void setDataSourcesInDropDown(List<String> ids);
 	public String getReferenceSourceId();
 	public String getLookupText();
+	public void setLookupText(String lookupText);
 	public void setResults(BibleVerse[] results);
 	public void popupErrorMessage(String errorNoSearchInfoGiven);
 }

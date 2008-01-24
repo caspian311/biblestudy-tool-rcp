@@ -43,7 +43,7 @@ public class NoteModelManageLinksTest
 		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
 		assertEquals(0, noteStyles.size());
 		
-		noteModel.addLink("blah", 5, 9);
+		noteModel.addLinkToNote("blah", 5, 9);
 		
 		// before link
 		noteStyles = noteModel.getNoteStylesForRange(0, 4);
@@ -85,7 +85,7 @@ public class NoteModelManageLinksTest
 	@Test
 	public void testLinksStaySameWhenUpdateContentWithSameContent() throws Exception
 	{
-		noteModel.addLink("blah", 5, 9);
+		noteModel.addLinkToNote("blah", 5, 9);
 		
 		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
 		assertEquals(1, noteStyles.size());
@@ -129,7 +129,7 @@ public class NoteModelManageLinksTest
 		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
 		assertEquals(0, noteStyles.size());
 		
-		noteModel.addLink("blah", 5, 9);
+		noteModel.addLinkToNote("blah", 5, 9);
 		
 		noteModel.updateContent("woot woot woot");
 		
@@ -158,7 +158,7 @@ public class NoteModelManageLinksTest
 		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
 		assertEquals(0, noteStyles.size());
 		
-		noteModel.addLink("blah", 5, 9);
+		noteModel.addLinkToNote("blah", 5, 9);
 		
 		noteModel.updateContent("woot " + ORIGINAL_NOTE_CONTENT);
 		
@@ -209,7 +209,7 @@ public class NoteModelManageLinksTest
 		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
 		assertEquals(0, noteStyles.size());
 		
-		noteModel.addLink("blah", 0, 4);
+		noteModel.addLinkToNote("blah", 0, 4);
 		
 		noteStyles = noteModel.getNoteStylesForRange(0, 100);
 		assertEquals(1, noteStyles.size());

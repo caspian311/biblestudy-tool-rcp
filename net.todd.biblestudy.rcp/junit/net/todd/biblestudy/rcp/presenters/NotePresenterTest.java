@@ -154,4 +154,9 @@ class MockNoteView implements INoteView
 	public void changeCursorToText()
 	{
 	}
+
+	public int getCurrentCarretPosition()
+	{
+		return 0;
+	}
 }

@@ -40,4 +40,8 @@ public abstract class ReferenceViewAdapter implements IReferenceView
 	public void popupErrorMessage(String errorNoSearchInfoGiven)
 	{
 	}
+
+	public void setLookupText(String lookupText)
+	{
+	}
 }

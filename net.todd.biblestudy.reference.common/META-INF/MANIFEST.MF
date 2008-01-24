@@ -8,4 +8,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.todd.biblestudy.common
 Eclipse-LazyStart: true
-Export-Package: net.todd.biblestudy.reference.common
+Export-Package: net.todd.biblestudy.reference.common,
+ net.todd.biblestudy.reference.common.views

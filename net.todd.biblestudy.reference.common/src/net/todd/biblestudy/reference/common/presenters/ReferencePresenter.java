@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.todd.biblestudy.reference.common.BibleVerse;
+import net.todd.biblestudy.reference.common.Reference;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
 import net.todd.biblestudy.reference.common.models.IReferenceModel;
 import net.todd.biblestudy.reference.common.models.ReferenceModel;
@@ -48,6 +49,17 @@ public class ReferencePresenter implements IReferenceViewListener
 		{
 			handleSearch();
 		}
+		else if (ReferenceViewEvent.REFERENCE_VIEW_POPULATE_REFERENCE.equals(source))
+		{
+			Reference reference = (Reference)event.getData();
+			handlePopulateReferece(reference);
+		}
+	}
+
+	private void handlePopulateReferece(Reference reference)
+	{
+		referenceView.setLookupText(reference.toString());
+		handleSearch();
 	}
 
 	private void handleSearch()
@@ -58,10 +70,6 @@ public class ReferencePresenter implements IReferenceViewListener
 		if (ReferenceView.INITIAL_SEARCH_TEXT.equals(searchText))
 		{
 			searchText = null;
-		}
-		if (ReferenceView.INITIAL_COMBO_BOX_TEXT.equals(referenceShortName))
-		{
-			referenceShortName = null;
 		}
 		
 		if (StringUtils.isEmpty(searchText) || StringUtils.isEmpty(referenceShortName))
@@ -78,10 +86,17 @@ public class ReferencePresenter implements IReferenceViewListener
 	{
 		List<BibleVerse> results = getReferenceModel().performSearch(searchText, referenceShortName);
 		
-		BibleVerse[] resultsArray = new BibleVerse[results.size()];
-		results.toArray(resultsArray);
-		
-		referenceView.setResults(resultsArray);
+		if (results != null)
+		{
+			BibleVerse[] resultsArray = new BibleVerse[results.size()];
+			results.toArray(resultsArray);
+			
+			referenceView.setResults(resultsArray);
+		}
+		else
+		{
+			referenceView.setResults(null);
+		}
 	}
 
 	protected IReferenceModel getReferenceModel()

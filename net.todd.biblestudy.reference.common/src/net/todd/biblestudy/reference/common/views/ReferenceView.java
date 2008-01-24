@@ -7,11 +7,17 @@ import javax.swing.event.EventListenerList;
 
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.reference.common.BibleVerse;
+import net.todd.biblestudy.reference.common.ReferenceTransfer;
 import net.todd.biblestudy.reference.common.presenters.IReferenceViewListener;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,7 +38,6 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	private static final String TEXT_COLUMN_HEADER = "Text";
 	private static final String REFERENCE_COLUMN_HEADER = "Reference";
 	private static final int REFERENCE_COLUMN_WIDTH = 100;
-	public static final String INITIAL_COMBO_BOX_TEXT = "Select a Reference Source...";
 	public static final String INITIAL_SEARCH_TEXT = "Search...";
 
 	private EventListenerList eventListeners = new EventListenerList();
@@ -42,6 +47,7 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	private Text lookupText;
 
 	private TableViewer resultsTableViewer;
+	private Table resultsTable;
 	
 	protected static final String ID = "net.todd.biblestudy.reference.common.ReferenceView";
 
@@ -68,24 +74,43 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 	private void createResultsArea(Composite parent)
 	{
-		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
+		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
 		resultsTableViewer.setLabelProvider(new ResultsTableLabelProvider());
 		resultsTableViewer.setContentProvider(new ArrayContentProvider());
 		
-		Table table = resultsTableViewer.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
+		resultsTable = resultsTableViewer.getTable();
+		resultsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		resultsTable.setHeaderVisible(true);
+		resultsTable.setLinesVisible(true);
 		
-		TableColumn column1 = new TableColumn(table, SWT.LEFT);
+		TableColumn column1 = new TableColumn(resultsTable, SWT.LEFT);
 		column1.setText(REFERENCE_COLUMN_HEADER);
 		column1.setWidth(REFERENCE_COLUMN_WIDTH);
 		
-		TableColumn column2 = new TableColumn(table, SWT.WRAP | SWT.LEFT);
+		TableColumn column2 = new TableColumn(resultsTable, SWT.WRAP | SWT.LEFT);
 		column2.setText(TEXT_COLUMN_HEADER);
 		column2.setWidth(TEXT_COLUMN_WIDTH);
 		
-		table.pack();
+		makeDragable();
+		
+		resultsTable.pack();
+	}
+
+	private void makeDragable()
+	{
+		DragSource dragSource = new DragSource(resultsTableViewer.getTable(), DND.DROP_MOVE);
+		dragSource.setTransfer(new Transfer[] {ReferenceTransfer.getInstance()});
+		dragSource.addDragListener(new DragSourceAdapter() 
+		{
+			@Override
+			public void dragSetData(DragSourceEvent event)
+			{
+				if (ReferenceTransfer.getInstance().isSupportedType(event.dataType))
+				{
+					event.data = resultsTableViewer.getTable().getSelection()[0].getData();
+				}
+			}
+		});
 	}
 	
 	public void setResults(BibleVerse[] results)
@@ -141,7 +166,6 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		
 		referenceCombo = new Combo(composite, SWT.BORDER | SWT.DROP_DOWN);
 		referenceCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 2, 0));
-		referenceCombo.setText(INITIAL_COMBO_BOX_TEXT);
 	}
 
 	@Override
@@ -183,6 +207,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		{
 			referenceCombo.add(sourceId);
 		}
+		
+		referenceCombo.select(0);
 	}
 
 	public String getReferenceSourceId()
@@ -190,6 +216,11 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		return referenceCombo.getText();
 	}
 
+	public void setLookupText(String lookupString)
+	{
+		lookupText.setText(lookupString);
+	}
+	
 	public String getLookupText()
 	{
 		return lookupText.getText();

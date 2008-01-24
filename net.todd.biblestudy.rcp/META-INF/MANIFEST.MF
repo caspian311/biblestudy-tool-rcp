@@ -7,7 +7,8 @@ Bundle-Activator: net.todd.biblestudy.rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
- net.todd.biblestudy.common
+ net.todd.biblestudy.common,
+ net.todd.biblestudy.reference.common
 Eclipse-LazyStart: true
 Bundle-Vendor: todd.net
 Bundle-ClassPath: lib/junit-4.4.jar,

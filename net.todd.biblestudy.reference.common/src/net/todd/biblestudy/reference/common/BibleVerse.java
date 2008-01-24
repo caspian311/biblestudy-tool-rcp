@@ -1,7 +1,14 @@
 package net.todd.biblestudy.reference.common;
 
-public class BibleVerse
+import java.io.Serializable;
+
+public class BibleVerse implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3181294728315349422L;
+	
 	private String id;
 	private String version;
 	private String book;

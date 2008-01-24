@@ -50,7 +50,7 @@ public class NoteModelDocumentDirtyTest
 	{
 		assertFalse(noteModel.isDocumentDirty());
 		
-		noteModel.addLink("", 0, 100);
+		noteModel.addLinkToNote("", 0, 100);
 		
 		assertTrue(noteModel.isDocumentDirty());
 	}
@@ -72,7 +72,7 @@ public class NoteModelDocumentDirtyTest
 	{
 		assertFalse(noteModel.isDocumentDirty());
 		
-		noteModel.addLink("", 0, 100);
+		noteModel.addLinkToNote("", 0, 100);
 		
 		noteModel.saveNoteAndLinks();
 		

@@ -25,4 +25,5 @@ public interface INoteView
 	public void replaceNoteStyles(List<NoteStyle> list);
 	public void changeCursorToPointer();
 	public void changeCursorToText();
+	public int getCurrentCarretPosition();
 }

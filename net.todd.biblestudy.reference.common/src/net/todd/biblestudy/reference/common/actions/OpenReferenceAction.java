@@ -9,9 +9,6 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class OpenReferenceAction implements IWorkbenchWindowActionDelegate
 {
-	private String referenceIdPrefix = "reference";
-	int referenceCount;
-	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
@@ -26,7 +23,6 @@ public class OpenReferenceAction implements IWorkbenchWindowActionDelegate
 	 */
 	public void init(IWorkbenchWindow window)
 	{
-		referenceCount = 0;
 	}
 
 	/*
@@ -35,16 +31,7 @@ public class OpenReferenceAction implements IWorkbenchWindowActionDelegate
 	 */
 	public void run(IAction action)
 	{
-		String referenceIdentifier = getReferenceIdentifier();
-		
-		ReferenceViewerFactory.getViewer().openReferenceView(referenceIdentifier);
-	}
-
-	private String getReferenceIdentifier()
-	{
-		referenceCount++;
-		
-		return referenceIdPrefix + referenceCount;
+		ReferenceViewerFactory.getViewer().openReferenceView(null);
 	}
 
 	/*

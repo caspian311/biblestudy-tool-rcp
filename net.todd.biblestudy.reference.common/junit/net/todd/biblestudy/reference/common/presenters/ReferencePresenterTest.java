@@ -127,7 +127,6 @@ public class ReferencePresenterTest
 	public void testSearchWhenDefaultsAreStillSetResultInError() throws Exception
 	{
 		referenceView.setLookupText(ReferenceView.INITIAL_SEARCH_TEXT);
-		referenceView.setReferenceSourceId(ReferenceView.INITIAL_COMBO_BOX_TEXT);
 		
 		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SEARCH));
 		

@@ -5,6 +5,7 @@ public class Link
 	private Integer linkId;
 	private Integer containingNoteId;
 	private String linkToNoteName;
+	private String linkToReference;
 	private Integer start;
 	private Integer end;
 	
@@ -47,5 +48,13 @@ public class Link
 	public void setEnd(Integer end)
 	{
 		this.end = end;
+	}
+	public String getLinkToReference()
+	{
+		return linkToReference;
+	}
+	public void setLinkToReference(String linkToReference)
+	{
+		this.linkToReference = linkToReference;
 	}
 }

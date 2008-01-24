@@ -15,9 +15,8 @@ public class SearchHandleTest
 	@Before
 	public void setup()
 	{
-		view = new ReferenceViewAdapter()
+		view = new ReferenceViewAdapter() 
 		{
-			
 		};
 		referencePresenter = new ReferencePresenter(view);
 	}
