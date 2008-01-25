@@ -23,13 +23,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 {
 	private Text filterText;
-//	private Label textLabel;
 	
 	private String newNoteName;
 	
@@ -50,6 +50,8 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 	
 	EventListenerList eventListeners = new EventListenerList();
 	private ListViewer listViewer;
+
+	private Label messageLabel;
 	
 	public void addNewNoteEventListener(INewNoteEventListener listener)
 	{
@@ -68,13 +70,9 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(gridLayout);
 		GridData compositeLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		compositeLayoutData.widthHint = 200;
+		compositeLayoutData.widthHint = 300;
 		compositeLayoutData.heightHint = 200;
 		composite.setLayoutData(compositeLayoutData);
-		
-//		textLabel = new Label(composite, SWT.NORMAL);
-//		textLabel.setText("Note:");
-//		textLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		
 		filterText = new Text(composite, SWT.BORDER);
 		filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -91,9 +89,9 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 				{
 					listViewer.addFilter(new NoteFilter(filterString));
 					listViewer.getList().select(0);
-					
-					handleSelection();
 				}
+				
+				handleSelection();
 			}
 		});
 		
@@ -120,6 +118,11 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 			}
 		});
 		
+		messageLabel = new Label(composite, SWT.NORMAL);
+		messageLabel.setVisible(false);
+		messageLabel.setLayoutData(new GridData(SWT.CENTER, SWT.BOTTOM, false, false));
+		messageLabel.setText("You cannot have a colon in your note name.");
+		
 		return parent;
 	}
 	
@@ -128,7 +131,11 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 		StructuredSelection structuredSelection = (StructuredSelection)listViewer.getSelection();
 		Object obj = structuredSelection.getFirstElement();
 		
-		if (obj instanceof Note)
+		if (obj == null)
+		{
+			newNoteName = filterText.getText();
+		}
+		else
 		{
 			Note note = (Note)obj;
 			
@@ -140,16 +147,46 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 	
 	private void updateOkButtonStatus()
 	{
-		if (newNoteName == null || newNoteName.equals(""))
-		{
-			getButton(OK).setEnabled(false);
-		}
-		else
+		if (isValidNewNoteName())
 		{
 			getButton(OK).setEnabled(true);
 		}
+		else
+		{
+			getButton(OK).setEnabled(false);
+		}
 	}
 	
+	private boolean isValidNewNoteName()
+	{
+		boolean isValid = false;
+		
+		if (StringUtils.isEmpty(newNoteName) == false)
+		{
+			if (newNoteName.indexOf(":") == -1)
+			{
+				clearMessageLabel();
+				isValid = true;
+			}
+			else
+			{
+				notifyNoColonsInName();
+			}
+		}
+		
+		return isValid;
+	}
+
+	private void clearMessageLabel()
+	{
+		messageLabel.setVisible(false);
+	}
+
+	private void notifyNoColonsInName()
+	{
+		messageLabel.setVisible(true);
+	}
+
 	@Override
 	protected void createButtonsForButtonBar(Composite parent)
 	{
