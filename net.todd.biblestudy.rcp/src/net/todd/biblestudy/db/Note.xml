@@ -33,4 +33,9 @@
 		WHERE		N_ID=#noteId#
 	</delete>
 
+	<select id="getAllNotes" resultMap="noteResult">
+		SELECT		*
+		FROM		NOTES
+	</select>
+
 </sqlMap>

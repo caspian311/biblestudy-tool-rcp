@@ -1,5 +1,6 @@
 package net.todd.biblestudy.rcp.views;
 
+import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.presenters.INewNoteEventListener;
 
 public interface INewNoteDialog
@@ -9,4 +10,5 @@ public interface INewNoteDialog
 	public void closeDialog();
 	public String getNewNoteName();
 	public void openDialog();
+	public void populateDropDown(Note[] notes);
 }

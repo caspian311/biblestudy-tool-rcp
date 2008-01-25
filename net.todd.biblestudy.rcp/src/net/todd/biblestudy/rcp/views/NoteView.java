@@ -139,11 +139,18 @@ public class NoteView extends ViewPart implements INoteView
 				{
 					Point point = new Point(e.x, e.y);
 					
-					int offset = noteContentText.getOffsetAtLocation(point);
+					try
+					{
+						int offset = noteContentText.getOffsetAtLocation(point);
+						
+						ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
+						viewEvent.setData(offset);
+						fireEvent(viewEvent);
+					}
+					catch (IllegalArgumentException e1)
+					{
+					}
 					
-					ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
-					viewEvent.setData(offset);
-					fireEvent(viewEvent);
 				}
 			}
 		});

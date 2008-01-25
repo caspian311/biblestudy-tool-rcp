@@ -36,4 +36,14 @@ public class ViewHelper
 		mb.setMessage("Error: " + e.getMessage());
 		mb.open();
 	}
+
+	public static void runWithoutBusyIndicator(final Runnable runnable)
+	{
+		if (runnable == null)
+		{
+			return;
+		}
+		
+		Display.getDefault().asyncExec(runnable);
+	}
 }

@@ -2,8 +2,7 @@ package net.todd.biblestudy.db;
 
 import java.sql.SQLException;
 import java.util.Date;
-
-import com.ibatis.sqlmap.client.SqlMapClient;
+import java.util.List;
 
 public class NoteDao extends BaseDao implements INoteDao
 {
@@ -14,9 +13,7 @@ public class NoteDao extends BaseDao implements INoteDao
 	 */
 	public Note getNoteByName(String noteName) throws SQLException
 	{
-		SqlMapClient sqlMapConfig = getSqlMapConfig();
-		
-		return (Note) sqlMapConfig.queryForObject("getNoteByName", noteName);
+		return (Note)getSqlMapConfig().queryForObject("getNoteByName", noteName);
 	}
 	
 	/*
@@ -29,9 +26,7 @@ public class NoteDao extends BaseDao implements INoteDao
 		note.setName(newNoteName);
 		note.setLastModified(new Date());
 		
-		SqlMapClient sqlMapConfig = getSqlMapConfig();
-		
-		return (Note)sqlMapConfig.insert("createNewNote", note);
+		return (Note)getSqlMapConfig().insert("createNewNote", note);
 	}
 
 	/*
@@ -40,9 +35,7 @@ public class NoteDao extends BaseDao implements INoteDao
 	 */
 	public void saveNote(Note note) throws SQLException
 	{
-		SqlMapClient sqlMapConfig = getSqlMapConfig();
-		
-		sqlMapConfig.update("updateNote", note);
+		getSqlMapConfig().update("updateNote", note);
 	}
 
 	/*
@@ -51,8 +44,16 @@ public class NoteDao extends BaseDao implements INoteDao
 	 */
 	public void deleteNote(Note note) throws SQLException
 	{
-		SqlMapClient sqlMapConfig = getSqlMapConfig();
-		
-		sqlMapConfig.update("deleteNote", note);
+		getSqlMapConfig().update("deleteNote", note);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.db.INoteDao#getAllNotes()
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Note> getAllNotes() throws SQLException
+	{
+		return getSqlMapConfig().queryForList("getAllNotes");
 	}
 }

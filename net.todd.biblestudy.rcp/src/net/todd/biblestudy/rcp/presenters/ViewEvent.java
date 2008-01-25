@@ -11,6 +11,7 @@ public class ViewEvent extends EventObject
 	
 	public static final String NEW_NOTE_OK_PRESSED = "newNote.okPressed";
 	public static final String NEW_NOTE_CANCEL_PRESSED = "newNote.cancelPressed";
+	public static final String NEW_NOTE_OPENED = "newNote.opened";
 	
 	public static final String NOTE_CREATE_LINK_EVENT = "note.createLink";
 	public static final String NOTE_CONTENT_CHANGED = "note.contentChanged";
@@ -26,6 +27,7 @@ public class ViewEvent extends EventObject
 	public static final String CREATE_LINK_DIALOG_OPENED = "createLink.dialogOpened";
 	public static final String CREATE_LINK_DIALOG_CLOSED = "createLink.dialogClosed";
 	public static final String CREATE_LINK_DO_CREATE_LINK = "createLink.doCreateLink";
+
 
 
 
