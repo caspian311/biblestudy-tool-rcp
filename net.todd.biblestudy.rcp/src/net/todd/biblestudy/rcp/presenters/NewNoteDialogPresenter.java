@@ -5,6 +5,7 @@ import java.util.List;
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.INewNoteModel;
+import net.todd.biblestudy.rcp.models.NewNoteModel;
 import net.todd.biblestudy.rcp.views.INewNoteDialog;
 import net.todd.biblestudy.rcp.views.NewNoteDialog;
 import net.todd.biblestudy.rcp.views.ViewerFactory;

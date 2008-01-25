@@ -2,6 +2,12 @@ package net.todd.biblestudy.db;
 
 public class NoteStyle
 {
+	public interface Colors
+	{
+		String BLUE = "blue";
+		String GREEN = "green";
+	}
+	
 	private Integer start;
 	private Integer length;
 	private String foreground;

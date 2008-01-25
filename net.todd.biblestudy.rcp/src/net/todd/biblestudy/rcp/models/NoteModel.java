@@ -95,6 +95,10 @@ public class NoteModel implements INoteModel
 		return note.getLastModified().equals(timestampFromDB);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#getNoteStylesForRange(int, int)
+	 */
 	public List<NoteStyle> getNoteStylesForRange(int start, int end)
 	{
 		List<NoteStyle> styles = new ArrayList<NoteStyle>();
@@ -109,7 +113,7 @@ public class NoteModel implements INoteModel
 				int startPoint = link.getStart() >= start ? link.getStart() : start;
 				int endPoint = link.getEnd() <= end ? link.getEnd() : end;
 				
-				styles.add(getUnderLineStyle(startPoint, endPoint - startPoint));
+				styles.add(getUnderLineStyle(startPoint, endPoint - startPoint, link.getType()));
 			}
 		}
 		
@@ -121,12 +125,20 @@ public class NoteModel implements INoteModel
 		return links;
 	}
 
-	private NoteStyle getUnderLineStyle(int start, int length)
+	private NoteStyle getUnderLineStyle(int start, int length, int linkType)
 	{
 		NoteStyle style = new NoteStyle();
 		style.setStart(start);
 		style.setLength(length);
 		style.setUnderlined(true);
+		if (linkType == Link.Types.LINK_TO_NOTE)
+		{
+			style.setForeground(NoteStyle.Colors.BLUE);
+		}
+		if (linkType == Link.Types.LINK_TO_REFERENCE)
+		{
+			style.setForeground(NoteStyle.Colors.GREEN);
+		}
 		
 		return style;
 	}
@@ -146,6 +158,10 @@ public class NoteModel implements INoteModel
 		addLink(link);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.models.INoteModel#addLinkToReference(net.todd.biblestudy.reference.common.Reference, int, int)
+	 */
 	public void addLinkToReference(Reference reference, int start, int stop)
 	{
 		Link link = new Link();

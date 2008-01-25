@@ -2,6 +2,12 @@ package net.todd.biblestudy.db;
 
 public class Link
 {
+	public interface Types
+	{
+		int LINK_TO_NOTE = 1;
+		int LINK_TO_REFERENCE = 2;
+	}
+	
 	private Integer linkId;
 	private Integer containingNoteId;
 	private String linkToNoteName;
@@ -56,5 +62,9 @@ public class Link
 	public void setLinkToReference(String linkToReference)
 	{
 		this.linkToReference = linkToReference;
+	}
+	public int getType()
+	{
+		return linkToNoteName != null ? Types.LINK_TO_NOTE : Types.LINK_TO_REFERENCE;
 	}
 }

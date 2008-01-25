@@ -86,6 +86,10 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		String linkContent = data.getReference().toString();
 
 		String noteText = noteModel.getNote().getText();
+		if (noteText == null)
+		{
+			noteText = "";
+		}
 		String beginning = noteText.substring(0, currentCarretPosition);
 		String ending = noteText.substring(currentCarretPosition);
 		

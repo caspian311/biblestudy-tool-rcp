@@ -24,6 +24,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -50,6 +51,9 @@ public class NoteView extends ViewPart implements INoteView
 
 	private StyledText noteContentText;
 
+	private Color blueColor;
+	private Color greenColor;
+
 	@Override
 	public void createPartControl(Composite parent)
 	{
@@ -70,6 +74,14 @@ public class NoteView extends ViewPart implements INoteView
 		
 		createTextBox(composite);
 		createRightClickMenu(parent);
+		
+		createColors();
+	}
+
+	private void createColors()
+	{
+		blueColor = new Color(Display.getDefault(), 0, 0, 255);
+		greenColor = new Color(Display.getDefault(), 0, 150, 0);
 	}
 
 	private void createRightClickMenu(Composite parent)
@@ -189,72 +201,11 @@ public class NoteView extends ViewPart implements INoteView
 			@Override
 			public void drop(DropTargetEvent event)
 			{
-				printEvent(event);
-				System.out.println("woot");
-				
 				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_INSERT_REFERENCE);
 				viewEvent.setData(event.data);
 				fireEvent(viewEvent);
 			}
 		});
-		
-//		DropTarget dropTarget = new DropTarget(noteContentText, DND.DROP_MOVE);
-//		dropTarget.setTransfer(new Transfer[] {TextTransfer.getInstance()});
-//		dropTarget.addDropListener(new DropTargetAdapter()
-//		{
-//			@Override
-//			public void drop(DropTargetEvent event)
-//			{
-//				printEvent(event);
-//				System.out.println("woot");
-//				
-//				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_INSERT_REFERENCE);
-//				viewEvent.setData(event.data);
-//				fireEvent(viewEvent);
-//			}
-//		});
-	}
-	
-	private void printEvent(DropTargetEvent e)
-	{
-		StringBuffer sb = new StringBuffer();
-		sb.append("widget; ");
-		sb.append(e.widget);
-		sb.append(", time: ");
-		sb.append(e.time);
-		sb.append(", x: ");
-		sb.append(e.x);
-		sb.append(", y: ");
-		sb.append(e.y);
-		sb.append(", item: ");
-		sb.append(e.item);
-		sb.append(", operations: ");
-		sb.append(e.operations);
-		sb.append(", operation: ");
-		sb.append(e.detail);
-		sb.append(", feedback: ");
-		sb.append(e.feedback);
-		if (e.dataTypes != null)
-		{
-			for (int i = 0; i < e.dataTypes.length; i++)
-			{
-				sb.append(", dataType ");
-				sb.append(i);
-				sb.append(": ");
-				sb.append(e.dataTypes[i].type);
-			}
-		}
-		else
-		{
-			sb.append(", dataTypes: none");
-		}
-		sb.append(", currentDataType: ");
-		sb.append(e.currentDataType);
-		sb.append(", data: ");
-		sb.append(e.data);
-		sb.append("\n");
-		
-		System.out.println(sb.toString());
 	}
 	
 	public int getCurrentCarretPosition()
@@ -337,6 +288,8 @@ public class NoteView extends ViewPart implements INoteView
 		fireEvent(new ViewEvent(ViewEvent.NOTE_CLOSE));
 		
 		super.dispose();
+		blueColor.dispose();
+		greenColor.dispose();
 	}
 	
 	/*
@@ -414,6 +367,14 @@ public class NoteView extends ViewPart implements INoteView
 		styleRange.start = style.getStart();
 		styleRange.length = style.getLength();
 		styleRange.underline = style.isUnderlined();
+		if (NoteStyle.Colors.BLUE.equals(style.getForeground()))
+		{
+			styleRange.foreground = blueColor;
+		}
+		else if (NoteStyle.Colors.GREEN.equals(style.getForeground()))
+		{
+			styleRange.foreground = greenColor;
+		}
 		
 		return styleRange;
 	}

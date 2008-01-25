@@ -1,4 +1,4 @@
-package net.todd.biblestudy.rcp.presenters;
+package net.todd.biblestudy.rcp.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,7 +7,6 @@ import java.util.List;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteDao;
-import net.todd.biblestudy.rcp.models.INewNoteModel;
 
 public class NewNoteModel implements INewNoteModel
 {
