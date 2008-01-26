@@ -18,8 +18,6 @@ import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -27,6 +25,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -38,7 +37,6 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	private static final String TEXT_COLUMN_HEADER = "Text";
 	private static final String REFERENCE_COLUMN_HEADER = "Reference";
 	private static final int REFERENCE_COLUMN_WIDTH = 100;
-	public static final String INITIAL_SEARCH_TEXT = "Search...";
 
 	private EventListenerList eventListeners = new EventListenerList();
 
@@ -48,6 +46,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 	private TableViewer resultsTableViewer;
 	private Table resultsTable;
+	private Label resultsMessage;
+	private Button lookupButton;
 	
 	protected static final String ID = "net.todd.biblestudy.reference.common.ReferenceView";
 
@@ -71,7 +71,7 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		createControls(composite);
 		createResultsArea(composite);
 	}
-
+	
 	private void createResultsArea(Composite parent)
 	{
 		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
@@ -83,13 +83,13 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		resultsTable.setHeaderVisible(true);
 		resultsTable.setLinesVisible(true);
 		
-		TableColumn column1 = new TableColumn(resultsTable, SWT.LEFT);
-		column1.setText(REFERENCE_COLUMN_HEADER);
-		column1.setWidth(REFERENCE_COLUMN_WIDTH);
+		TableColumn referenceColumn = new TableColumn(resultsTable, SWT.LEFT);
+		referenceColumn.setText(REFERENCE_COLUMN_HEADER);
+		referenceColumn.setWidth(REFERENCE_COLUMN_WIDTH);
 		
-		TableColumn column2 = new TableColumn(resultsTable, SWT.WRAP | SWT.LEFT);
-		column2.setText(TEXT_COLUMN_HEADER);
-		column2.setWidth(TEXT_COLUMN_WIDTH);
+		TableColumn textColumn = new TableColumn(resultsTable, SWT.VIRTUAL | SWT.LEFT);
+		textColumn.setText(TEXT_COLUMN_HEADER);
+		textColumn.setWidth(TEXT_COLUMN_WIDTH);
 		
 		makeDragable();
 		
@@ -113,9 +113,15 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		});
 	}
 	
-	public void setResults(BibleVerse[] results)
+	public void setResults(final BibleVerse[] results)
 	{
-		resultsTableViewer.setInput(results);
+		ViewHelper.runWithBusyIndicator(new Runnable() 
+		{
+			public void run()
+			{
+				resultsTableViewer.setInput(results);
+			}
+		});
 	}
 
 	private void createControls(Composite parent)
@@ -133,27 +139,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		
 		lookupText = new Text(composite, SWT.BORDER);
 		lookupText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		lookupText.setText(INITIAL_SEARCH_TEXT);
-		lookupText.addFocusListener(new FocusListener() 
-		{
-			public void focusGained(FocusEvent e)
-			{
-				if (INITIAL_SEARCH_TEXT.equals(lookupText.getText())) 
-				{
-					lookupText.setText("");
-				}
-			}
-
-			public void focusLost(FocusEvent e)
-			{
-				if ("".equals(lookupText.getText())) 
-				{
-					lookupText.setText(INITIAL_SEARCH_TEXT);
-				}
-			}
-		});
 		
-		Button lookupButton = new Button(composite, SWT.PUSH);
+		lookupButton = new Button(composite, SWT.PUSH);
 		lookupButton.setText("Search");
 		lookupButton.addSelectionListener(new SelectionAdapter()
 		{
@@ -166,11 +153,17 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		
 		referenceCombo = new Combo(composite, SWT.BORDER | SWT.DROP_DOWN);
 		referenceCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 2, 0));
+		
+		resultsMessage = new Label(composite, SWT.NORMAL);
+		resultsMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 0));
+		
+		getSite().getShell().setDefaultButton(lookupButton);
 	}
 
 	@Override
 	public void setFocus()
 	{
+		lookupText.setFocus();
 	}
 
 	@Override
@@ -229,5 +222,27 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	public void popupErrorMessage(String error)
 	{
 		ViewHelper.showError(new Exception(error));
+	}
+
+	public void displayLimitResultsMessage(final int totalSize)
+	{
+		ViewHelper.runWithoutBusyIndicator(new Runnable() 
+		{
+			public void run()
+			{
+				resultsMessage.setText("Only displaying 100 of " + totalSize + " results.");
+			}
+		});
+	}
+	
+	public void hideLimitResultsMessage()
+	{
+		ViewHelper.runWithoutBusyIndicator(new Runnable() 
+		{
+			public void run()
+			{
+				resultsMessage.setText("");
+			}
+		});
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.presenters.IReferenceViewListener;
 
-public abstract class ReferenceViewAdapter implements IReferenceView
+public class ReferenceViewAdapter implements IReferenceView
 {
 	public void addReferenceViewListener(IReferenceViewListener listener)
 	{
@@ -43,5 +43,17 @@ public abstract class ReferenceViewAdapter implements IReferenceView
 
 	public void setLookupText(String lookupText)
 	{
+	}
+
+	public void displayLimitResultsMessage(int totalSize)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void hideLimitResultsMessage()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

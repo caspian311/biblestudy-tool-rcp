@@ -16,4 +16,6 @@ public interface IReferenceView
 	public void setLookupText(String lookupText);
 	public void setResults(BibleVerse[] results);
 	public void popupErrorMessage(String errorNoSearchInfoGiven);
+	public void displayLimitResultsMessage(int totalSize);
+	public void hideLimitResultsMessage();
 }

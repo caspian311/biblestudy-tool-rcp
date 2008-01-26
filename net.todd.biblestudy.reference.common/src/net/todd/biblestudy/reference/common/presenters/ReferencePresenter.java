@@ -12,7 +12,6 @@ import net.todd.biblestudy.reference.common.ReferenceDataSource;
 import net.todd.biblestudy.reference.common.models.IReferenceModel;
 import net.todd.biblestudy.reference.common.models.ReferenceModel;
 import net.todd.biblestudy.reference.common.views.IReferenceView;
-import net.todd.biblestudy.reference.common.views.ReferenceView;
 import net.todd.biblestudy.reference.common.views.ReferenceViewEvent;
 
 import org.apache.commons.lang.StringUtils;
@@ -67,11 +66,6 @@ public class ReferencePresenter implements IReferenceViewListener
 		String searchText = referenceView.getLookupText();
 		String referenceShortName = referenceView.getReferenceSourceId();
 		
-		if (ReferenceView.INITIAL_SEARCH_TEXT.equals(searchText))
-		{
-			searchText = null;
-		}
-		
 		if (StringUtils.isEmpty(searchText) || StringUtils.isEmpty(referenceShortName))
 		{
 			referenceView.popupErrorMessage(ERROR_NO_SEARCH_INFO_GIVEN);
@@ -88,6 +82,27 @@ public class ReferencePresenter implements IReferenceViewListener
 		
 		if (results != null)
 		{
+			int totalSize = results.size();
+			
+			List<BibleVerse> tempResults = new ArrayList<BibleVerse>(); 
+			
+			if (results.size() > 100)
+			{
+				for (int i=0; i<100; i++)
+				{
+					BibleVerse bibleVerse = results.get(i);
+					tempResults.add(bibleVerse);
+				}
+				
+				results = tempResults;
+				
+				referenceView.displayLimitResultsMessage(totalSize);
+			}
+			else
+			{
+				referenceView.hideLimitResultsMessage();
+			}
+			
 			BibleVerse[] resultsArray = new BibleVerse[results.size()];
 			results.toArray(resultsArray);
 			

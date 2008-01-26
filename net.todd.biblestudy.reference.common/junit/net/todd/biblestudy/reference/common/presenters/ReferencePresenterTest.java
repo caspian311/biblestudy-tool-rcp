@@ -126,7 +126,7 @@ public class ReferencePresenterTest
 	@Test
 	public void testSearchWhenDefaultsAreStillSetResultInError() throws Exception
 	{
-		referenceView.setLookupText(ReferenceView.INITIAL_SEARCH_TEXT);
+		referenceView.setLookupText(null);
 		
 		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SEARCH));
 		
