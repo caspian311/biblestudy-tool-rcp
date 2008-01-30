@@ -11,8 +11,6 @@ import net.todd.biblestudy.reference.common.ReferenceTransfer;
 import net.todd.biblestudy.reference.common.presenters.IReferenceViewListener;
 import net.todd.biblestudy.reference.common.util.ScriptureTextUtil;
 
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -64,6 +62,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	private Table resultsTable;
 	private Label resultsMessage;
 	private Button lookupButton;
+
+	private TableColumn textColumn;
 	
 	private static final int TEXT_MARGIN = 3;
 
@@ -129,33 +129,34 @@ public class ReferenceView extends ViewPart implements IReferenceView
 				event.gc.drawText(text, event.x + TEXT_MARGIN, event.y + yOffset, true);
 			}
 		});
-		
-		TableColumn referenceColumn = new TableColumn(resultsTable, SWT.LEFT);
-		referenceColumn.setText(REFERENCE_COLUMN_HEADER);
-		referenceColumn.setWidth(REFERENCE_COLUMN_WIDTH);
-		referenceColumn.setResizable(false);
-		
-		TableColumn textColumn = new TableColumn(resultsTable, SWT.LEFT);
-		textColumn.setText(TEXT_COLUMN_HEADER);
-		textColumn.setWidth(TEXT_COLUMN_WIDTH);
-		textColumn.addControlListener(new ControlListener() 
+		resultsTable.addControlListener(new ControlListener()
 		{
-			public void controlMoved(ControlEvent e)
+			public void controlMoved(ControlEvent e) 
 			{
 			}
 
-			public void controlResized(ControlEvent e)
+			public void controlResized(ControlEvent e) 
 			{
 				Rectangle clientArea = resultsTable.getClientArea();
 				
 				int tableWidth = clientArea.width - 100;
 				
 				textColumnWidth = tableWidth - REFERENCE_COLUMN_WIDTH;
-				
+				textColumn.setWidth(textColumnWidth);
 				redoTheText();
+//				textColumn.pack();
 			}
-
 		});
+		
+		TableColumn referenceColumn = new TableColumn(resultsTable, SWT.LEFT);
+		referenceColumn.setText(REFERENCE_COLUMN_HEADER);
+		referenceColumn.setWidth(REFERENCE_COLUMN_WIDTH);
+		referenceColumn.setResizable(false);
+		
+		textColumn = new TableColumn(resultsTable, SWT.LEFT);
+		textColumn.setText(TEXT_COLUMN_HEADER);
+		textColumn.setWidth(200);
+		textColumn.setResizable(false);
 		
 		makeDragable();
 	}
