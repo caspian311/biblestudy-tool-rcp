@@ -14,7 +14,6 @@ import net.todd.biblestudy.reference.common.IBibleDao;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
 import net.todd.biblestudy.reference.common.models.IReferenceModel;
 import net.todd.biblestudy.reference.common.models.ReferenceModelAdapter;
-import net.todd.biblestudy.reference.common.views.ReferenceView;
 import net.todd.biblestudy.reference.common.views.ReferenceViewAdapter;
 import net.todd.biblestudy.reference.common.views.ReferenceViewEvent;
 
