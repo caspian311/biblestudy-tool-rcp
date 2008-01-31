@@ -24,8 +24,13 @@
 		SELECT		BIBLE.*
 		FROM		BIBLE
 		WHERE		BIB_BOOK like #book#
-		AND			BIB_CHAPTER = #chapter#
-		AND			BIB_VERSE = #verse#
+		<isNotEmpty prepend="AND" property="chapter">
+		BIB_CHAPTER = #chapter#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="verse">
+		BIB_VERSE = #verse#
+		</isNotEmpty>
+		
 		ORDER BY	BIB_SEQUENCE_ID
 	</select>
 

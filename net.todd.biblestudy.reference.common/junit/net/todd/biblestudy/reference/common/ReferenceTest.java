@@ -70,7 +70,7 @@ public class ReferenceTest
 	}
 	
 	@Test
-	public void testParseReferenceWithComplexReference() throws Exception
+	public void testParseReferenceWithComplexBookNameReference() throws Exception
 	{
 		Reference reference = new Reference("1 john 1:1");
 		assertNotNull(reference);
@@ -80,5 +80,35 @@ public class ReferenceTest
 		assertEquals(new Integer(1), reference.getChapter());
 		assertNotNull(reference.getVerse());
 		assertEquals(new Integer(1), reference.getVerse());
+	}
+	
+	@Test
+	public void testParseReferenceWithJustBookName() throws Exception
+	{
+		Reference reference = new Reference("1 john");
+		assertNotNull(reference);
+		assertNotNull(reference.getBook());
+		assertEquals("1 john", reference.getBook());
+		
+		reference = new Reference("john");
+		assertNotNull(reference);
+		assertNotNull(reference.getBook());
+		assertEquals("john", reference.getBook());
+	}
+	
+	@Test
+	public void testParseReferenceWithJustBookNameAndChapter() throws Exception
+	{
+		Reference reference = new Reference("1 john 1");
+		assertNotNull(reference);
+		assertNotNull(reference.getBook());
+		assertEquals("1 john", reference.getBook());
+		assertEquals(new Integer(1), reference.getChapter());
+		
+		reference = new Reference("john 1");
+		assertNotNull(reference);
+		assertNotNull(reference.getBook());
+		assertEquals("john", reference.getBook());
+		assertEquals(new Integer(1), reference.getChapter());
 	}
 }

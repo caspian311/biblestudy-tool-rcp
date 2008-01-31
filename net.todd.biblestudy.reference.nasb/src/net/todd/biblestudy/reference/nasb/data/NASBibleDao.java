@@ -34,15 +34,16 @@ public class NASBibleDao extends BaseDao implements IBibleDao
 	 * @param reference
 	 * @return BibleVerse
 	 */
-	public BibleVerse referenceLookup(Reference reference)
+	@SuppressWarnings("unchecked")
+	public List<BibleVerse> referenceLookup(Reference reference)
 	{
-		BibleVerse result = null;
+		List<BibleVerse> result = null;
 		
 		if (reference != null)
 		{
 			try
 			{
-				result = (BibleVerse)getSqlMapConfig().queryForObject("referenceLookup", reference);
+				result = getSqlMapConfig().queryForList("referenceLookup", reference);
 			}
 			catch (SQLException e)
 			{

@@ -18,7 +18,7 @@ abstract public class ReferenceDataSource
 			Reference reference = new Reference(searchText);
 			list = new ArrayList<BibleVerse>();
 			
-			list.add(getBibleDao().referenceLookup(reference));
+			list = getBibleDao().referenceLookup(reference);
 		}
 		catch (InvalidReferenceException e)
 		{

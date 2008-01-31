@@ -30,9 +30,11 @@ public class BibleDaoTest
 	{
 		IBibleDao bibleDao = new NASBibleDao();
 		
-		BibleVerse verse = bibleDao.referenceLookup(new Reference("gen 1:1"));
+		List<BibleVerse> verses = bibleDao.referenceLookup(new Reference("gen 1:1"));
 		
-		assertNotNull(verse);
+		assertNotNull(verses);
+		assertEquals(1, verses.size());
+		BibleVerse verse = verses.get(0);
 		assertNotNull(verse.getBook());
 		assertEquals("Gen", verse.getBook());
 		assertNotNull(verse.getChapter());
@@ -40,6 +42,38 @@ public class BibleDaoTest
 		assertNotNull(verse.getVerse());
 		assertEquals(new Integer(1), verse.getVerse());
 		assertNotNull(verse.getText());
-		assertTrue(verse.getText().toLowerCase().contains("in the beginning"));
+		assertTrue(verse.getText().toLowerCase().startsWith("in the beginning"));
+	}
+	
+	@Test
+	public void testReferenceLookupWholeChapter() throws Exception
+	{
+		IBibleDao bibleDao = new NASBibleDao();
+		
+		List<BibleVerse> verses = bibleDao.referenceLookup(new Reference("gen 1"));
+		
+		assertNotNull(verses);
+		assertEquals(31, verses.size());
+		
+		BibleVerse firstVerse = verses.get(0);
+		
+		assertNotNull(firstVerse.getBook());
+		assertEquals("Gen", firstVerse.getBook());
+		assertNotNull(firstVerse.getChapter());
+		assertEquals(new Integer(1), firstVerse.getChapter());
+		assertNotNull(firstVerse.getVerse());
+		assertEquals(new Integer(1), firstVerse.getVerse());
+		assertNotNull(firstVerse.getText());
+		assertTrue(firstVerse.getText().toLowerCase().startsWith("in the beginning"));
+		
+		BibleVerse lastVerse = verses.get(verses.size() - 1);
+		assertNotNull(lastVerse.getBook());
+		assertEquals("Gen", lastVerse.getBook());
+		assertNotNull(lastVerse.getChapter());
+		assertEquals(new Integer(1), lastVerse.getChapter());
+		assertNotNull(lastVerse.getVerse());
+		assertEquals(new Integer(31), lastVerse.getVerse());
+		assertNotNull(lastVerse.getText());
+		assertTrue(lastVerse.getText().toLowerCase().endsWith("the sixth day."));
 	}
 }
