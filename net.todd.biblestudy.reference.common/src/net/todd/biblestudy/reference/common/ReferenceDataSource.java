@@ -22,6 +22,10 @@ abstract public class ReferenceDataSource
 		}
 		catch (InvalidReferenceException e)
 		{
+		}
+		
+		if (list == null || list.isEmpty())
+		{
 			list = getBibleDao().keywordLookup(searchText);
 		}
 		
