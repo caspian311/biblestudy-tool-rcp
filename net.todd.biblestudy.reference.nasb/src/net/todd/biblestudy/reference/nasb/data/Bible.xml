@@ -23,7 +23,7 @@
 	<select id="referenceLookup" parameterClass="net.todd.biblestudy.reference.common.Reference" resultMap="bibleResult">
 		SELECT		BIBLE.*
 		FROM		BIBLE
-		WHERE		BIB_BOOK like #book#
+		WHERE		BIB_BOOK like '$book$%'
 		<isNotEmpty prepend="AND" property="chapter">
 		BIB_CHAPTER = #chapter#
 		</isNotEmpty>

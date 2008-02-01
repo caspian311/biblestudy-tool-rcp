@@ -36,7 +36,7 @@ public class BibleDaoTest
 		assertEquals(1, verses.size());
 		BibleVerse verse = verses.get(0);
 		assertNotNull(verse.getBook());
-		assertEquals("Gen", verse.getBook());
+		assertEquals("Genesis", verse.getBook());
 		assertNotNull(verse.getChapter());
 		assertEquals(new Integer(1), verse.getChapter());
 		assertNotNull(verse.getVerse());
@@ -58,7 +58,7 @@ public class BibleDaoTest
 		BibleVerse firstVerse = verses.get(0);
 		
 		assertNotNull(firstVerse.getBook());
-		assertEquals("Gen", firstVerse.getBook());
+		assertEquals("Genesis", firstVerse.getBook());
 		assertNotNull(firstVerse.getChapter());
 		assertEquals(new Integer(1), firstVerse.getChapter());
 		assertNotNull(firstVerse.getVerse());
@@ -68,7 +68,7 @@ public class BibleDaoTest
 		
 		BibleVerse lastVerse = verses.get(verses.size() - 1);
 		assertNotNull(lastVerse.getBook());
-		assertEquals("Gen", lastVerse.getBook());
+		assertEquals("Genesis", lastVerse.getBook());
 		assertNotNull(lastVerse.getChapter());
 		assertEquals(new Integer(1), lastVerse.getChapter());
 		assertNotNull(lastVerse.getVerse());
