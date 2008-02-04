@@ -12,6 +12,7 @@ import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.NoteModelHarness;
 import net.todd.biblestudy.rcp.views.INoteView;
+import net.todd.biblestudy.reference.common.BibleVerse;
 
 import org.eclipse.swt.graphics.Point;
 import org.junit.Before;
@@ -158,5 +159,29 @@ class MockNoteView implements INoteView
 	public int getCurrentCarretPosition()
 	{
 		return 0;
+	}
+
+	public BibleVerse getDroppedVerse()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void openDropReferenceOptions()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Point getDropCoordinates()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void openDropReferenceOptions(int x, int y)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

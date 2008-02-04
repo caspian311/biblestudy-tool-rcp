@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.presenters.INoteListener;
+import net.todd.biblestudy.reference.common.BibleVerse;
 
 import org.eclipse.swt.graphics.Point;
 
@@ -18,7 +19,6 @@ public interface INoteView
 	public void showRightClickPopup(int x, int y);
 	public String getSelectedText();
 	public Point getSelectionPoint();
-//	public int promptForSave();
 	public void saveNote();
 	public void deleteNote();
 	public void closeView(String secondaryId);
@@ -26,4 +26,7 @@ public interface INoteView
 	public void changeCursorToPointer();
 	public void changeCursorToText();
 	public int getCurrentCarretPosition();
+	public BibleVerse getDroppedVerse();
+	public void openDropReferenceOptions(int x, int y);
+	public Point getDropCoordinates();
 }

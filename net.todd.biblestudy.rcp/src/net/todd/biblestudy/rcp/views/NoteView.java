@@ -7,6 +7,7 @@ import javax.swing.event.EventListenerList;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.presenters.INoteListener;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
+import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.ReferenceTransfer;
 
 import org.eclipse.swt.SWT;
@@ -44,8 +45,10 @@ public class NoteView extends ViewPart implements INoteView
 	private EventListenerList eventListeners = new EventListenerList();
 
 	private Menu rightClickTextMenu;
+	private Menu dropReferenceOptionsMenu;
 
 	private Point lastClickedCoordinates;
+	private Point dropCoordinates;
 	
 	private Composite parent;
 
@@ -53,6 +56,8 @@ public class NoteView extends ViewPart implements INoteView
 
 	private Color blueColor;
 	private Color greenColor;
+	
+	private BibleVerse droppedVerse;
 
 	@Override
 	public void createPartControl(Composite parent)
@@ -74,6 +79,7 @@ public class NoteView extends ViewPart implements INoteView
 		
 		createTextBox(composite);
 		createRightClickMenu(parent);
+		createDropReferenceOptions(parent);
 		
 		createColors();
 	}
@@ -162,7 +168,6 @@ public class NoteView extends ViewPart implements INoteView
 					catch (IllegalArgumentException e1)
 					{
 					}
-					
 				}
 			}
 		});
@@ -183,7 +188,7 @@ public class NoteView extends ViewPart implements INoteView
 					Integer offset = new Integer(noteContentText.getOffsetAtLocation(point));
 					viewEvent.setData(offset);
 				}
-				catch (IllegalArgumentException ex)
+				catch (Exception ex)
 				{
 				}
 				
@@ -201,9 +206,12 @@ public class NoteView extends ViewPart implements INoteView
 			@Override
 			public void drop(DropTargetEvent event)
 			{
-				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_INSERT_REFERENCE);
-				viewEvent.setData(event.data);
-				fireEvent(viewEvent);
+				dropCoordinates = new Point(event.x, event.y);
+				droppedVerse = (BibleVerse)event.data;
+				
+				setFocus();				
+				
+				fireEvent(new ViewEvent(ViewEvent.NOTE_DROPPED_REFERENCE));
 			}
 		});
 	}
@@ -397,5 +405,65 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_IBEAM);
 		noteContentText.setCursor(cursor);
+	}
+
+	public BibleVerse getDroppedVerse()
+	{
+		return droppedVerse;
+	}
+
+	public void openDropReferenceOptions(int x, int y)
+	{
+//		Point point = parent.toDisplay(x, y);
+//		dropReferenceOptionsMenu.setLocation(point);
+		dropReferenceOptionsMenu.setLocation(new Point(x, y));
+		dropReferenceOptionsMenu.setVisible(true);
+	}
+	
+	private void createDropReferenceOptions(Composite parent)
+	{
+		dropReferenceOptionsMenu = new Menu(parent);
+		dropReferenceOptionsMenu.setVisible(false);
+		
+		MenuItem dropReferenceLink = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
+		dropReferenceLink.setText("Insert Link to Reference");
+		dropReferenceLink.setEnabled(true);
+		dropReferenceLink.addSelectionListener(new SelectionAdapter() 
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				fireEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
+			}
+		});
+		
+		MenuItem dropReferenceText = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
+		dropReferenceText.setText("Insert Text");
+		dropReferenceText.setEnabled(true);
+		dropReferenceText.addSelectionListener(new SelectionAdapter() 
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				fireEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_TEXT));
+			}
+		});
+		
+		MenuItem dropReferenceAndText = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
+		dropReferenceAndText.setText("Drop Text with Reference");
+		dropReferenceAndText.setEnabled(true);
+		dropReferenceAndText.addSelectionListener(new SelectionAdapter() 
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				fireEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_AND_TEXT));
+			}
+		});
+	}
+
+	public Point getDropCoordinates()
+	{
+		return dropCoordinates;
 	}
 }

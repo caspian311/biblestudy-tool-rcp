@@ -73,17 +73,59 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		{
 			handleNoteClicked(((Integer)event.getData()).intValue());
 		}
-		else if (source.equals(ViewEvent.NOTE_INSERT_REFERENCE))
+		else if (source.equals(ViewEvent.NOTE_DROPPED_REFERENCE))
 		{
-			handleInsertReference((BibleVerse)event.getData());
+			handleOpenDropReferenceOptions();
+		}
+		else if (source.equals(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE))
+		{
+			handleInsertReference();
+		}
+		else if (source.equals(ViewEvent.NOTE_DROP_REFERENCE_TEXT))
+		{
+			handleInsertReferenceText();
+		}
+		else if (source.equals(ViewEvent.NOTE_DROP_REFERENCE_AND_TEXT))
+		{
+			handleInsertReferenceAndText();
 		}
 	}
 
-	private void handleInsertReference(BibleVerse data)
+	private void handleInsertReferenceAndText()
 	{
+		BibleVerse bibleVerse = noteView.getDroppedVerse();
 		int currentCarretPosition = noteView.getCurrentCarretPosition();
 		
-		String linkContent = data.getReference().toString();
+		String linkContent = bibleVerse.getReference().toString() + " - " + bibleVerse.getText();
+
+		String noteText = noteModel.getNote().getText();
+		
+		if (noteText == null)
+		{
+			noteText = "";
+		}
+		
+		String beginning = noteText.substring(0, currentCarretPosition);
+		String ending = noteText.substring(currentCarretPosition);
+		
+		String newNoteText = beginning + linkContent + ending;
+		
+		noteView.setContentText(newNoteText);
+	}
+
+	private void handleOpenDropReferenceOptions()
+	{
+		Point dropCoordinates = noteView.getDropCoordinates();
+		
+		noteView.openDropReferenceOptions(dropCoordinates.x, dropCoordinates.y);
+	}
+
+	private void handleInsertReference()
+	{
+		BibleVerse bibleVerse = noteView.getDroppedVerse();
+		int currentCarretPosition = noteView.getCurrentCarretPosition();
+		
+		String linkContent = bibleVerse.getReference().toString();
 
 		String noteText = noteModel.getNote().getText();
 		if (noteText == null)
@@ -106,7 +148,26 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	private void handleInsertReferenceText()
+	{
+		BibleVerse bibleVerse = noteView.getDroppedVerse();
+		int currentCarretPosition = noteView.getCurrentCarretPosition();
 		
+		String verseContent = bibleVerse.getText();
+
+		String noteText = noteModel.getNote().getText();
+		if (noteText == null)
+		{
+			noteText = "";
+		}
+		String beginning = noteText.substring(0, currentCarretPosition);
+		String ending = noteText.substring(currentCarretPosition);
+		
+		String newNoteText = beginning + verseContent + ending;
+		
+		noteView.setContentText(newNoteText);
 	}
 
 	private void handleNoteClicked(Integer offset)
