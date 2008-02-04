@@ -37,7 +37,6 @@ public class ReferencePresenterTest
 		referenceView = new MockReferenceViewAdapter();
 		presenter = new ReferencePresenter(referenceView)
 		{
-
 			@Override
 			protected IReferenceModel getReferenceModel()
 			{
@@ -50,7 +49,13 @@ public class ReferencePresenterTest
 					}
 					
 					@Override
-					public List<BibleVerse> performSearch(String searchText, String referenceShortName)
+					public List<BibleVerse> performSearchOnKeyword(String searchText, String referenceShortName)
+					{
+						return new ArrayList<BibleVerse>();
+					}
+					
+					@Override
+					public List<BibleVerse> performSearchOnReference(String searchText, String referenceShortName)
 					{
 						return new ArrayList<BibleVerse>();
 					}
@@ -58,7 +63,7 @@ public class ReferencePresenterTest
 			}
 			
 			@Override
-			protected void doSearch(String searchText, String referenceShortName)
+			protected void doSearch(String searchText, String referenceShortName, String keywordOrReference)
 			{
 				searchWasPerformed = true;
 			}

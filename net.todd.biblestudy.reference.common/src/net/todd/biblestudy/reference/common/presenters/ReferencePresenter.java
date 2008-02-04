@@ -65,6 +65,7 @@ public class ReferencePresenter implements IReferenceViewListener
 	{
 		String searchText = referenceView.getLookupText();
 		String referenceShortName = referenceView.getReferenceSourceId();
+		String keywordOrReference = referenceView.getKeywordOrReference();
 		
 		if (StringUtils.isEmpty(searchText) || StringUtils.isEmpty(referenceShortName))
 		{
@@ -72,13 +73,22 @@ public class ReferencePresenter implements IReferenceViewListener
 		}
 		else
 		{
-			doSearch(searchText, referenceShortName);
+			doSearch(searchText, referenceShortName, keywordOrReference);
 		}
 	}
 
-	protected void doSearch(String searchText, String referenceShortName)
+	protected void doSearch(String searchText, String referenceShortName, String keywordOrReference)
 	{
-		List<BibleVerse> results = getReferenceModel().performSearch(searchText, referenceShortName);
+		List<BibleVerse> results = null;
+		
+		if ("reference".equals(keywordOrReference))
+		{
+			results = getReferenceModel().performSearchOnReference(searchText, referenceShortName);
+		}
+		else if ("keyword".equals(keywordOrReference))
+		{
+			results = getReferenceModel().performSearchOnKeyword(searchText, referenceShortName);
+		}
 		
 		if (results != null)
 		{

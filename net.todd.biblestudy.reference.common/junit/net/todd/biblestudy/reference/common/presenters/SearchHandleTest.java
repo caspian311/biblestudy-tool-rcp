@@ -26,7 +26,7 @@ public class SearchHandleTest
 	{
 		// TODO: finish implementing test...
 		
-		String searchText = null;
-		referencePresenter.doSearch(searchText, SAMPLE_SEARCH_REFERENCE_SHORT_NAME);
+//		String searchText = null;
+//		referencePresenter.doSearch(searchText, SAMPLE_SEARCH_REFERENCE_SHORT_NAME);
 	}
 }

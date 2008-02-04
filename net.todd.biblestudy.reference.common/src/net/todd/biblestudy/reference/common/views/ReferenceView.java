@@ -62,8 +62,13 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	private Table resultsTable;
 	private Label resultsMessage;
 	private Button lookupButton;
+	private Button referenceSearchButton;
+	private Button keywordSearchButton;
 
 	private TableColumn textColumn;
+
+	private String keywordOrReference = "reference";
+
 	
 	private static final int TEXT_MARGIN = 3;
 
@@ -214,7 +219,7 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	{
 		Composite composite = new Composite(parent, SWT.NONE);
 		
-		GridLayout layout = new GridLayout(2, false);
+		GridLayout layout = new GridLayout(4, false);
 		layout.marginBottom = 2;
 		layout.marginTop = 2;
 		layout.marginLeft = 2;
@@ -224,7 +229,7 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		
 		lookupText = new Text(composite, SWT.BORDER);
-		lookupText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		lookupText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
 		
 		lookupButton = new Button(composite, SWT.PUSH);
 		lookupButton.setText("Search");
@@ -237,13 +242,35 @@ public class ReferenceView extends ViewPart implements IReferenceView
 			}
 		});
 		
+		getSite().getShell().setDefaultButton(lookupButton);
+
+		referenceSearchButton = new Button(composite, SWT.RADIO);
+		referenceSearchButton.setText("Reference");
+		referenceSearchButton.setSelection(true);
+		referenceSearchButton.addSelectionListener(new SelectionAdapter() 
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				keywordOrReference = "reference";
+			}
+		});
+		keywordSearchButton = new Button(composite, SWT.RADIO);
+		keywordSearchButton.setText("Keyword");
+		keywordSearchButton.addSelectionListener(new SelectionAdapter() 
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				keywordOrReference = "keyword";
+			}
+		});
+		
 		referenceCombo = new Combo(composite, SWT.BORDER | SWT.DROP_DOWN);
-		referenceCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 2, 0));
+		referenceCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 2, 1));
 		
 		resultsMessage = new Label(composite, SWT.NORMAL);
-		resultsMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 0));
-		
-		getSite().getShell().setDefaultButton(lookupButton);
+		resultsMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 4, 1));
 	}
 
 	@Override
@@ -331,30 +358,9 @@ public class ReferenceView extends ViewPart implements IReferenceView
 			}
 		});
 	}
-	
-//	class ResultsTableLabelProvider extends LabelProvider implements ITableLabelProvider
-//	{
-//		public Image getColumnImage(Object element, int columnIndex)
-//		{
-//			return null;
-//		}
-//
-//		public String getColumnText(Object element, int columnIndex)
-//		{
-//			BibleVerse result = (BibleVerse)element;
-//			
-//			String text = null;
-//			
-//			if (columnIndex == 0)
-//			{
-//				text = result.getReference().toString();
-//			}
-//			else if (columnIndex == 1)
-//			{
-//				text = result.getText();
-//			}
-//			
-//			return text;
-//		}
-//	}
+
+	public String getKeywordOrReference()
+	{
+		return keywordOrReference;
+	}
 }

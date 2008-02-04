@@ -14,7 +14,7 @@ public class ReferenceModel implements IReferenceModel
 		return ReferenceRegistrar.getInstance().getAllDataSources();
 	}
 
-	public List<BibleVerse> performSearch(String searchText, String referenceShortName)
+	public List<BibleVerse> performSearchOnReference(String searchText, String referenceShortName)
 	{
 		ReferenceDataSource dataSource = getDataSourceByShortName(referenceShortName);
 		
@@ -22,7 +22,21 @@ public class ReferenceModel implements IReferenceModel
 		
 		if (dataSource != null)
 		{
-			search = dataSource.search(searchText);
+			search = dataSource.searchByReference(searchText);
+		}
+		
+		return search;
+	}
+	
+	public List<BibleVerse> performSearchOnKeyword(String searchText, String referenceShortName)
+	{
+		ReferenceDataSource dataSource = getDataSourceByShortName(referenceShortName);
+		
+		List<BibleVerse> search = null;
+		
+		if (dataSource != null)
+		{
+			search = dataSource.searchByKeyword(searchText);
 		}
 		
 		return search;

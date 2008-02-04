@@ -6,14 +6,19 @@ import java.util.Set;
 import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.ReferenceDataSource;
 
-public abstract class ReferenceModelAdapter implements IReferenceModel
+public class ReferenceModelAdapter implements IReferenceModel
 {
 	public Set<ReferenceDataSource> getAllDataSources()
 	{
 		return null;
 	}
 
-	public List<BibleVerse> performSearch(String searchText, String referenceShortName)
+	public List<BibleVerse> performSearchOnReference(String searchText, String referenceShortName)
+	{
+		return null;
+	}
+
+	public List<BibleVerse> performSearchOnKeyword(String searchText, String referenceShortName)
 	{
 		return null;
 	}

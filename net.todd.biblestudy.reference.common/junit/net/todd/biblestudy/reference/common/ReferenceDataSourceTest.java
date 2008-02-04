@@ -10,7 +10,6 @@ import org.junit.Test;
 
 public class ReferenceDataSourceTest
 {
-	
 	@Test
 	public void testSearchWithReference()
 	{
@@ -59,12 +58,61 @@ public class ReferenceDataSourceTest
 			}
 		};
 		
-		List<BibleVerse> referenceResults = dataSource.search("john 3:16");
+		List<BibleVerse> referenceResults = dataSource.searchByReference("john 3:16");
 		assertNotNull(referenceResults);
 		assertEquals(1, referenceResults.size());
 		assertEquals("reference result", referenceResults.get(0).getText());
+	}
+	
+	@Test
+	public void testSearchWithKeyword()
+	{
+		ReferenceDataSource dataSource = new ReferenceDataSource()
+		{
+			@Override
+			protected IBibleDao getBibleDao()
+			{
+				return new IBibleDao()
+				{
+					public List<BibleVerse> keywordLookup(String keyword)
+					{
+						List<BibleVerse> list = new ArrayList<BibleVerse>();
+						BibleVerse verse = new BibleVerse();
+						verse.setText("keyword result");
+						list.add(verse);
+						return list ;
+					}
+
+					public List<BibleVerse> referenceLookup(Reference reference)
+					{
+						List<BibleVerse> list = new ArrayList<BibleVerse>();
+						
+						if (reference.getBook().equalsIgnoreCase("john"))
+						{
+							BibleVerse verse = new BibleVerse();
+							verse.setText("reference result");
+							list.add(verse);
+						}
+						return list ;
+					}
+					
+				};
+			}
+
+			@Override
+			public String getId()
+			{
+				return null;
+			}
+
+			@Override
+			public String getShortName()
+			{
+				return null;
+			}
+		};
 		
-		List<BibleVerse> keywordResults = dataSource.search("love");
+		List<BibleVerse> keywordResults = dataSource.searchByKeyword("love");
 		assertNotNull(keywordResults);
 		assertEquals(1, keywordResults.size());
 		assertEquals("keyword result", keywordResults.get(0).getText());

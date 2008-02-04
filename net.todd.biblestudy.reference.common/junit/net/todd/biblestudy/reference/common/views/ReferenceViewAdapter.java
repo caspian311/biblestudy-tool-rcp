@@ -56,4 +56,10 @@ public class ReferenceViewAdapter implements IReferenceView
 		// TODO Auto-generated method stub
 		
 	}
+
+	public String getKeywordOrReference()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

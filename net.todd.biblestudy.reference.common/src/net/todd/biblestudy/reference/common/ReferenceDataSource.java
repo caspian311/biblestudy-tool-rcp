@@ -9,7 +9,7 @@ abstract public class ReferenceDataSource
 	abstract public String getShortName();
 	abstract protected IBibleDao getBibleDao();
 	
-	public List<BibleVerse> search(String searchText)
+	public List<BibleVerse> searchByReference(String searchText)
 	{
 		List<BibleVerse> list = null;
 
@@ -24,10 +24,14 @@ abstract public class ReferenceDataSource
 		{
 		}
 		
-		if (list == null || list.isEmpty())
-		{
-			list = getBibleDao().keywordLookup(searchText);
-		}
+		return list;
+	}
+	
+	public List<BibleVerse> searchByKeyword(String searchText)
+	{
+		List<BibleVerse> list = null;
+
+		list = getBibleDao().keywordLookup(searchText);
 		
 		return list;
 	}

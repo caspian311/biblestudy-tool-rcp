@@ -18,4 +18,5 @@ public interface IReferenceView
 	public void popupErrorMessage(String errorNoSearchInfoGiven);
 	public void displayLimitResultsMessage(int totalSize);
 	public void hideLimitResultsMessage();
+	public String getKeywordOrReference();
 }
