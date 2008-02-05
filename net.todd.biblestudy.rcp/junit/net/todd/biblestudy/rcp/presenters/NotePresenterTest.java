@@ -55,8 +55,6 @@ public class NotePresenterTest
 	@Test
 	public void contentChangeMakesDocumentDirty() throws Exception
 	{
-		// FIXME: this fails every other time
-		
 		NotePresenter notePresenter = new NotePresenter(noteView, noteModel);
 
 		assertFalse(noteModel.isDocumentDirty());
