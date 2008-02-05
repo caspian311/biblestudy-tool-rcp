@@ -56,8 +56,10 @@ public class NoteView extends ViewPart implements INoteView
 
 	private Color blueColor;
 	private Color greenColor;
+	private Color blackColor;
 	
 	private BibleVerse droppedVerse;
+
 
 	@Override
 	public void createPartControl(Composite parent)
@@ -88,6 +90,7 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		blueColor = new Color(Display.getDefault(), 0, 0, 255);
 		greenColor = new Color(Display.getDefault(), 0, 150, 0);
+		blackColor = new Color(Display.getDefault(), 0, 0, 0);
 	}
 
 	private void createRightClickMenu(Composite parent)
@@ -295,9 +298,11 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		fireEvent(new ViewEvent(ViewEvent.NOTE_CLOSE));
 		
-		super.dispose();
 		blueColor.dispose();
 		greenColor.dispose();
+		blackColor.dispose();
+		
+		super.dispose();
 	}
 	
 	/*
@@ -367,6 +372,21 @@ public class NoteView extends ViewPart implements INoteView
 			
 			noteContentText.setStyleRange(styleRange);
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.rcp.views.INoteView#removeNoteStyles()
+	 */
+	public void removeNoteStyles()
+	{
+		StyleRange styleRange = new StyleRange();
+		styleRange.start = 0;
+		styleRange.length = noteContentText.getText().length();
+		styleRange.underline = false;
+		styleRange.foreground = blackColor;
+		
+		noteContentText.setStyleRange(styleRange);
 	}
 	
 	private StyleRange convertToStyleRange(NoteStyle style)

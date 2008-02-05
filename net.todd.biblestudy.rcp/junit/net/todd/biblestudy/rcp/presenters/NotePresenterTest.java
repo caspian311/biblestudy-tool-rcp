@@ -55,6 +55,8 @@ public class NotePresenterTest
 	@Test
 	public void contentChangeMakesDocumentDirty() throws Exception
 	{
+		// FIXME: this fails every other time
+		
 		NotePresenter notePresenter = new NotePresenter(noteView, noteModel);
 
 		assertFalse(noteModel.isDocumentDirty());
@@ -180,6 +182,12 @@ class MockNoteView implements INoteView
 	}
 
 	public void openDropReferenceOptions(int x, int y)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void removeNoteStyles()
 	{
 		// TODO Auto-generated method stub
 		

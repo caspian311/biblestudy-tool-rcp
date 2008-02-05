@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class NoteModelManageLinksTest
 {
-	private static final String ORIGINAL_NOTE_CONTENT = "blah blah blah";
+	private static final String originalNoteContent = "blah blah blah";
 	private NoteModel noteModel;
 
 	@Before
@@ -28,7 +28,7 @@ public class NoteModelManageLinksTest
 				Note note = new Note();
 				note.setName("Test");
 				note.setNoteId(new Integer(1));
-				note.setText(ORIGINAL_NOTE_CONTENT);
+				note.setText(originalNoteContent);
 				note.setLastModified(new Date());
 				return note;
 			}
@@ -90,7 +90,7 @@ public class NoteModelManageLinksTest
 		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
 		assertEquals(1, noteStyles.size());
 		
-		noteModel.updateContent(ORIGINAL_NOTE_CONTENT);
+		noteModel.updateContent(originalNoteContent);
 		
 		noteStyles = noteModel.getNoteStylesForRange(0, 4);
 		assertEquals(0, noteStyles.size());
@@ -160,7 +160,7 @@ public class NoteModelManageLinksTest
 		
 		noteModel.addLinkToNote("blah", 5, 9);
 		
-		noteModel.updateContent("woot " + ORIGINAL_NOTE_CONTENT);
+		noteModel.updateContent("woot " + originalNoteContent);
 		
 		// new link should be at 10, 14
 		
@@ -226,5 +226,119 @@ public class NoteModelManageLinksTest
 		noteStyle = noteStyles.get(0);
 		assertEquals(1, noteStyle.getStart().intValue());
 		assertEquals(4, noteStyle.getLength().intValue());
+	}
+	
+	@Test
+	public void testLinkIsRemovedWhenLinkIsModified() throws Exception
+	{
+		noteModel = new NoteModelHarness()
+		{
+			@Override
+			protected Note getSampleNote()
+			{
+				Note note = new Note();
+				note.setName("Test");
+				note.setNoteId(new Integer(1));
+				note.setText("test1 test2 test3");
+				note.setLastModified(new Date());
+				return note;
+			}
+		};
+		
+		noteModel.populateNoteInfo(null);
+		
+		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		noteModel.addLinkToNote("blah", 6, 10);
+		
+		noteModel.updateContent("test1 test test3");
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		
+		
+		noteModel = new NoteModelHarness()
+		{
+			@Override
+			protected Note getSampleNote()
+			{
+				Note note = new Note();
+				note.setName("Test");
+				note.setNoteId(new Integer(1));
+				note.setText("test1 test2 test3");
+				note.setLastModified(new Date());
+				return note;
+			}
+		};
+		
+		noteModel.populateNoteInfo(null);
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		noteModel.addLinkToNote("blah", 6, 10);
+		
+		noteModel.updateContent("test1 est2 test3");
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		
+		
+		noteModel = new NoteModelHarness()
+		{
+			@Override
+			protected Note getSampleNote()
+			{
+				Note note = new Note();
+				note.setName("Test");
+				note.setNoteId(new Integer(1));
+				note.setText("test1 test2 test3");
+				note.setLastModified(new Date());
+				return note;
+			}
+		};
+		
+		noteModel.populateNoteInfo(null);
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		noteModel.addLinkToNote("blah", 6, 10);
+		
+		noteModel.updateContent("test1 tst2 test3");
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		
+		
+		noteModel = new NoteModelHarness()
+		{
+			@Override
+			protected Note getSampleNote()
+			{
+				Note note = new Note();
+				note.setName("Test");
+				note.setNoteId(new Integer(1));
+				note.setText("test1 test2 test3");
+				note.setLastModified(new Date());
+				return note;
+			}
+		};
+		
+		noteModel.populateNoteInfo(null);
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		noteModel.addLinkToNote("blah", 6, 10);
+		
+		noteModel.updateContent("test1 te st2 test3");
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
 	}
 }

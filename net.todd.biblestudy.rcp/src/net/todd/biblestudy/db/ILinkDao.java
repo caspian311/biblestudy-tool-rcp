@@ -38,4 +38,12 @@ public interface ILinkDao
 	 * @throws SQLException
 	 */
 	public void updateLink(Link link) throws SQLException;
+
+	/**
+	 * removes all links associated with the note
+	 * 
+	 * @param note
+	 * @throws SQLException
+	 */
+	public void removeAllLinksForNote(Note note) throws SQLException;
 }

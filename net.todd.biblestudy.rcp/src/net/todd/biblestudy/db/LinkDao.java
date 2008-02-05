@@ -43,5 +43,14 @@ public class LinkDao extends BaseDao implements ILinkDao
 	{
 		getSqlMapConfig().update("updateLink", link);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.todd.biblestudy.db.ILinkDao#removeAllLinksForNote(net.todd.biblestudy.db.Note)
+	 */
+	public void removeAllLinksForNote(Note note) throws SQLException
+	{
+		getSqlMapConfig().delete("removeAllLinksForNote", note);
+	}
 	
 }

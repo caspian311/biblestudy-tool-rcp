@@ -3,6 +3,7 @@
 <sqlMap namespace="Verse">
 
 	<typeAlias alias="Link" type="net.todd.biblestudy.db.Link" />
+	<typeAlias alias="Note" type="net.todd.biblestudy.db.Note" />
 
 	<resultMap id="linkResult" class="Link">
 		<result property="linkId" column="L_ID" />
@@ -12,7 +13,7 @@
 		<result property="start" column="L_START" />
 		<result property="end" column="L_END" />
 	</resultMap>
-
+	
 	<insert id="createLink" parameterClass="Link">
 		INSERT INTO LINKS (
 			L_NOTE_ID, 
@@ -59,5 +60,11 @@
 				L_END=#end#
 		WHERE	L_ID=#linkId#
 	</update>
+
+<delete id="removeAllLinksForNote" parameterClass="Note">
+		DELETE 
+		FROM		LINKS
+		WHERE		L_NOTE_ID=#noteId#
+	</delete>
 
 </sqlMap>

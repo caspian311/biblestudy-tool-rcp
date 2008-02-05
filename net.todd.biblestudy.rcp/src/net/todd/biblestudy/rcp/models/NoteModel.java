@@ -189,15 +189,13 @@ public class NoteModel implements INoteModel
 		{
 			getNoteDao().saveNote(getNote());
 			
+			getLinkDao().removeAllLinksForNote(getNote());
+			
 			for (Link link : getLinks())
 			{
 				if (link.getLinkId() == null)
 				{
 					getLinkDao().createLink(link);
-				}
-				else
-				{
-					getLinkDao().updateLink(link);
 				}
 			}
 			
@@ -223,11 +221,7 @@ public class NoteModel implements INoteModel
 		try
 		{
 			getNoteDao().deleteNote(getNote());
-			
-			for (Link link : getLinks())
-			{
-				getLinkDao().removeLink(link);
-			}
+			getLinkDao().removeAllLinksForNote(getNote());
 		}
 		catch (SQLException e)
 		{
@@ -268,6 +262,8 @@ public class NoteModel implements INoteModel
 
 	private void updateLinks(String newContentText)
 	{
+		boolean isDeleting = newContentText.length() < getNote().getText().length();
+		
 		int differenceLength = findLengthOfDifferingText(newContentText);
 		
 		if (differenceLength != 0)
@@ -280,15 +276,40 @@ public class NoteModel implements INoteModel
 			}
 			else
 			{
+				List<Link> linksToBeDeleted = new ArrayList<Link>();
+				
 				for (Link link : getLinks())
 				{
+					if (location == link.getStart().intValue() && isDeleting)
+					{
+						linksToBeDeleted.add(link);
+					}
+					else if (location >= link.getStart().intValue() && location <= link.getEnd().intValue())
+					{	// edit is in text
+						
+						linksToBeDeleted.add(link);
+//							if (getNote().getText().length() > newContentText.length())
+//							{	// is removing content
+//							}
+					} 
+					
 					if (location <= link.getStart().intValue())
 					{
-						shiftLinkRight(link, differenceLength);
+						shiftLink(link, differenceLength);
 					}
+				}
+				
+				for (Link linkToDelete : linksToBeDeleted)
+				{
+					removeLink(linkToDelete);
 				}
 			}
 		}
+	}
+
+	private void removeLink(Link linkToDelete)
+	{
+		getLinks().remove(linkToDelete);
 	}
 
 	private void removeAllLinksForNote()
@@ -329,7 +350,7 @@ public class NoteModel implements INoteModel
 		return lengthOfDifferingText;
 	}
 
-	private void shiftLinkRight(Link link, int i)
+	private void shiftLink(Link link, int i)
 	{
 		link.setStart(new Integer(link.getStart() + i));
 		link.setEnd(new Integer(link.getEnd() + i));

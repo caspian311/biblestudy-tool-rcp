@@ -62,4 +62,33 @@ public class LinkDaoTest
 		assertNotNull(links);
 		assertEquals(0, links.size());
 	}
+	
+	@Test
+	public void testLinkRemoveAll() throws Exception
+	{
+		Link link = new Link();
+		link.setContainingNoteId(TEST_CONTAINING_NOTE_ID);
+		link.setLinkToNoteName(TEST_NOTE_NAME);
+		link.setStart(1);
+		link.setEnd(100);
+		
+		ILinkDao linkDao = new LinkDao();
+		
+		linkDao.createLink(link);
+		
+		List<Link> links = linkDao.getAllLinksForNote(TEST_CONTAINING_NOTE_ID);
+		
+		assertNotNull(links);
+		assertEquals(1, links.size());
+		
+		Note note = new Note();
+		note.setNoteId(TEST_CONTAINING_NOTE_ID);
+		
+		linkDao.removeAllLinksForNote(note);
+		
+		links = linkDao.getAllLinksForNote(TEST_CONTAINING_NOTE_ID);
+		
+		assertNotNull(links);
+		assertEquals(0, links.size());
+	}
 }

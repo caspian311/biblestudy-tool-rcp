@@ -29,4 +29,5 @@ public interface INoteView
 	public BibleVerse getDroppedVerse();
 	public void openDropReferenceOptions(int x, int y);
 	public Point getDropCoordinates();
+	public void removeNoteStyles();
 }

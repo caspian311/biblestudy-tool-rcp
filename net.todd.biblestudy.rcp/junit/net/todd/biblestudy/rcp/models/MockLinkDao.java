@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.Link;
+import net.todd.biblestudy.db.Note;
 
 public class MockLinkDao implements ILinkDao
 {
@@ -21,10 +22,13 @@ public class MockLinkDao implements ILinkDao
 	
 	public void removeLink(Link link) throws SQLException
 	{
-		
 	}
 	
 	public void updateLink(Link link) throws SQLException
+	{
+	}
+
+	public void removeAllLinksForNote(Note note)
 	{
 	}
 }

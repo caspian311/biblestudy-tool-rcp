@@ -259,7 +259,14 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		
 		if (updatedStyles != null)
 		{
-			noteView.replaceNoteStyles(updatedStyles);
+			if (updatedStyles.isEmpty())
+			{
+				noteView.removeNoteStyles();
+			}
+			else
+			{
+				noteView.replaceNoteStyles(updatedStyles);
+			}
 		}
 	}
 
