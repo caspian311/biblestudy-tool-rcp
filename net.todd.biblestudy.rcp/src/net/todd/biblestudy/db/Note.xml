@@ -18,7 +18,15 @@
 	</select>
 
 	<insert id="createNewNote" parameterClass="Note">
-		INSERT INTO NOTES (N_NAME, N_TEXT, N_LAST_MODIFIED) values (#name#, #text#, #lastModified#)
+		INSERT INTO NOTES (
+			N_NAME, N_TEXT, N_LAST_MODIFIED
+		) values (
+			#name#, #text#, #lastModified#
+		)
+		
+		<selectKey resultClass="int" keyProperty="noteId">
+	    	SELECT @@IDENTITY AS ID
+  		</selectKey>
 	</insert>
 	
 	<update id="updateNote" parameterClass="Note">

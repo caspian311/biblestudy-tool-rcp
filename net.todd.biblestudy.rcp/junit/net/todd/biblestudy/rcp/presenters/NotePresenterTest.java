@@ -60,6 +60,8 @@ public class NotePresenterTest
 		assertFalse(noteModel.isDocumentDirty());
 		assertEquals("Test", noteView.getViewTitle());
 		
+		Thread.sleep(1000);
+		
 		noteView.setContentText(noteView.getContentText() + "asdf");
 		notePresenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
 		

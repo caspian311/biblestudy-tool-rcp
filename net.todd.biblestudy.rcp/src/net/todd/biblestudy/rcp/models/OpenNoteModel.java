@@ -8,7 +8,7 @@ import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteDao;
 
-public class NewNoteModel implements INewNoteModel
+public class OpenNoteModel implements IOpenNoteModel
 {
 	/*
 	 * (non-Javadoc)
@@ -33,5 +33,21 @@ public class NewNoteModel implements INewNoteModel
 	private INoteDao getNoteDao()
 	{
 		return new NoteDao();
+	}
+
+	public boolean doesNoteExist(String noteName)
+	{
+		boolean noteExists = false;
+		
+		try
+		{
+			noteExists = getNoteDao().getNoteByName(noteName) != null;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return noteExists;
 	}
 }

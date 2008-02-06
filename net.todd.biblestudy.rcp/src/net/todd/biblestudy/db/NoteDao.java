@@ -26,7 +26,11 @@ public class NoteDao extends BaseDao implements INoteDao
 		note.setName(newNoteName);
 		note.setLastModified(new Date());
 		
-		return (Note)getSqlMapConfig().insert("createNewNote", note);
+		Integer noteId = (Integer)getSqlMapConfig().insert("createNewNote", note);
+		
+		note.setNoteId(noteId);
+		
+		return note;
 	}
 
 	/*

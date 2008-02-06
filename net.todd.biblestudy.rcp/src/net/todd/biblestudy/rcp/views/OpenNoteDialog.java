@@ -4,7 +4,7 @@ import javax.swing.event.EventListenerList;
 
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.rcp.presenters.INewNoteEventListener;
+import net.todd.biblestudy.rcp.presenters.IOpenNoteEventListener;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,13 +27,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class NewNoteDialog extends TrayDialog implements INewNoteDialog
+public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 {
 	private Text filterText;
 	
 	private String newNoteName;
 	
-	public NewNoteDialog(Shell shell)
+	public OpenNoteDialog(Shell shell)
 	{
 		super(shell);
 		
@@ -45,7 +45,7 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 	{
 		super.configureShell(newShell);
 		
-		newShell.setText("Open/Create Note");
+		newShell.setText("Open Note");
 	}
 	
 	EventListenerList eventListeners = new EventListenerList();
@@ -53,9 +53,9 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 
 	private Label messageLabel;
 	
-	public void addNewNoteEventListener(INewNoteEventListener listener)
+	public void addOpenNoteEventListener(IOpenNoteEventListener listener)
 	{
-		eventListeners.add(INewNoteEventListener.class, listener);
+		eventListeners.add(IOpenNoteEventListener.class, listener);
 	}
 	
 	@Override
@@ -107,7 +107,7 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 			{
 				handleSelection();
 				
-				fireEvent(new ViewEvent(ViewEvent.NEW_NOTE_OK_PRESSED));
+				fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_OK_PRESSED));
 			}
 		});
 		listViewer.addSelectionChangedListener(new ISelectionChangedListener()
@@ -179,6 +179,7 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 
 	private void clearMessageLabel()
 	{
+		messageLabel.setText("You cannot have a colon in your note name.");
 		messageLabel.setVisible(false);
 	}
 
@@ -203,20 +204,20 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 	@Override
 	protected void okPressed()
 	{
-		fireEvent(new ViewEvent(ViewEvent.NEW_NOTE_OK_PRESSED));
+		fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_OK_PRESSED));
 	}
 	
 	@Override
 	protected void cancelPressed()
 	{
-		fireEvent(new ViewEvent(ViewEvent.NEW_NOTE_CANCEL_PRESSED));
+		fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_CANCEL_PRESSED));
 	}
 	
 	private void fireEvent(ViewEvent e)
 	{
-		INewNoteEventListener[] listeners = eventListeners.getListeners(INewNoteEventListener.class);
+		IOpenNoteEventListener[] listeners = eventListeners.getListeners(IOpenNoteEventListener.class);
 		
-		for (INewNoteEventListener listener : listeners)
+		for (IOpenNoteEventListener listener : listeners)
 		{
 			listener.handleEvent(e);
 		}
@@ -231,16 +232,16 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 		close();
 	}
 	
-	public void removeNewNoteEventListener(INewNoteEventListener listener)
+	public void removeNewNoteEventListener(IOpenNoteEventListener listener)
 	{
-		eventListeners.remove(INewNoteEventListener.class, listener);
+		eventListeners.remove(IOpenNoteEventListener.class, listener);
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see net.todd.biblestudy.rcp.views.INewNoteDialog#getNewNoteName()
 	 */
-	public String getNewNoteName()
+	public String getNoteName()
 	{
 		return newNoteName;
 	}
@@ -259,7 +260,7 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 			}
 		});
 		
-		fireEvent(new ViewEvent(ViewEvent.NEW_NOTE_OPENED));
+		fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_OPENED));
 	}
 
 	/*
@@ -275,5 +276,11 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 				listViewer.setInput(notes);
 			}
 		});
+	}
+
+	public void popuplateErrorMessage(String message)
+	{
+		messageLabel.setText(message);
+		messageLabel.setVisible(true);
 	}
 }

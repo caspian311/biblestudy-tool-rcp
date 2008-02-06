@@ -3,7 +3,7 @@ package net.todd.biblestudy.rcp.views;
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.NoteModel;
-import net.todd.biblestudy.rcp.presenters.NewNoteDialogPresenter;
+import net.todd.biblestudy.rcp.presenters.OpenNoteDialogPresenter;
 import net.todd.biblestudy.rcp.presenters.NotePresenter;
 
 import org.eclipse.ui.IWorkbenchPage;
@@ -18,14 +18,14 @@ public class ViewerImpl implements IViewer
 	 */
 	public void openNewActionDialog()
 	{
-		new NewNoteDialogPresenter();
+		new OpenNoteDialogPresenter();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see net.todd.biblestudy.rcp.views.IViewer#openNewNoteView(java.lang.String)
 	 */
-	public void openNewNoteView(final String noteName)
+	public void openNoteView(final String noteName)
 	{
 		ViewHelper.runWithBusyIndicator(new Runnable() 
 		{

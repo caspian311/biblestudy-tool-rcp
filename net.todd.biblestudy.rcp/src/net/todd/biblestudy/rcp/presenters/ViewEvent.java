@@ -9,9 +9,9 @@ public class ViewEvent extends EventObject
 	 */
 	private static final long serialVersionUID = -3608603346116267989L;
 	
-	public static final String NEW_NOTE_OK_PRESSED = "newNote.okPressed";
-	public static final String NEW_NOTE_CANCEL_PRESSED = "newNote.cancelPressed";
-	public static final String NEW_NOTE_OPENED = "newNote.opened";
+	public static final String OPEN_NOTE_OK_PRESSED = "openNote.okPressed";
+	public static final String OPEN_NOTE_CANCEL_PRESSED = "openNote.cancelPressed";
+	public static final String OPEN_NOTE_OPENED = "openNote.opened";
 	
 	public static final String NOTE_CREATE_LINK_EVENT = "note.createLink";
 	public static final String NOTE_CONTENT_CHANGED = "note.contentChanged";

@@ -178,7 +178,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		{
 			if (link.getLinkToNoteName() != null)
 			{
-				ViewerFactory.getViewer().openNewNoteView(link.getLinkToNoteName());
+				ViewerFactory.getViewer().openNoteView(link.getLinkToNoteName());
 			}
 			else if (link.getLinkToReference() != null)
 			{

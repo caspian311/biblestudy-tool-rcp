@@ -51,13 +51,13 @@
                toolbarPath="main/global">
          </action>
          <action
-               class="net.todd.biblestudy.rcp.actions.NewNoteAction"
+               class="net.todd.biblestudy.rcp.actions.OpenNoteAction"
                icon="icons/folder_open.png"
-               id="net.todd.biblestudy.rcp.NewNoteAction"
+               id="net.todd.biblestudy.rcp.OpenNoteAction"
                label="Open Note"
                style="push"
                toolbarPath="main/global"
-               tooltip="Create New Note">
+               tooltip="Open Existing Note">
          </action>
       </actionSet>
    </extension>

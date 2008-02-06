@@ -19,4 +19,5 @@ public interface INoteModel
 	public void deleteNoteAndLinks();
 	public void updateContent(String newContentText);
 	public void populateNoteInfo(String noteName);
+	public void createNewNoteInfo(String noteName);
 }

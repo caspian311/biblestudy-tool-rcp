@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class NoteModelDocumentDirtyTest
 {
-	private NoteModel noteModel;
+	private INoteModel noteModel;
 	private String noteName;
 
 	@Before
@@ -20,7 +20,7 @@ public class NoteModelDocumentDirtyTest
 		noteName = "test" + new Date().getTime();
 		
 		noteModel = new NoteModel();
-		noteModel.populateNoteInfo(noteName);
+		noteModel.createNewNoteInfo(noteName);
 	}
 	
 	@After

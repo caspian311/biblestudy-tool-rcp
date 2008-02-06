@@ -35,9 +35,11 @@ public class NoteModel implements INoteModel
 			
 			if (note == null)
 			{
-				getNoteDao().createNote(noteName);
+//				getNoteDao().createNote(noteName);
+//				
+//				note = getNoteDao().getNoteByName(noteName);
 				
-				note = getNoteDao().getNoteByName(noteName);
+				throw new Exception("Note not found.");
 			}
 			
 			this.note = note;
@@ -280,7 +282,11 @@ public class NoteModel implements INoteModel
 				
 				for (Link link : getLinks())
 				{
-					if (location == link.getStart().intValue() && isDeleting)
+					if (location == link.getStart().intValue() && isDeleting == false)
+					{
+						shiftLink(link, differenceLength);
+					}
+					else if (location == link.getStart().intValue() && isDeleting)
 					{
 						linksToBeDeleted.add(link);
 					}
@@ -292,8 +298,7 @@ public class NoteModel implements INoteModel
 //							{	// is removing content
 //							}
 					} 
-					
-					if (location <= link.getStart().intValue())
+					else if (location <= link.getStart().intValue())
 					{
 						shiftLink(link, differenceLength);
 					}
@@ -376,5 +381,21 @@ public class NoteModel implements INoteModel
 		}
 		
 		return null;
+	}
+
+	public void createNewNoteInfo(String noteName)
+	{
+		try
+		{
+			note = getNoteDao().createNote(noteName);
+			
+			timestampFromDB = (Date)note.getLastModified().clone();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		populateAllLinksForNoteInDB(note);
 	}
 }
