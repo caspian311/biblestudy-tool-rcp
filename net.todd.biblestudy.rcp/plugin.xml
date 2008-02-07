@@ -59,6 +59,15 @@
                toolbarPath="main/global"
                tooltip="Open Existing Note">
          </action>
+         <action
+               class="net.todd.biblestudy.rcp.actions.NewNoteAction"
+               icon="icons/text_file.png"
+               id="net.todd.biblestudy.rcp.NewNoteAction"
+               label="Create New Note"
+               style="push"
+               toolbarPath="main/global"
+               tooltip="Create Note New Note">
+         </action>
       </actionSet>
    </extension>
    <extension

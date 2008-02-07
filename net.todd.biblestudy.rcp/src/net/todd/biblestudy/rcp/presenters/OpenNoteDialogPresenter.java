@@ -7,19 +7,16 @@ import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.IOpenNoteModel;
 import net.todd.biblestudy.rcp.models.OpenNoteModel;
 import net.todd.biblestudy.rcp.views.IOpenNoteDialog;
-import net.todd.biblestudy.rcp.views.OpenNoteDialog;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
-
-import org.eclipse.swt.widgets.Display;
 
 public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 {
 	private IOpenNoteDialog view;
 	private IOpenNoteModel model;
 
-	public OpenNoteDialogPresenter()
+	public OpenNoteDialogPresenter(IOpenNoteDialog view)
 	{
-		this.view = new OpenNoteDialog(Display.getCurrent().getActiveShell());
+		this.view = view;
 		model = new OpenNoteModel();
 		view.addOpenNoteEventListener(this);
 		view.openDialog();
@@ -61,7 +58,6 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 	private void handleCancel()
 	{
 		view.closeDialog();
-		view.removeNewNoteEventListener(this);
 	}
 
 	private void handleOpenNote()
@@ -73,7 +69,6 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 		if (noteExists)
 		{
 			view.closeDialog();
-			view.removeNewNoteEventListener(this);
 			
 			ViewHelper.runWithBusyIndicator(new Runnable()
 			{

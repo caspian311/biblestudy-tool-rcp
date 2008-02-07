@@ -35,11 +35,11 @@ public class NoteModel implements INoteModel
 			
 			if (note == null)
 			{
-//				getNoteDao().createNote(noteName);
-//				
-//				note = getNoteDao().getNoteByName(noteName);
+				getNoteDao().createNote(noteName);
 				
-				throw new Exception("Note not found.");
+				note = getNoteDao().getNoteByName(noteName);
+				
+//				throw new Exception("Note not found.");
 			}
 			
 			this.note = note;

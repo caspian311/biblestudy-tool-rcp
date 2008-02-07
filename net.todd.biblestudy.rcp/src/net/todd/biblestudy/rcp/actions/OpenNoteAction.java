@@ -31,7 +31,7 @@ public class OpenNoteAction implements IWorkbenchWindowActionDelegate
 	 */
 	public void run(IAction action)
 	{
-		ViewerFactory.getViewer().openNewActionDialog();
+		ViewerFactory.getViewer().openNoteDialog();
 	}
 	
 	/*

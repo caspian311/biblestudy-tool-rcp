@@ -1,5 +1,8 @@
 package net.todd.biblestudy.rcp.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.event.EventListenerList;
 
 import net.todd.biblestudy.common.ViewHelper;
@@ -230,11 +233,25 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 	public void closeDialog()
 	{
 		close();
+		
+		removeAllListeners();
 	}
 	
-	public void removeNewNoteEventListener(IOpenNoteEventListener listener)
+	public void removeAllListeners()
 	{
-		eventListeners.remove(IOpenNoteEventListener.class, listener);
+		IOpenNoteEventListener[] listeners = eventListeners.getListeners(IOpenNoteEventListener.class);
+		
+		List<IOpenNoteEventListener> clonedListeners = new ArrayList<IOpenNoteEventListener>();
+		
+		for (IOpenNoteEventListener listener : listeners)
+		{
+			clonedListeners.add(listener);
+		}
+		
+		for (IOpenNoteEventListener listener : clonedListeners)
+		{
+			eventListeners.remove(IOpenNoteEventListener.class, listener);
+		}
 	}
 	
 	/*
