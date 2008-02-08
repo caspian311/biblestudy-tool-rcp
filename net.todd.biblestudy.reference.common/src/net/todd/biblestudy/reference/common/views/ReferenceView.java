@@ -1,6 +1,7 @@
 package net.todd.biblestudy.reference.common.views;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.event.EventListenerList;
@@ -91,7 +92,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	
 	private void createResultsArea(Composite parent)
 	{
-		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
+		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | 
+				SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION | SWT.MULTI);
 		resultsTableViewer.setLabelProvider(new ResultsTableLabelProvider());
 		resultsTableViewer.setContentProvider(new ArrayContentProvider());
 		
@@ -196,7 +198,17 @@ public class ReferenceView extends ViewPart implements IReferenceView
 			{
 				if (ReferenceTransfer.getInstance().isSupportedType(event.dataType))
 				{
-					event.data = resultsTableViewer.getTable().getSelection()[0].getData();
+					List<BibleVerse> verses = new ArrayList<BibleVerse>();
+					
+					TableItem[] selectionList = resultsTableViewer.getTable().getSelection();
+					for (TableItem selectedItem : selectionList)
+					{
+						BibleVerse verse = (BibleVerse)selectedItem.getData();
+						
+						verses.add(verse);
+					}
+					
+					event.data = verses;
 				}
 			}
 		});

@@ -33,10 +33,6 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		noteView.addNoteViewListener(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.presenters.INoteListener#handleEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
-	 */
 	public void handleEvent(ViewEvent event)
 	{
 		String source = (String)event.getSource();
@@ -79,7 +75,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		}
 		else if (source.equals(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE))
 		{
-			handleInsertReference();
+			handleInsertReferenceLink();
 		}
 		else if (source.equals(ViewEvent.NOTE_DROP_REFERENCE_TEXT))
 		{
@@ -93,10 +89,17 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 
 	private void handleInsertReferenceAndText()
 	{
-		BibleVerse bibleVerse = noteView.getDroppedVerse();
+		List<BibleVerse> bibleVerses = noteView.getDroppedVerse();
 		int currentCarretPosition = noteView.getCurrentCarretPosition();
 		
-		String linkContent = bibleVerse.getReference().toString() + " - " + bibleVerse.getText();
+		StringBuffer newContent = new StringBuffer();
+		
+		for (BibleVerse bibleVerse : bibleVerses)
+		{
+			String linkContent = bibleVerse.getReference().toString() + " - " + bibleVerse.getText();
+			newContent.append(linkContent).append("\n");
+		}
+		
 
 		String noteText = noteModel.getNote().getText();
 		
@@ -108,7 +111,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		String beginning = noteText.substring(0, currentCarretPosition);
 		String ending = noteText.substring(currentCarretPosition);
 		
-		String newNoteText = beginning + linkContent + ending;
+		String newNoteText = beginning + newContent.toString() + ending;
 		
 		noteView.setContentText(newNoteText);
 	}
@@ -120,13 +123,22 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		noteView.openDropReferenceOptions(dropCoordinates.x, dropCoordinates.y);
 	}
 
-	private void handleInsertReference()
+	private void handleInsertReferenceLink()
 	{
-		BibleVerse bibleVerse = noteView.getDroppedVerse();
+		List<BibleVerse> bibleVerses = noteView.getDroppedVerse();
 		int currentCarretPosition = noteView.getCurrentCarretPosition();
 		
-		String linkContent = bibleVerse.getReference().toString();
-
+		StringBuffer newContent = new StringBuffer();
+		
+		for (BibleVerse bibleVerse : bibleVerses)
+		{
+			Reference reference = bibleVerse.getReference();
+			
+			String referenceText = reference.toString();
+			newContent.append(referenceText).append("\n");
+			
+		}
+		
 		String noteText = noteModel.getNote().getText();
 		if (noteText == null)
 		{
@@ -135,28 +147,34 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		String beginning = noteText.substring(0, currentCarretPosition);
 		String ending = noteText.substring(currentCarretPosition);
 		
-		String newNoteText = beginning + linkContent + ending;
+		String newNoteText = beginning + newContent.toString() + ending;
 		
 		noteView.setContentText(newNoteText);
 		
-		try
+		for (BibleVerse bibleVerse : bibleVerses)
 		{
-			Reference reference = new Reference(linkContent);
-			addLinkToReferenceAndUpdateView(reference, currentCarretPosition, currentCarretPosition + linkContent.length());
+			Reference reference = bibleVerse.getReference();
+			
+			noteModel.addLinkToReference(reference, currentCarretPosition, currentCarretPosition + reference.toString().length());
+			currentCarretPosition = currentCarretPosition + reference.toString().length() + 1;
 		}
-		catch (InvalidReferenceException e)
-		{
-			e.printStackTrace();
-		}
+		
+		updateStylesOnView();
+		updateDocumentTitle();
 	}
 	
 	private void handleInsertReferenceText()
 	{
-		BibleVerse bibleVerse = noteView.getDroppedVerse();
+		List<BibleVerse> bibleVerses = noteView.getDroppedVerse();
 		int currentCarretPosition = noteView.getCurrentCarretPosition();
 		
-		String verseContent = bibleVerse.getText();
-
+		StringBuffer verseContent = new StringBuffer();
+		
+		for (BibleVerse bibleVerse : bibleVerses)
+		{
+			verseContent.append(bibleVerse.getText()).append("\n");
+		}
+		
 		String noteText = noteModel.getNote().getText();
 		if (noteText == null)
 		{
@@ -165,7 +183,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		String beginning = noteText.substring(0, currentCarretPosition);
 		String ending = noteText.substring(currentCarretPosition);
 		
-		String newNoteText = beginning + verseContent + ending;
+		String newNoteText = beginning + verseContent.toString() + ending;
 		
 		noteView.setContentText(newNoteText);
 	}
@@ -363,13 +381,10 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		updateDocumentTitle();
 	}
 	
-	private void addLinkToReferenceAndUpdateView(Reference reference, int start, int stop)
-	{
-		noteModel.addLinkToReference(reference, start, stop);
-		
-		updateStylesOnView();
-		updateDocumentTitle();
-	}
+//	private void addLinkToReferenceAndUpdateView(Reference reference, int start, int stop)
+//	{
+//		
+//	}
 
 	private void handleCreateLinkDialogClosed()
 	{

@@ -163,7 +163,7 @@ class MockNoteView implements INoteView
 		return 0;
 	}
 
-	public BibleVerse getDroppedVerse()
+	public List<BibleVerse> getDroppedVerse()
 	{
 		// TODO Auto-generated method stub
 		return null;

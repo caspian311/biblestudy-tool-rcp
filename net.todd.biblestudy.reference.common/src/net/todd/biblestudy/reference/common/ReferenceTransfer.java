@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -43,19 +44,20 @@ public class ReferenceTransfer extends ByteArrayTransfer
 		return new String[] {BIBLE_VERSE};
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void javaToNative (Object object, TransferData transferData)
 	{
-		if (object instanceof BibleVerse)
+		if (object instanceof List)
 		{
-			BibleVerse verse = (BibleVerse)object;
+			List<BibleVerse> verses = (List<BibleVerse>)object;
 			
 			try
 			{
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				ObjectOutputStream oos = new ObjectOutputStream(out);
 				
-				oos.writeObject(verse);
+				oos.writeObject(verses);
 				
 				oos.close();
 				out.close();

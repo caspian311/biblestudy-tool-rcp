@@ -26,7 +26,7 @@ public interface INoteView
 	public void changeCursorToPointer();
 	public void changeCursorToText();
 	public int getCurrentCarretPosition();
-	public BibleVerse getDroppedVerse();
+	public List<BibleVerse> getDroppedVerse();
 	public void openDropReferenceOptions(int x, int y);
 	public Point getDropCoordinates();
 	public void removeNoteStyles();

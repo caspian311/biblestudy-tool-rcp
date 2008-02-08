@@ -58,7 +58,7 @@ public class NoteView extends ViewPart implements INoteView
 	private Color greenColor;
 	private Color blackColor;
 	
-	private BibleVerse droppedVerse;
+	private List<BibleVerse> droppedVerses;
 
 
 	@Override
@@ -130,10 +130,6 @@ public class NoteView extends ViewPart implements INoteView
 		noteContentText.setLayoutData(gridData);
 		noteContentText.addModifyListener(new ModifyListener() 
 		{
-			/*
-			 * (non-Javadoc)
-			 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-			 */
 			public void modifyText(ModifyEvent e)
 			{
 				fireEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
@@ -176,10 +172,6 @@ public class NoteView extends ViewPart implements INoteView
 		});
 		noteContentText.addMouseMoveListener(new MouseMoveListener()
 		{
-			/*
-			 * (non-Javadoc)
-			 * @see org.eclipse.swt.events.MouseMoveListener#mouseMove(org.eclipse.swt.events.MouseEvent)
-			 */
 			public void mouseMove(MouseEvent e)
 			{
 				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_HOVERING);
@@ -206,13 +198,14 @@ public class NoteView extends ViewPart implements INoteView
 		dropTarget.setTransfer(new Transfer[] {ReferenceTransfer.getInstance()});
 		dropTarget.addDropListener(new DropTargetAdapter()
 		{
+			@SuppressWarnings("unchecked")
 			@Override
 			public void drop(DropTargetEvent event)
 			{
 				dropCoordinates = new Point(event.x, event.y);
-				droppedVerse = (BibleVerse)event.data;
+				droppedVerses = (List<BibleVerse>)event.data;
 				
-				setFocus();				
+				setFocus();
 				
 				fireEvent(new ViewEvent(ViewEvent.NOTE_DROPPED_REFERENCE));
 			}
@@ -223,21 +216,12 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		return noteContentText.getCaretOffset();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.views.INoteView#getLastClickedCoordinates()
-	 */
+	
 	public Point getLastClickedCoordinates()
 	{
 		return lastClickedCoordinates;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#showRightClickPopup(int, int)
-	 */
 	public void showRightClickPopup(int x, int y)
 	{
 		String selectionText = noteContentText.getSelectionText();
@@ -255,19 +239,11 @@ public class NoteView extends ViewPart implements INoteView
 	{
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#addNoteViewListener(net.todd.biblestudy.rcp.presenters.INoteListener)
-	 */
 	public void addNoteViewListener(INoteListener noteListener)
 	{
 		eventListeners.add(INoteListener.class, noteListener);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#setContentText(java.lang.String)
-	 */
 	public void setContentText(String text)
 	{
 		if (text != null)
@@ -281,19 +257,11 @@ public class NoteView extends ViewPart implements INoteView
 		return noteContentText.getText();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#setViewTitle(java.lang.String)
-	 */
 	public void setViewTitle(String title)
 	{
 		setPartName(title);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.part.WorkbenchPart#dispose()
-	 */
 	public void dispose()
 	{
 		fireEvent(new ViewEvent(ViewEvent.NOTE_CLOSE));
@@ -305,65 +273,37 @@ public class NoteView extends ViewPart implements INoteView
 		super.dispose();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#removeNoteViewListener(net.todd.biblestudy.rcp.presenters.INoteListener)
-	 */
 	public void removeNoteViewListener(INoteListener noteListener)
 	{
 		eventListeners.remove(INoteListener.class, noteListener);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#getSelectedText()
-	 */
 	public String getSelectedText()
 	{
 		return noteContentText.getSelectionText();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#getSelectionPoint()
-	 */
 	public Point getSelectionPoint()
 	{
 		return noteContentText.getSelection();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#saveNote()
-	 */
 	public void saveNote()
 	{
 		fireEvent(new ViewEvent(ViewEvent.NOTE_SAVE));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#deleteNote()
-	 */
 	public void deleteNote()
 	{
 		fireEvent(new ViewEvent(ViewEvent.NOTE_DELETE));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#closeView(java.lang.String)
-	 */
 	public void closeView(String secondaryId)
 	{
 		IViewReference viewReference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(ID, secondaryId);
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(viewReference);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#replaceNoteStyles(java.util.List)
-	 */
 	public void replaceNoteStyles(List<NoteStyle> styleList)
 	{
 		for (NoteStyle style : styleList)
@@ -374,10 +314,6 @@ public class NoteView extends ViewPart implements INoteView
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#removeNoteStyles()
-	 */
 	public void removeNoteStyles()
 	{
 		StyleRange styleRange = new StyleRange();
@@ -407,35 +343,25 @@ public class NoteView extends ViewPart implements INoteView
 		return styleRange;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#changeCursorToPointer()
-	 */
 	public void changeCursorToPointer()
 	{
 		Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_HAND);
 		noteContentText.setCursor(cursor);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.INoteView#changeCursorToText()
-	 */
 	public void changeCursorToText()
 	{
 		Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_IBEAM);
 		noteContentText.setCursor(cursor);
 	}
 
-	public BibleVerse getDroppedVerse()
+	public List<BibleVerse> getDroppedVerse()
 	{
-		return droppedVerse;
+		return droppedVerses;
 	}
 
 	public void openDropReferenceOptions(int x, int y)
 	{
-//		Point point = parent.toDisplay(x, y);
-//		dropReferenceOptionsMenu.setLocation(point);
 		dropReferenceOptionsMenu.setLocation(new Point(x, y));
 		dropReferenceOptionsMenu.setVisible(true);
 	}
@@ -470,7 +396,7 @@ public class NoteView extends ViewPart implements INoteView
 		});
 		
 		MenuItem dropReferenceAndText = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
-		dropReferenceAndText.setText("Drop Text with Reference");
+		dropReferenceAndText.setText("Insert Reference with Text");
 		dropReferenceAndText.setEnabled(true);
 		dropReferenceAndText.addSelectionListener(new SelectionAdapter() 
 		{
