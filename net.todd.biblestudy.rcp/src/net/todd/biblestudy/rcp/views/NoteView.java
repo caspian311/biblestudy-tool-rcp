@@ -306,6 +306,8 @@ public class NoteView extends ViewPart implements INoteView
 
 	public void replaceNoteStyles(List<NoteStyle> styleList)
 	{
+		removeNoteStyles();
+		
 		for (NoteStyle style : styleList)
 		{
 			StyleRange styleRange = convertToStyleRange(style);

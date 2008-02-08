@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteStyle;
+import net.todd.biblestudy.reference.common.Reference;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -335,6 +336,120 @@ public class NoteModelManageLinksTest
 		assertEquals(0, noteStyles.size());
 		
 		noteModel.addLinkToNote("blah", 6, 10);
+		
+		noteModel.updateContent("test1 te st2 test3");
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+	}
+	
+	@Test
+	public void testReferenceLinkIsRemovedWhenReferenceLinkIsModified() throws Exception
+	{
+		noteModel = new NoteModelHarness()
+		{
+			@Override
+			protected Note getSampleNote()
+			{
+				Note note = new Note();
+				note.setName("Test");
+				note.setNoteId(new Integer(1));
+				note.setText("test1 test2 test3");
+				note.setLastModified(new Date());
+				return note;
+			}
+		};
+		
+		noteModel.populateNoteInfo(null);
+		
+		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		noteModel.addLinkToReference(new Reference("John 3:16"), 6, 10);
+		
+		noteModel.updateContent("test1 test test3");
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		
+		
+		noteModel = new NoteModelHarness()
+		{
+			@Override
+			protected Note getSampleNote()
+			{
+				Note note = new Note();
+				note.setName("Test");
+				note.setNoteId(new Integer(1));
+				note.setText("test1 test2 test3");
+				note.setLastModified(new Date());
+				return note;
+			}
+		};
+		
+		noteModel.populateNoteInfo(null);
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		noteModel.addLinkToReference(new Reference("John 3:16"), 6, 10);
+		
+		noteModel.updateContent("test1 est2 test3");
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		
+		
+		noteModel = new NoteModelHarness()
+		{
+			@Override
+			protected Note getSampleNote()
+			{
+				Note note = new Note();
+				note.setName("Test");
+				note.setNoteId(new Integer(1));
+				note.setText("test1 test2 test3");
+				note.setLastModified(new Date());
+				return note;
+			}
+		};
+		
+		noteModel.populateNoteInfo(null);
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		noteModel.addLinkToReference(new Reference("John 3:16"), 6, 10);
+		
+		noteModel.updateContent("test1 tst2 test3");
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		
+		
+		noteModel = new NoteModelHarness()
+		{
+			@Override
+			protected Note getSampleNote()
+			{
+				Note note = new Note();
+				note.setName("Test");
+				note.setNoteId(new Integer(1));
+				note.setText("test1 test2 test3");
+				note.setLastModified(new Date());
+				return note;
+			}
+		};
+		
+		noteModel.populateNoteInfo(null);
+		
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+		
+		noteModel.addLinkToReference(new Reference("John 3:16"), 6, 10);
 		
 		noteModel.updateContent("test1 te st2 test3");
 		
