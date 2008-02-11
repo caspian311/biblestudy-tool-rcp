@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.NoteStyle;
+import net.todd.biblestudy.rcp.LinkStatusLineUtil;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.CreateLinkDialog;
 import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
@@ -225,15 +226,30 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 			if (link != null)
 			{
 				noteView.changeCursorToPointer();
+
+				String message = "";
+
+				if (link.getLinkToNoteName() != null)
+				{
+					message = "Link to: " + link.getLinkToNoteName();
+				}
+				else if (link.getLinkToReference() != null)
+				{
+					message = "Link to: " + link.getLinkToReference();
+				}
+
+				LinkStatusLineUtil.setTextOnStatusLine(message);
 			}
 			else
 			{
 				noteView.changeCursorToText();
+				LinkStatusLineUtil.setTextOnStatusLine("");
 			}
 		}
 		else
 		{
 			noteView.changeCursorToText();
+			LinkStatusLineUtil.setTextOnStatusLine("");
 		}
 	}
 
