@@ -97,15 +97,28 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		rightClickTextMenu = new Menu(parent);
 		rightClickTextMenu.setVisible(false);
-		MenuItem createLink = new MenuItem(rightClickTextMenu, SWT.POP_UP);
-		createLink.setText("Create link");
-		createLink.setEnabled(true);
-		createLink.addSelectionListener(new SelectionAdapter() 
+		
+		MenuItem createLinkToNote = new MenuItem(rightClickTextMenu, SWT.POP_UP);
+		createLinkToNote.setText("Create Link to Note");
+		createLinkToNote.setEnabled(true);
+		createLinkToNote.addSelectionListener(new SelectionAdapter() 
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				fireEvent(new ViewEvent(ViewEvent.NOTE_CREATE_LINK_EVENT));
+				fireEvent(new ViewEvent(ViewEvent.NOTE_CREATE_LINK_TO_NOTE_EVENT));
+			}
+		});
+		
+		MenuItem createLinkToReference = new MenuItem(rightClickTextMenu, SWT.POP_UP);
+		createLinkToReference.setText("Create Link to Reference");
+		createLinkToReference.setEnabled(true);
+		createLinkToReference.addSelectionListener(new SelectionAdapter() 
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				fireEvent(new ViewEvent(ViewEvent.NOTE_CREATE_LINK_TO_REFERENCE_EVENT));
 			}
 		});
 	}

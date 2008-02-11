@@ -8,12 +8,13 @@ public class ViewEvent extends EventObject
 	 * 
 	 */
 	private static final long serialVersionUID = -3608603346116267989L;
-	
+
 	public static final String OPEN_NOTE_OK_PRESSED = "openNote.okPressed";
 	public static final String OPEN_NOTE_CANCEL_PRESSED = "openNote.cancelPressed";
 	public static final String OPEN_NOTE_OPENED = "openNote.opened";
-	
-	public static final String NOTE_CREATE_LINK_EVENT = "note.createLink";
+
+	public static final String NOTE_CREATE_LINK_TO_NOTE_EVENT = "note.createLinkToNote";
+	public static final String NOTE_CREATE_LINK_TO_REFERENCE_EVENT = "note.createLinkToReference";
 	public static final String NOTE_CONTENT_CHANGED = "note.contentChanged";
 	public static final String NOTE_SHOW_RIGHT_CLICK_MENU = "note.showRightClickMenu";
 	public static final String NOTE_CLOSE = "note.close";
@@ -29,7 +30,9 @@ public class ViewEvent extends EventObject
 
 	public static final String CREATE_LINK_DIALOG_OPENED = "createLink.dialogOpened";
 	public static final String CREATE_LINK_DIALOG_CLOSED = "createLink.dialogClosed";
-	public static final String CREATE_LINK_DO_CREATE_LINK = "createLink.doCreateLink";
+	public static final String CREATE_LINK_DO_CREATE_LINK_TO_NOTE = "createLink.doCreateLinkToNote";
+	public static final String CREATE_LINK_DO_CREATE_LINK_TO_REFERENCE = "createLink.doCreateLinkToReference";
+	public static final String CREATE_LINK_VALIDATE_REFERENCE = "createLink.validateReference";
 
 	public static final String NEW_NOTE_OPENED = "newNote.opened";
 	public static final String NEW_NOTE_OK_PRESSED = "newNote.okPressed";
@@ -37,7 +40,7 @@ public class ViewEvent extends EventObject
 	public static final String NEW_NOTE_CANCEL_PRESSED = "newNote.cancelPressed";
 
 	private Object data;
-	
+
 	public ViewEvent(Object source)
 	{
 		super(source);
@@ -47,6 +50,7 @@ public class ViewEvent extends EventObject
 	{
 		return data;
 	}
+
 	public void setData(Object data)
 	{
 		this.data = data;

@@ -27,16 +27,16 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	{
 		this.noteView = noteView;
 		this.noteModel = noteModel;
-		
+
 		handleOpenNote();
-		
+
 		noteView.addNoteViewListener(this);
 	}
 
 	public void handleEvent(ViewEvent event)
 	{
-		String source = (String)event.getSource();
-		
+		String source = (String) event.getSource();
+
 		if (source.equals(ViewEvent.NOTE_CONTENT_CHANGED))
 		{
 			handleContentChanged();
@@ -45,9 +45,13 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		{
 			handleShowRightClickMenu();
 		}
-		else if (source.equals(ViewEvent.NOTE_CREATE_LINK_EVENT))
+		else if (source.equals(ViewEvent.NOTE_CREATE_LINK_TO_NOTE_EVENT))
 		{
-			createLink();
+			createLinkToNote();
+		}
+		else if (source.equals(ViewEvent.NOTE_CREATE_LINK_TO_REFERENCE_EVENT))
+		{
+			createLinkToReference();
 		}
 		else if (source.equals(ViewEvent.NOTE_CLOSE))
 		{
@@ -63,11 +67,11 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		}
 		else if (source.equals(ViewEvent.NOTE_HOVERING))
 		{
-			handleNoteHovering(((Integer)event.getData()));
+			handleNoteHovering(((Integer) event.getData()));
 		}
 		else if (source.equals(ViewEvent.NOTE_CLICKED))
 		{
-			handleNoteClicked(((Integer)event.getData()).intValue());
+			handleNoteClicked(((Integer) event.getData()).intValue());
 		}
 		else if (source.equals(ViewEvent.NOTE_DROPPED_REFERENCE))
 		{
@@ -91,35 +95,34 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	{
 		List<BibleVerse> bibleVerses = noteView.getDroppedVerse();
 		int currentCarretPosition = noteView.getCurrentCarretPosition();
-		
+
 		StringBuffer newContent = new StringBuffer();
-		
+
 		for (BibleVerse bibleVerse : bibleVerses)
 		{
 			String linkContent = bibleVerse.getReference().toString() + " - " + bibleVerse.getText();
 			newContent.append(linkContent).append("\n");
 		}
-		
 
 		String noteText = noteModel.getNote().getText();
-		
+
 		if (noteText == null)
 		{
 			noteText = "";
 		}
-		
+
 		String beginning = noteText.substring(0, currentCarretPosition);
 		String ending = noteText.substring(currentCarretPosition);
-		
+
 		String newNoteText = beginning + newContent.toString() + ending;
-		
+
 		noteView.setContentText(newNoteText);
 	}
 
 	private void handleOpenDropReferenceOptions()
 	{
 		Point dropCoordinates = noteView.getDropCoordinates();
-		
+
 		noteView.openDropReferenceOptions(dropCoordinates.x, dropCoordinates.y);
 	}
 
@@ -127,18 +130,18 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	{
 		List<BibleVerse> bibleVerses = noteView.getDroppedVerse();
 		int currentCarretPosition = noteView.getCurrentCarretPosition();
-		
+
 		StringBuffer newContent = new StringBuffer();
-		
+
 		for (BibleVerse bibleVerse : bibleVerses)
 		{
 			Reference reference = bibleVerse.getReference();
-			
+
 			String referenceText = reference.toString();
 			newContent.append(referenceText).append("\n");
-			
+
 		}
-		
+
 		String noteText = noteModel.getNote().getText();
 		if (noteText == null)
 		{
@@ -146,35 +149,35 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		}
 		String beginning = noteText.substring(0, currentCarretPosition);
 		String ending = noteText.substring(currentCarretPosition);
-		
+
 		String newNoteText = beginning + newContent.toString() + ending;
-		
+
 		noteView.setContentText(newNoteText);
-		
+
 		for (BibleVerse bibleVerse : bibleVerses)
 		{
 			Reference reference = bibleVerse.getReference();
-			
+
 			noteModel.addLinkToReference(reference, currentCarretPosition, currentCarretPosition + reference.toString().length());
 			currentCarretPosition = currentCarretPosition + reference.toString().length() + 1;
 		}
-		
+
 		updateStylesOnView();
 		updateDocumentTitle();
 	}
-	
+
 	private void handleInsertReferenceText()
 	{
 		List<BibleVerse> bibleVerses = noteView.getDroppedVerse();
 		int currentCarretPosition = noteView.getCurrentCarretPosition();
-		
+
 		StringBuffer verseContent = new StringBuffer();
-		
+
 		for (BibleVerse bibleVerse : bibleVerses)
 		{
 			verseContent.append(bibleVerse.getText()).append("\n");
 		}
-		
+
 		String noteText = noteModel.getNote().getText();
 		if (noteText == null)
 		{
@@ -182,16 +185,16 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		}
 		String beginning = noteText.substring(0, currentCarretPosition);
 		String ending = noteText.substring(currentCarretPosition);
-		
+
 		String newNoteText = beginning + verseContent.toString() + ending;
-		
+
 		noteView.setContentText(newNoteText);
 	}
 
 	private void handleNoteClicked(Integer offset)
 	{
 		Link link = noteModel.getLinkAtOffset(offset);
-		
+
 		if (link != null)
 		{
 			if (link.getLinkToNoteName() != null)
@@ -218,7 +221,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		if (offset != null)
 		{
 			Link link = noteModel.getLinkAtOffset(offset);
-			
+
 			if (link != null)
 			{
 				noteView.changeCursorToPointer();
@@ -250,7 +253,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	private void handleCloseNote()
 	{
 		noteView.removeNoteViewListener(this);
-		
+
 		noteModel = null;
 		noteView = null;
 	}
@@ -258,23 +261,23 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	private void handleShowRightClickMenu()
 	{
 		Point lastClickedCoordinates = noteView.getLastClickedCoordinates();
-		
+
 		noteView.showRightClickPopup(lastClickedCoordinates.x, lastClickedCoordinates.y);
 	}
 
 	private void handleContentChanged()
 	{
 		noteModel.updateContent(noteView.getContentText());
-		
+
 		updateDocumentTitle();
-		
+
 		updateStylesOnView();
 	}
 
 	private void updateStylesOnView()
 	{
 		List<NoteStyle> updatedStyles = getUpdatedStyles();
-		
+
 		if (updatedStyles != null)
 		{
 			if (updatedStyles.isEmpty())
@@ -291,14 +294,14 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	private List<NoteStyle> getUpdatedStyles()
 	{
 		List<NoteStyle> stylesForRange = null;
-		
+
 		String text = noteModel.getNote().getText();
-		
+
 		if (text != null)
 		{
 			stylesForRange = getStylesForRange(0, text.length());
 		}
-		
+
 		return stylesForRange;
 	}
 
@@ -318,35 +321,45 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	{
 		noteView.setViewTitle(noteModel.getNote().getName());
 		noteView.setContentText(noteModel.getNote().getText());
-		
+
 		updateStylesOnView();
 	}
 
-	private void createLink()
+	private void createLinkToNote()
 	{
 		createLinkDialog = new CreateLinkDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		
+
 		createLinkDialog.addCreateLinkListener(this);
-		
-		createLinkDialog.openDialog();
+
+		createLinkDialog.openDialog(false);
+	}
+
+	private void createLinkToReference()
+	{
+		createLinkDialog = new CreateLinkDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+
+		createLinkDialog.addCreateLinkListener(this);
+
+		createLinkDialog.openDialog(true);
 	}
 
 	private List<NoteStyle> getStylesForRange(int startPoint, int stopPoint)
 	{
 		List<NoteStyle> noteStylesForRange = noteModel.getNoteStylesForRange(startPoint, stopPoint);
-		
+
 		return noteStylesForRange;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.todd.biblestudy.rcp.presenters.ICreateLinkListener#handleCreateLinkEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
 	 */
 	public void handleCreateLinkEvent(ViewEvent viewEvent)
 	{
-		String source = (String)viewEvent.getSource();
-		
-		if (ViewEvent.CREATE_LINK_DIALOG_OPENED.equals(source)) 
+		String source = (String) viewEvent.getSource();
+
+		if (ViewEvent.CREATE_LINK_DIALOG_OPENED.equals(source))
 		{
 			handleCreateLinkDialogOpened();
 		}
@@ -354,37 +367,85 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		{
 			handleCreateLinkDialogClosed();
 		}
-		else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK.equals(source))
+		else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_NOTE.equals(source))
 		{
-			handleDoCreateLink();
+			handleDoCreateLinkToNote();
+		}
+		else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_REFERENCE.equals(source))
+		{
+			handleDoCreateLinkToReference();
+		}
+		else if (ViewEvent.CREATE_LINK_VALIDATE_REFERENCE.equals(source))
+		{
+			validateReference();
 		}
 	}
 
-	private void handleDoCreateLink()
+	private void validateReference()
+	{
+		String referenceText = createLinkDialog.getLinkText();
+		try
+		{
+			new Reference(referenceText);
+			createLinkDialog.hideErrorMessage();
+		}
+		catch (InvalidReferenceException e)
+		{
+			createLinkDialog.showErrorMessage();
+		}
+	}
+
+	private void handleDoCreateLinkToReference()
+	{
+		String referenceText = createLinkDialog.getLinkText();
+		Point selection = noteView.getSelectionPoint();
+
+		int start = selection.x;
+		int stop = selection.y;
+
+		Reference reference = null;
+
+		try
+		{
+			reference = new Reference(referenceText);
+
+			addLinkToReferenceAndUpdateView(reference, start, stop);
+
+			createLinkDialog.closeDialog();
+		}
+		catch (InvalidReferenceException e)
+		{
+		}
+	}
+
+	private void addLinkToReferenceAndUpdateView(Reference reference, int start, int stop)
+	{
+		noteModel.addLinkToReference(reference, start, stop);
+
+		updateStylesOnView();
+		updateDocumentTitle();
+	}
+
+	private void handleDoCreateLinkToNote()
 	{
 		String linkText = createLinkDialog.getLinkText();
 		Point selection = noteView.getSelectionPoint();
-		
+
 		int start = selection.x;
 		int stop = selection.y;
-		
+
 		addLinkToNoteAndUpdateView(linkText, start, stop);
-		
+
 		createLinkDialog.closeDialog();
 	}
 
 	private void addLinkToNoteAndUpdateView(String linkText, int start, int stop)
 	{
 		noteModel.addLinkToNote(linkText, start, stop);
-		
+
 		updateStylesOnView();
 		updateDocumentTitle();
 	}
-	
-//	private void addLinkToReferenceAndUpdateView(Reference reference, int start, int stop)
-//	{
-//		
-//	}
 
 	private void handleCreateLinkDialogClosed()
 	{
@@ -394,7 +455,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	private void handleCreateLinkDialogOpened()
 	{
 		String selectionText = noteView.getSelectedText();
-		
+
 		createLinkDialog.setSelectedLinkText(selectionText);
 	}
 }

@@ -6,8 +6,12 @@ import net.todd.biblestudy.rcp.presenters.ICreateLinkListener;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -20,7 +24,9 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 {
 	private EventListenerList eventListeners = new EventListenerList();
 	private Text linkTextField;
-	
+	private Label errorLabel;
+	private boolean isLinkToReference;
+
 	public CreateLinkDialog(IShellProvider parentShell)
 	{
 		super(parentShell);
@@ -29,26 +35,19 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 	private void fireEvent(ViewEvent viewEvent)
 	{
 		ICreateLinkListener[] listeners = eventListeners.getListeners(ICreateLinkListener.class);
-		
+
 		for (ICreateLinkListener listener : listeners)
 		{
 			listener.handleCreateLinkEvent(viewEvent);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#addCreateLinkListener(net.todd.biblestudy.rcp.presenters.ICreateLinkListener)
-	 */
 	public void addCreateLinkListener(ICreateLinkListener createLinklistener)
 	{
 		eventListeners.add(ICreateLinkListener.class, createLinklistener);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 */
+
+	@Override
 	protected Control createDialogArea(Composite parent)
 	{
 		GridLayout layout = new GridLayout(1, false);
@@ -58,41 +57,51 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 		layout.marginRight = 2;
 
 		parent.setLayout(layout);
-		
+
 		layout = new GridLayout(2, false);
 		layout.marginTop = 2;
 		layout.marginBottom = 2;
 		layout.marginLeft = 2;
 		layout.marginRight = 2;
-		
+
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+
 		Label label = new Label(composite, SWT.NORMAL);
-		label.setText("Link to Note:");
-		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
-		
+		label.setText("Link:");
+		GridDataFactory.swtDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
+
 		linkTextField = new Text(composite, SWT.NORMAL | SWT.BORDER);
-		linkTextField.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		
+		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(false, false).hint(new Point(200, 10)).applyTo(linkTextField);
+		linkTextField.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				if (isLinkToReference)
+				{
+					fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_VALIDATE_REFERENCE));
+				}
+			}
+		});
+
+		errorLabel = new Label(composite, SWT.NORMAL);
+		errorLabel.setText("Invalid Reference");
+		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, false).span(2, 1).applyTo(errorLabel);
+		errorLabel.setVisible(false);
+
 		fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_DIALOG_OPENED));
-		
+
 		return parent;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#openDialog()
-	 */
-	public void openDialog()
+	public void openDialog(boolean isLinkToReference)
 	{
+		this.isLinkToReference = isLinkToReference;
+
 		Display.getDefault().asyncExec(new Runnable()
 		{
-			/*
-			 * (non-Javadoc)
-			 * @see java.lang.Runnable#run()
-			 */
 			public void run()
 			{
 				open();
@@ -100,59 +109,56 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 		});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#close()
-	 */
+	@Override
 	public boolean close()
 	{
 		fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_DIALOG_CLOSED));
-		
+
 		return super.close();
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#removeCreateLinkListener(net.todd.biblestudy.rcp.presenters.ICreateLinkListener)
-	 */
+
 	public void removeCreateLinkListener(ICreateLinkListener createLinkListener)
 	{
 		eventListeners.remove(ICreateLinkListener.class, createLinkListener);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#setSelectedLinkText(java.lang.String)
-	 */
 	public void setSelectedLinkText(String selectionText)
 	{
 		linkTextField.setText(selectionText);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#closeDialog()
-	 */
 	public void closeDialog()
 	{
 		close();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.todd.biblestudy.rcp.views.ICreateLinkDialog#getLinkText()
-	 */
 	public String getLinkText()
 	{
 		return linkTextField != null ? linkTextField.getText() : null;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-	 */
+
+	@Override
 	protected void okPressed()
 	{
-		fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_DO_CREATE_LINK));
+		if (isLinkToReference)
+		{
+			fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_REFERENCE));
+		}
+		else
+		{
+			fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_NOTE));
+		}
+	}
+
+	public void showErrorMessage()
+	{
+		errorLabel.setVisible(true);
+		getButton(OK).setEnabled(false);
+	}
+
+	public void hideErrorMessage()
+	{
+		errorLabel.setVisible(false);
+		getButton(OK).setEnabled(true);
 	}
 }
