@@ -3,10 +3,10 @@
 <schema targetNamespace="net.todd.biblestudy.reference.common">
 <annotation>
       <appInfo>
-         <meta.schema plugin="net.todd.biblestudy.reference.common" id="dbScripts" name="dbScripts"/>
+         <meta.schema plugin="net.todd.biblestudy.reference.common" id="dbScripts" name="DB Scripts"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         This extension point allows other plugins to extend the available versions of the Bible by creating an extension of this extension point that contains sql script files to populate the text of the version that the plugin would provide.
       </documentation>
    </annotation>
 
@@ -47,7 +47,7 @@
          <attribute name="filename" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  file that contains sql to be imported into the biblestudy application
                </documentation>
                <appInfo>
                   <meta.attribute kind="resource"/>
@@ -62,7 +62,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         0.0.1
       </documentation>
    </annotation>
 
@@ -71,7 +71,16 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;pre&gt;
+   &lt;extension
+         id=&quot;nasb&quot;
+         name=&quot;NASB&quot;
+         point=&quot;net.todd.biblestudy.reference.common.dbScripts&quot;&gt;
+      &lt;script
+            filename=&quot;resources/data.sql&quot;&gt;
+      &lt;/script&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -80,7 +89,7 @@
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         [Enter API information here.]
+         
       </documentation>
    </annotation>
 
@@ -89,7 +98,7 @@
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         
       </documentation>
    </annotation>
 

@@ -2,6 +2,8 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
+         id="nasb"
+         name="NASB"
          point="net.todd.biblestudy.reference.common.dbScripts">
       <script
             filename="resources/data.sql">
