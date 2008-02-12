@@ -1,63 +1,45 @@
 package net.todd.biblestudy.reference.common.models;
 
 import java.util.List;
-import java.util.Set;
 
 import net.todd.biblestudy.reference.common.BibleVerse;
-import net.todd.biblestudy.reference.common.ReferenceDataSource;
-import net.todd.biblestudy.reference.common.ReferenceRegistrar;
+import net.todd.biblestudy.reference.common.InvalidReferenceException;
+import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.common.db.BibleDao;
+import net.todd.biblestudy.reference.common.db.IBibleDao;
 
 public class ReferenceModel implements IReferenceModel
 {
-	public Set<ReferenceDataSource> getAllDataSources()
-	{
-		return ReferenceRegistrar.getInstance().getAllDataSources();
-	}
-
 	public List<BibleVerse> performSearchOnReference(String searchText, String referenceShortName)
 	{
-		ReferenceDataSource dataSource = getDataSourceByShortName(referenceShortName);
-		
 		List<BibleVerse> search = null;
-		
-		if (dataSource != null)
+
+		try
 		{
-			search = dataSource.searchByReference(searchText);
+			search = getBibleDao().referenceLookup(new Reference(searchText));
 		}
-		
-		return search;
-	}
-	
-	public List<BibleVerse> performSearchOnKeyword(String searchText, String referenceShortName)
-	{
-		ReferenceDataSource dataSource = getDataSourceByShortName(referenceShortName);
-		
-		List<BibleVerse> search = null;
-		
-		if (dataSource != null)
+		catch (InvalidReferenceException e)
 		{
-			search = dataSource.searchByKeyword(searchText);
+			e.printStackTrace();
 		}
-		
+
 		return search;
 	}
 
-	protected ReferenceDataSource getDataSourceByShortName(String referenceShortName)
+	public List<BibleVerse> performSearchOnKeyword(String searchText, String referenceShortName)
 	{
-		ReferenceDataSource targetDataSource = null;
-		
-		if (referenceShortName != null)
-		{
-			for (ReferenceDataSource dataSource : getAllDataSources())
-			{
-				if (referenceShortName.equals(dataSource.getShortName()))
-				{
-					targetDataSource = dataSource;
-					break;
-				}
-			}
-		}
-		
-		return targetDataSource;
+		List<BibleVerse> search = getBibleDao().keywordLookup(searchText);
+
+		return search;
+	}
+
+	private IBibleDao getBibleDao()
+	{
+		return new BibleDao();
+	}
+
+	public List<String> getAllBibleVersions()
+	{
+		return getBibleDao().listAllVersions();
 	}
 }

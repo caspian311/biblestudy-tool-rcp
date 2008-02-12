@@ -3,13 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Nasb Plug-in
 Bundle-SymbolicName: net.todd.biblestudy.reference.nasb;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: net.todd.biblestudy.reference.nasb.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.todd.biblestudy.reference.common
-Eclipse-LazyStart: true
-Bundle-ClassPath: lib/ibatis-2.3.0.677.jar,
- lib/junit-4.4.jar,
- lib/mysql-connector-java-5.1.5-bin.jar,
- .,
- lib/commons-lang-2.3.jar
+Eclipse-LazyStart: false
+Bundle-ClassPath: .
