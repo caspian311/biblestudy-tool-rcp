@@ -8,6 +8,14 @@
 			<property name="JDBC.ConnectionURL" value="jdbc:hsqldb:res:/bible" />
 			<property name="JDBC.Username" value="sa" />
 			<property name="JDBC.Password" value="" />
+			<property name="Pool.MaximumActiveConnections" value="10" />
+			<property name="Pool.MaximumIdleConnections" value="5" />
+			<property name="Pool.MaximumCheckoutTime" value="120000" />
+			<property name="Pool.TimeToWait" value="500" />
+			<property name="Pool.PingQuery" value="SELECT count(*) FROM BIBLE" />
+			<property name="Pool.PingEnabled" value="false" />
+			<property name="Pool.PingConnectionsOlderThan" value="1" />
+			<property name="Pool.PingConnectionsNotUsedFor" value="1" />
 		</dataSource>
 	</transactionManager>
 

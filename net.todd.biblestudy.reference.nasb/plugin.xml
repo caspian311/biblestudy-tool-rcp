@@ -6,7 +6,7 @@
          name="NASB"
          point="net.todd.biblestudy.reference.common.dbScripts">
       <script
-            filename="resources/data.sql">
+            filename="resources/data_subset.sql">
       </script>
    </extension>
 

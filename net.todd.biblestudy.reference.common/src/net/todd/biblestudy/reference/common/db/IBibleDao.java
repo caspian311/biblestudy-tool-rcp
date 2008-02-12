@@ -1,5 +1,6 @@
 package net.todd.biblestudy.reference.common.db;
 
+import java.sql.Connection;
 import java.util.List;
 
 import net.todd.biblestudy.reference.common.BibleVerse;
@@ -12,4 +13,6 @@ public interface IBibleDao
 	public List<BibleVerse> referenceLookup(Reference reference);
 
 	public List<String> listAllVersions();
+
+	public Connection getConnection();
 }

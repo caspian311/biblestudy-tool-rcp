@@ -5,7 +5,6 @@
 	<typeAlias alias="BibleVerse" type="net.todd.biblestudy.reference.common.BibleVerse" />
 
 	<resultMap id="bibleResult" class="BibleVerse">
-		<result property="id" column="BIB_ID" />
 		<result property="version" column="BIB_VERSION" />
 		<result property="book" column="BIB_BOOK" />
 		<result property="chapter" column="BIB_CHAPTER" />
@@ -34,7 +33,7 @@
 		ORDER BY	BIB_SEQUENCE_ID
 	</select>
 
-	<select id="listAllVersions" parameterClass="net.todd.biblestudy.reference.common.Reference" resultMap="bibleResult">
+	<select id="listAllVersions" resultClass="String">
 		SELECT		BIB_VERSION
 		FROM		BIBLE
 		GROUP BY	BIB_VERSION
