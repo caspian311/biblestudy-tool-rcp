@@ -6,5 +6,5 @@ Bundle-Version: 1.0.0
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.todd.biblestudy.reference.common
-Eclipse-LazyStart: false
+Eclipse-LazyStart: true
 Bundle-ClassPath: .

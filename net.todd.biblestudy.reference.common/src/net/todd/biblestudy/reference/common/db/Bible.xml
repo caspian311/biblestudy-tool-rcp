@@ -3,6 +3,8 @@
 <sqlMap namespace="Verse">
 
 	<typeAlias alias="BibleVerse" type="net.todd.biblestudy.reference.common.BibleVerse" />
+	<typeAlias alias="Reference" type="net.todd.biblestudy.reference.common.Reference" />
+	
 
 	<resultMap id="bibleResult" class="BibleVerse">
 		<result property="version" column="BIB_VERSION" />
@@ -15,11 +17,11 @@
 	<select id="keywordLookup" parameterClass="String" resultMap="bibleResult">
 		SELECT		BIBLE.*
 		FROM		BIBLE
-		WHERE		BIB_TEXT like '%$value$%'
+		WHERE		LCASE(BIB_TEXT) like '%$value$%'
 		ORDER BY	BIB_SEQUENCE_ID
 	</select>
 	
-	<select id="referenceLookup" parameterClass="net.todd.biblestudy.reference.common.Reference" resultMap="bibleResult">
+	<select id="referenceLookup" parameterClass="Reference" resultMap="bibleResult">
 		SELECT		BIBLE.*
 		FROM		BIBLE
 		WHERE		BIB_BOOK like '$book$%'

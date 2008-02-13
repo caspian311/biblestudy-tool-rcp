@@ -85,7 +85,9 @@ public class DataInitializer
 			{
 				if (line.startsWith("--") == false)
 				{
-					textBuffer.append(line).append("\n");
+					String newLine = fixTicks(line);
+
+					textBuffer.append(newLine).append("\n");
 				}
 			}
 		}
@@ -95,6 +97,26 @@ public class DataInitializer
 		}
 
 		return textBuffer.toString();
+	}
+
+	private String fixTicks(String line)
+	{
+		int first = line.indexOf("'");
+		int second = line.indexOf("'", first + 1);
+		int third = line.indexOf("'", second + 1);
+		int fourth = line.indexOf("'", third + 1);
+		int fifth = line.indexOf("'", fourth + 1);
+		int last = line.lastIndexOf("'");
+
+		String text = line.substring(fifth + 1, last);
+
+		String prefix = line.substring(0, fifth + 1);
+		String suffix = line.substring(last);
+
+		String middle = text.replaceAll("\'", "\'\'");
+
+		String newLine = prefix + middle + suffix;
+		return newLine;
 	}
 
 	private void doSQL(List<String> batchQueries)

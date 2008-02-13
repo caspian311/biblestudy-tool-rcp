@@ -28,5 +28,11 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="net.todd.biblestudy.reference.common.Startup">
+      </startup>
+   </extension>
 
 </plugin>

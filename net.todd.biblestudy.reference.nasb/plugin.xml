@@ -6,8 +6,14 @@
          name="NASB"
          point="net.todd.biblestudy.reference.common.dbScripts">
       <script
-            filename="resources/data_subset.sql">
+            filename="resources/data.sql">
       </script>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="net.todd.biblestudy.reference.nasb.Startup">
+      </startup>
    </extension>
 
 </plugin>

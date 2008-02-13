@@ -1,3 +1,0 @@
-INSERT INTO BIBLE VALUES ('NASB','Judges',1,1,'Now it came about after the death of Joshua that the sons of Israel inquired of the LORD, saying, \"Who shall go up first for us against the Canaanites, to fight against them?\"',6511);
-INSERT INTO BIBLE VALUES ('NASB','Judges',1,2,'The LORD said, \"Judah shall go up; behold, I have given the land into his hand.\"',6512);
-INSERT INTO BIBLE VALUES ('NASB','Judges',1,3,'Then Judah said to Simeon his brother, \"Come up with me into the territory allotted me, that we may fight against the Canaanites; and I in turn will go with you into the territory allotted you.\" So Simeon went with him.',6513);
