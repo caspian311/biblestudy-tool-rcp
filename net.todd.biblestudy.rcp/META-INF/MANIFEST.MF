@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: net.todd.biblestudy.rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.jface.text,
  net.todd.biblestudy.common,
  net.todd.biblestudy.reference.common
 Eclipse-LazyStart: true

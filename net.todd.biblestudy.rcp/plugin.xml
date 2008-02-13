@@ -33,6 +33,22 @@
                name="appName"
                value="Bible Study Tool">
          </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,252,445,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,275,445,15">
+         </property>
       </product>
    </extension>
    <extension
@@ -95,6 +111,17 @@
                tooltip="Delete Note">
          </action>
       </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="net.todd.biblestudy.rcp.splashHandlers.InteractiveSplashHandler"
+            id="net.todd.biblestudy.rcp.splashHandlers.interactive">
+      </splashHandler>
+      <splashHandler
+            class="net.todd.biblestudy.rcp.splashHandlers.BrowserSplashHandler"
+            id="net.todd.biblestudy.rcp.splashHandlers.browser">
+      </splashHandler>
    </extension>
 
 </plugin>
