@@ -112,16 +112,5 @@
          </action>
       </viewContribution>
    </extension>
-   <extension
-         point="org.eclipse.ui.splashHandlers">
-      <splashHandler
-            class="net.todd.biblestudy.rcp.splashHandlers.InteractiveSplashHandler"
-            id="net.todd.biblestudy.rcp.splashHandlers.interactive">
-      </splashHandler>
-      <splashHandler
-            class="net.todd.biblestudy.rcp.splashHandlers.BrowserSplashHandler"
-            id="net.todd.biblestudy.rcp.splashHandlers.browser">
-      </splashHandler>
-   </extension>
 
 </plugin>
