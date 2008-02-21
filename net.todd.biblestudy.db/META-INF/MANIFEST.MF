@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Db Plug-in
-Bundle-SymbolicName: net.todd.biblestudy.db
-Bundle-Version: 1.0.0
-Bundle-Activator: net.todd.biblestudy.db.Activator
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
-Eclipse-LazyStart: true
