@@ -310,7 +310,14 @@ public class NoteModel implements INoteModel
 					}
 					else if (location <= link.getStart().intValue())
 					{
-						shiftLink(link, differenceLength);
+						if (isDeleting)
+						{
+							shiftLink(link, differenceLength * -1);
+						}
+						else
+						{
+							shiftLink(link, differenceLength);
+						}
 					}
 				}
 
