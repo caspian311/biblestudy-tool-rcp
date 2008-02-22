@@ -255,9 +255,12 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 
 	private void handleNoteDeleted()
 	{
-		String secondaryId = noteModel.getNote().getName();
-		noteModel.deleteNoteAndLinks();
-		noteView.closeView(secondaryId);
+		if (noteView.openDeleteConfirmationWindow() == 1)
+		{
+			String secondaryId = noteModel.getNote().getName();
+			noteModel.deleteNoteAndLinks();
+			noteView.closeView(secondaryId);
+		}
 	}
 
 	private void handleSaveNote()
@@ -333,7 +336,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		}
 	}
 
-	private void handleOpenNote()
+	void handleOpenNote()
 	{
 		noteView.setViewTitle(noteModel.getNote().getName());
 		noteView.setContentText(noteModel.getNote().getText());

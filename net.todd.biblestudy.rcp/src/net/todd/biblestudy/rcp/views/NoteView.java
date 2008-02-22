@@ -10,6 +10,7 @@ import net.todd.biblestudy.rcp.presenters.ViewEvent;
 import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.ReferenceTransfer;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -40,8 +41,8 @@ import org.eclipse.ui.part.ViewPart;
 
 public class NoteView extends ViewPart implements INoteView
 {
-	public static final String ID = "net.todd.biblestudy.rcp.NoteView"; 
-	
+	public static final String ID = "net.todd.biblestudy.rcp.NoteView";
+
 	private EventListenerList eventListeners = new EventListenerList();
 
 	private Menu rightClickTextMenu;
@@ -49,7 +50,7 @@ public class NoteView extends ViewPart implements INoteView
 
 	private Point lastClickedCoordinates;
 	private Point dropCoordinates;
-	
+
 	private Composite parent;
 
 	private StyledText noteContentText;
@@ -57,32 +58,31 @@ public class NoteView extends ViewPart implements INoteView
 	private Color blueColor;
 	private Color greenColor;
 	private Color blackColor;
-	
-	private List<BibleVerse> droppedVerses;
 
+	private List<BibleVerse> droppedVerses;
 
 	@Override
 	public void createPartControl(Composite parent)
 	{
 		this.parent = parent;
-		
+
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginTop = 2;
 		gridLayout.marginBottom = 2;
 		gridLayout.marginLeft = 2;
 		gridLayout.marginRight = 2;
-		
+
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		
+
 		Composite composite = new Composite(parent, SWT.NONE);
-		
+
 		composite.setLayout(gridLayout);
 		composite.setLayoutData(gridData);
-		
+
 		createTextBox(composite);
 		createRightClickMenu(parent);
 		createDropReferenceOptions(parent);
-		
+
 		createColors();
 	}
 
@@ -97,11 +97,11 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		rightClickTextMenu = new Menu(parent);
 		rightClickTextMenu.setVisible(false);
-		
+
 		MenuItem createLinkToNote = new MenuItem(rightClickTextMenu, SWT.POP_UP);
 		createLinkToNote.setText("Create Link to Note");
 		createLinkToNote.setEnabled(true);
-		createLinkToNote.addSelectionListener(new SelectionAdapter() 
+		createLinkToNote.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -109,11 +109,11 @@ public class NoteView extends ViewPart implements INoteView
 				fireEvent(new ViewEvent(ViewEvent.NOTE_CREATE_LINK_TO_NOTE_EVENT));
 			}
 		});
-		
+
 		MenuItem createLinkToReference = new MenuItem(rightClickTextMenu, SWT.POP_UP);
 		createLinkToReference.setText("Create Link to Reference");
 		createLinkToReference.setEnabled(true);
-		createLinkToReference.addSelectionListener(new SelectionAdapter() 
+		createLinkToReference.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -122,11 +122,11 @@ public class NoteView extends ViewPart implements INoteView
 			}
 		});
 	}
-	
+
 	private void fireEvent(ViewEvent event)
 	{
 		INoteListener[] listeners = eventListeners.getListeners(INoteListener.class);
-		
+
 		for (INoteListener listener : listeners)
 		{
 			listener.handleEvent(event);
@@ -136,43 +136,44 @@ public class NoteView extends ViewPart implements INoteView
 	private void createTextBox(Composite parent)
 	{
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		
-		noteContentText = new StyledText(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+
+		noteContentText = new StyledText(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
+				| SWT.H_SCROLL);
 		noteContentText.setLayoutData(gridData);
-		
+
 		noteContentText.setLayoutData(gridData);
-		noteContentText.addModifyListener(new ModifyListener() 
+		noteContentText.addModifyListener(new ModifyListener()
 		{
 			public void modifyText(ModifyEvent e)
 			{
 				fireEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
 			}
 		});
-		
+
 		setupMouseListeners();
 		makeDropable();
 	}
 
 	private void setupMouseListeners()
 	{
-		noteContentText.addMouseListener(new MouseAdapter() 
+		noteContentText.addMouseListener(new MouseAdapter()
 		{
 			@Override
 			public void mouseUp(MouseEvent e)
 			{
 				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.CTRL))
-				{	// right-click and ctrl+mouse1 for macs
+				{ // right-click and ctrl+mouse1 for macs
 					lastClickedCoordinates = new Point(e.x, e.y);
 					fireEvent(new ViewEvent(ViewEvent.NOTE_SHOW_RIGHT_CLICK_MENU));
 				}
 				if (e.stateMask == SWT.BUTTON1)
 				{
 					Point point = new Point(e.x, e.y);
-					
+
 					try
 					{
 						int offset = noteContentText.getOffsetAtLocation(point);
-						
+
 						ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
 						viewEvent.setData(offset);
 						fireEvent(viewEvent);
@@ -188,9 +189,9 @@ public class NoteView extends ViewPart implements INoteView
 			public void mouseMove(MouseEvent e)
 			{
 				ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_HOVERING);
-				
+
 				Point point = new Point(e.x, e.y);
-				
+
 				try
 				{
 					Integer offset = new Integer(noteContentText.getOffsetAtLocation(point));
@@ -199,7 +200,7 @@ public class NoteView extends ViewPart implements INoteView
 				catch (Exception ex)
 				{
 				}
-				
+
 				fireEvent(viewEvent);
 			}
 		});
@@ -208,7 +209,7 @@ public class NoteView extends ViewPart implements INoteView
 	private void makeDropable()
 	{
 		DropTarget dropTarget = new DropTarget(noteContentText, DND.DROP_MOVE);
-		dropTarget.setTransfer(new Transfer[] {ReferenceTransfer.getInstance()});
+		dropTarget.setTransfer(new Transfer[] { ReferenceTransfer.getInstance() });
 		dropTarget.addDropListener(new DropTargetAdapter()
 		{
 			@SuppressWarnings("unchecked")
@@ -216,29 +217,29 @@ public class NoteView extends ViewPart implements INoteView
 			public void drop(DropTargetEvent event)
 			{
 				dropCoordinates = new Point(event.x, event.y);
-				droppedVerses = (List<BibleVerse>)event.data;
-				
+				droppedVerses = (List<BibleVerse>) event.data;
+
 				setFocus();
-				
+
 				fireEvent(new ViewEvent(ViewEvent.NOTE_DROPPED_REFERENCE));
 			}
 		});
 	}
-	
+
 	public int getCurrentCarretPosition()
 	{
 		return noteContentText.getCaretOffset();
 	}
-	
+
 	public Point getLastClickedCoordinates()
 	{
 		return lastClickedCoordinates;
 	}
-	
+
 	public void showRightClickPopup(int x, int y)
 	{
 		String selectionText = noteContentText.getSelectionText();
-		
+
 		if (selectionText == null || selectionText.length() != 0)
 		{
 			Point point = parent.toDisplay(x, y);
@@ -264,7 +265,7 @@ public class NoteView extends ViewPart implements INoteView
 			noteContentText.setText(text);
 		}
 	}
-	
+
 	public String getContentText()
 	{
 		return noteContentText.getText();
@@ -274,18 +275,19 @@ public class NoteView extends ViewPart implements INoteView
 	{
 		setPartName(title);
 	}
-	
+
+	@Override
 	public void dispose()
 	{
 		fireEvent(new ViewEvent(ViewEvent.NOTE_CLOSE));
-		
+
 		blueColor.dispose();
 		greenColor.dispose();
 		blackColor.dispose();
-		
+
 		super.dispose();
 	}
-	
+
 	public void removeNoteViewListener(INoteListener noteListener)
 	{
 		eventListeners.remove(INoteListener.class, noteListener);
@@ -313,22 +315,24 @@ public class NoteView extends ViewPart implements INoteView
 
 	public void closeView(String secondaryId)
 	{
-		IViewReference viewReference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(ID, secondaryId);
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(viewReference);
+		IViewReference viewReference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().findViewReference(ID, secondaryId);
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.hideView(viewReference);
 	}
 
 	public void replaceNoteStyles(List<NoteStyle> styleList)
 	{
 		removeNoteStyles();
-		
+
 		for (NoteStyle style : styleList)
 		{
 			StyleRange styleRange = convertToStyleRange(style);
-			
+
 			noteContentText.setStyleRange(styleRange);
 		}
 	}
-	
+
 	public void removeNoteStyles()
 	{
 		StyleRange styleRange = new StyleRange();
@@ -336,10 +340,10 @@ public class NoteView extends ViewPart implements INoteView
 		styleRange.length = noteContentText.getText().length();
 		styleRange.underline = false;
 		styleRange.foreground = blackColor;
-		
+
 		noteContentText.setStyleRange(styleRange);
 	}
-	
+
 	private StyleRange convertToStyleRange(NoteStyle style)
 	{
 		StyleRange styleRange = new StyleRange();
@@ -354,7 +358,7 @@ public class NoteView extends ViewPart implements INoteView
 		{
 			styleRange.foreground = greenColor;
 		}
-		
+
 		return styleRange;
 	}
 
@@ -380,16 +384,16 @@ public class NoteView extends ViewPart implements INoteView
 		dropReferenceOptionsMenu.setLocation(new Point(x, y));
 		dropReferenceOptionsMenu.setVisible(true);
 	}
-	
+
 	private void createDropReferenceOptions(Composite parent)
 	{
 		dropReferenceOptionsMenu = new Menu(parent);
 		dropReferenceOptionsMenu.setVisible(false);
-		
+
 		MenuItem dropReferenceLink = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
 		dropReferenceLink.setText("Insert Link to Reference");
 		dropReferenceLink.setEnabled(true);
-		dropReferenceLink.addSelectionListener(new SelectionAdapter() 
+		dropReferenceLink.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -397,11 +401,11 @@ public class NoteView extends ViewPart implements INoteView
 				fireEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
 			}
 		});
-		
+
 		MenuItem dropReferenceText = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
 		dropReferenceText.setText("Insert Text");
 		dropReferenceText.setEnabled(true);
-		dropReferenceText.addSelectionListener(new SelectionAdapter() 
+		dropReferenceText.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -409,11 +413,11 @@ public class NoteView extends ViewPart implements INoteView
 				fireEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_TEXT));
 			}
 		});
-		
+
 		MenuItem dropReferenceAndText = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
 		dropReferenceAndText.setText("Insert Reference with Text");
 		dropReferenceAndText.setEnabled(true);
-		dropReferenceAndText.addSelectionListener(new SelectionAdapter() 
+		dropReferenceAndText.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
 			public void widgetSelected(SelectionEvent e)
@@ -426,5 +430,13 @@ public class NoteView extends ViewPart implements INoteView
 	public Point getDropCoordinates()
 	{
 		return dropCoordinates;
+	}
+
+	public int openDeleteConfirmationWindow()
+	{
+		MessageDialog dialog = new MessageDialog(Display.getDefault().getActiveShell(),
+				"Are you sure?", null, "Are you sure you want to delete this note?",
+				MessageDialog.QUESTION, new String[] { "No", "Yes" }, 0);
+		return dialog.open();
 	}
 }
