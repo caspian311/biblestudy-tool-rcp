@@ -80,4 +80,17 @@ public class BibleVerse implements Serializable
 
 		return reference;
 	}
+
+	@Override
+	public String toString()
+	{
+		String s = null;
+
+		if (getReference() != null)
+		{
+			s = getReference().toString() + text.substring(0, 20) + "...";
+		}
+
+		return s;
+	}
 }

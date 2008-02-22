@@ -14,27 +14,32 @@ public class Reference
 	{
 		validateReferenceStr(referenceStr);
 	}
-	
+
 	public String getBook()
 	{
 		return book;
 	}
+
 	public void setBook(String book)
 	{
 		this.book = book;
 	}
+
 	public Integer getChapter()
 	{
 		return chapter;
 	}
+
 	public void setChapter(Integer chapter)
 	{
 		this.chapter = chapter;
 	}
+
 	public Integer getVerse()
 	{
 		return verse;
 	}
+
 	public void setVerse(Integer verse)
 	{
 		this.verse = verse;
@@ -43,15 +48,15 @@ public class Reference
 	private void validateReferenceStr(String referenceStr) throws InvalidReferenceException
 	{
 		boolean isValid = false;
-		
+
 		if (referenceStr != null)
 		{
 			StringTokenizer tokenizer = new StringTokenizer(referenceStr);
-			
+
 			if (tokenizer.countTokens() > 0)
 			{
 				String firstToken = tokenizer.nextToken();
-				
+
 				if (StringUtils.isNumeric(firstToken))
 				{
 					if (tokenizer.hasMoreTokens())
@@ -62,7 +67,7 @@ public class Reference
 							if (tokenizer.hasMoreTokens())
 							{
 								String thirdToken = tokenizer.nextToken();
-								
+
 								if (StringUtils.isNumeric(thirdToken))
 								{
 									isValid = true;
@@ -72,12 +77,12 @@ public class Reference
 								else
 								{
 									StringTokenizer refTokenizer = new StringTokenizer(thirdToken, ":");
-									
+
 									if (refTokenizer.countTokens() == 2)
 									{
 										String firstRefToken = refTokenizer.nextToken();
 										String secondRefToken = refTokenizer.nextToken();
-										
+
 										if (StringUtils.isNumeric(firstRefToken) && StringUtils.isNumeric(secondRefToken))
 										{
 											isValid = true;
@@ -98,55 +103,74 @@ public class Reference
 				}
 				else if (StringUtils.isAlpha(firstToken))
 				{
+					String bookName = firstToken;
+
 					if (tokenizer.hasMoreTokens())
 					{
-						String secondToken = tokenizer.nextToken();
-						
-						if (StringUtils.isNumeric(secondToken))
+						String nextToken = tokenizer.nextToken();
+
+						while (nextToken.indexOf(":") == -1 && StringUtils.isNumeric(nextToken) == false)
+						{
+							bookName += " " + nextToken;
+
+							if (tokenizer.hasMoreTokens() == false)
+							{
+								break;
+							}
+
+							nextToken = tokenizer.nextToken();
+						}
+
+						if (StringUtils.isNumeric(nextToken))
 						{
 							isValid = true;
-							book = firstToken;
-							chapter = new Integer(secondToken);
+							book = bookName;
+							chapter = new Integer(nextToken);
 						}
-						else
+						else if (nextToken.indexOf(":") != -1)
 						{
-							StringTokenizer refTokenizer = new StringTokenizer(secondToken, ":");
-							
+							StringTokenizer refTokenizer = new StringTokenizer(nextToken, ":");
+
 							if (refTokenizer.countTokens() == 2)
 							{
 								String firstRefToken = refTokenizer.nextToken();
 								String secondRefToken = refTokenizer.nextToken();
-								
+
 								if (StringUtils.isNumeric(firstRefToken) && StringUtils.isNumeric(secondRefToken))
 								{
 									isValid = true;
-									book = firstToken;
+									book = bookName;
 									chapter = new Integer(firstRefToken);
 									verse = new Integer(secondRefToken);
 								}
 							}
 						}
+						else
+						{
+							isValid = true;
+							book = bookName;
+						}
 					}
 					else
 					{
 						isValid = true;
-						book = firstToken;
+						book = bookName;
 					}
 				}
 			}
 		}
-		
+
 		if (isValid == false)
 		{
 			throw new InvalidReferenceException();
 		}
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		String s = book;
-		
+
 		if (chapter != null && verse != null)
 		{
 			s += " " + chapter + ":" + verse;
@@ -155,7 +179,7 @@ public class Reference
 		{
 			s += " " + chapter;
 		}
-		
+
 		return s;
 	}
 }

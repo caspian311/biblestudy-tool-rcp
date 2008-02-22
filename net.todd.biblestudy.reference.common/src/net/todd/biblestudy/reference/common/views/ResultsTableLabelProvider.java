@@ -15,10 +15,10 @@ public class ResultsTableLabelProvider extends LabelProvider implements ITableLa
 
 	public String getColumnText(Object element, int columnIndex)
 	{
-		BibleVerse result = (BibleVerse)element;
-		
+		BibleVerse result = (BibleVerse) element;
+
 		String text = null;
-		
+
 		if (columnIndex == 0)
 		{
 			text = result.getReference().toString();
@@ -27,7 +27,7 @@ public class ResultsTableLabelProvider extends LabelProvider implements ITableLa
 		{
 			text = result.getText();
 		}
-		
+
 		return text;
 	}
 }
