@@ -9,6 +9,7 @@
 		<result property="name" column="N_NAME" />
 		<result property="text" column="N_TEXT" />
 		<result property="lastModified" column="N_LAST_MODIFIED" />
+		<result property="createdTimestamp" column="N_CREATED" />
 	</resultMap>
 
 	<select id="getNoteByName" parameterClass="string" resultMap="noteResult">
@@ -19,9 +20,9 @@
 
 	<insert id="createNewNote" parameterClass="Note">
 		INSERT INTO NOTES (
-			N_NAME, N_TEXT, N_LAST_MODIFIED
+			N_NAME, N_TEXT, N_LAST_MODIFIED, N_CREATED
 		) values (
-			#name#, #text#, #lastModified#
+			#name#, #text#, #lastModified#, #createdTimestamp#
 		)
 		
 		<selectKey resultClass="int" keyProperty="noteId">
@@ -31,7 +32,10 @@
 	
 	<update id="updateNote" parameterClass="Note">
 		UPDATE	NOTES
-		SET		N_ID=#noteId#, N_NAME=#name#, N_TEXT=#text#, N_LAST_MODIFIED=#lastModified#
+		SET		N_ID=#noteId#,
+				N_NAME=#name#,
+				N_TEXT=#text#,
+				N_LAST_MODIFIED=#lastModified#
 		WHERE	N_ID=#noteId#
 	</update>
 	

@@ -13,28 +13,33 @@ public class NoteDao extends BaseDao implements INoteDao
 	 */
 	public Note getNoteByName(String noteName) throws SQLException
 	{
-		return (Note)getSqlMapConfig().queryForObject("getNoteByName", noteName);
+		return (Note) getSqlMapConfig().queryForObject("getNoteByName", noteName);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.todd.biblestudy.db.INoteDao#createNote(java.lang.String)
-	 */	
+	 */
 	public Note createNote(String newNoteName) throws SQLException
 	{
+		Date currentTime = new Date();
+
 		Note note = new Note();
 		note.setName(newNoteName);
-		note.setLastModified(new Date());
-		
-		Integer noteId = (Integer)getSqlMapConfig().insert("createNewNote", note);
-		
+		note.setLastModified(currentTime);
+		note.setCreatedTimestamp(currentTime);
+
+		Integer noteId = (Integer) getSqlMapConfig().insert("createNewNote", note);
+
 		note.setNoteId(noteId);
-		
+
 		return note;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.todd.biblestudy.db.INoteDao#saveNote(net.todd.biblestudy.db.Note)
 	 */
 	public void saveNote(Note note) throws SQLException
@@ -44,6 +49,7 @@ public class NoteDao extends BaseDao implements INoteDao
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.todd.biblestudy.db.INoteDao#deleteNote(net.todd.biblestudy.db.Note)
 	 */
 	public void deleteNote(Note note) throws SQLException
@@ -53,6 +59,7 @@ public class NoteDao extends BaseDao implements INoteDao
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see net.todd.biblestudy.db.INoteDao#getAllNotes()
 	 */
 	@SuppressWarnings("unchecked")
