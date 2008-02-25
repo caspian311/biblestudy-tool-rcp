@@ -21,6 +21,8 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.FontMetrics;
@@ -35,6 +37,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -71,6 +75,12 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 	private static final int TEXT_MARGIN = 3;
 
+	private BibleVerse selectedVerse;
+
+	private Menu rightClickMenu;
+
+	private Point lastRightClickPosition;
+
 	@Override
 	public void createPartControl(Composite parent)
 	{
@@ -86,11 +96,32 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 		createControls(composite);
 		createResultsArea(composite);
+		createRightClickMenu(composite);
+	}
+
+	private void createRightClickMenu(Composite parent)
+	{
+		rightClickMenu = new Menu(parent);
+		rightClickMenu.setVisible(false);
+
+		MenuItem createLinkToNote = new MenuItem(rightClickMenu, SWT.POP_UP);
+		createLinkToNote.setText("Show Entire Chapter");
+		createLinkToNote.setEnabled(true);
+		createLinkToNote.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				fireEvent(new ReferenceViewEvent(
+						ReferenceViewEvent.REFERENCE_VIEW_SHOW_ENTIRE_CHAPTER));
+			}
+		});
 	}
 
 	private void createResultsArea(Composite parent)
 	{
-		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION | SWT.MULTI);
+		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL
+				| SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION | SWT.MULTI);
 		resultsTableViewer.setLabelProvider(new ResultsTableLabelProvider());
 		resultsTableViewer.setContentProvider(new ArrayContentProvider());
 
@@ -98,6 +129,32 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		resultsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		resultsTable.setHeaderVisible(true);
 		resultsTable.setLinesVisible(true);
+
+		resultsTable.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseUp(MouseEvent e)
+			{
+				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.CTRL))
+				{ // right-click and ctrl+mouse1 for macs
+					lastRightClickPosition = new Point(e.x, e.y);
+
+					fireEvent(new ReferenceViewEvent(
+							ReferenceViewEvent.REFERENCE_VIEW_SHOW_RIGHT_CLICK_MENU));
+				}
+			}
+		});
+
+		resultsTable.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				TableItem[] selection = resultsTable.getSelection();
+
+				selectedVerse = (BibleVerse) selection[0].getData();
+			}
+		});
 
 		resultsTable.addListener(SWT.MeasureItem, new Listener()
 		{
@@ -163,6 +220,11 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		textColumn.setResizable(false);
 
 		makeDragable();
+	}
+
+	public BibleVerse getSelectedVerse()
+	{
+		return selectedVerse;
 	}
 
 	private void redoTheText()
@@ -303,7 +365,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 	public void fireEvent(ReferenceViewEvent event)
 	{
-		IReferenceViewListener[] listeners = eventListeners.getListeners(IReferenceViewListener.class);
+		IReferenceViewListener[] listeners = eventListeners
+				.getListeners(IReferenceViewListener.class);
 
 		for (IReferenceViewListener listener : listeners)
 		{
@@ -371,5 +434,16 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	public String getKeywordOrReference()
 	{
 		return keywordOrReference;
+	}
+
+	public void showRightClickMenu()
+	{
+		int x = lastRightClickPosition.x;
+		int y = lastRightClickPosition.y;
+
+		Point point = resultsTableViewer.getControl().toDisplay(x, y);
+
+		rightClickMenu.setLocation(point);
+		rightClickMenu.setVisible(true);
 	}
 }

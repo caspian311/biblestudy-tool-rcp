@@ -30,4 +30,8 @@ public interface IReferenceView
 	public void hideLimitResultsMessage();
 
 	public String getKeywordOrReference();
+
+	public BibleVerse getSelectedVerse();
+
+	public void showRightClickMenu();
 }

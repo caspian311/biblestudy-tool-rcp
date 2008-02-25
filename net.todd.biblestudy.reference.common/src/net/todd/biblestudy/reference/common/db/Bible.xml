@@ -17,14 +17,14 @@
 	<select id="keywordLookup" parameterClass="String" resultMap="bibleResult">
 		SELECT		BIBLE.*
 		FROM		BIBLE
-		WHERE		LCASE(BIB_TEXT) like '%$value$%'
+		WHERE		LCASE(BIB_TEXT) like LCASE('%$value$%')
 		ORDER BY	BIB_SEQUENCE_ID
 	</select>
 	
 	<select id="referenceLookup" parameterClass="Reference" resultMap="bibleResult">
 		SELECT		BIBLE.*
 		FROM		BIBLE
-		WHERE		LCASE(BIB_BOOK) like '$book$%'
+		WHERE		LCASE(BIB_BOOK) like LCASE('$book$%')
 		<isNotEmpty prepend="AND" property="chapter">
 		BIB_CHAPTER = #chapter#
 		</isNotEmpty>

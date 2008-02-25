@@ -52,6 +52,28 @@ public class ReferencePresenter implements IReferenceViewListener
 			Reference reference = (Reference) event.getData();
 			handlePopulateReferece(reference);
 		}
+		else if (ReferenceViewEvent.REFERENCE_VIEW_SHOW_RIGHT_CLICK_MENU.equals(source))
+		{
+			handleShowRightClickMenu();
+		}
+		else if (ReferenceViewEvent.REFERENCE_VIEW_SHOW_ENTIRE_CHAPTER.equals(source))
+		{
+			handleShowEntireChapter();
+		}
+	}
+
+	private void handleShowEntireChapter()
+	{
+		BibleVerse selectedVerse = referenceView.getSelectedVerse();
+
+		String searchText = selectedVerse.getBook() + " " + selectedVerse.getChapter();
+
+		doSearch(searchText, referenceView.getReferenceSourceId(), "reference");
+	}
+
+	private void handleShowRightClickMenu()
+	{
+		referenceView.showRightClickMenu();
 	}
 
 	private void handlePopulateReferece(Reference reference)
