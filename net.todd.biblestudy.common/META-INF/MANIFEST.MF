@@ -3,13 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Common Plug-in
 Bundle-SymbolicName: net.todd.biblestudy.common
 Bundle-Version: 1.0.0
-Bundle-Activator: net.todd.biblestudy.common.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
-Eclipse-LazyStart: true
+Eclipse-LazyStart: false
 Export-Package: net.todd.biblestudy.common,
- org.apache.commons.lang,
- org.junit
+ org.apache.commons.lang
 Bundle-ClassPath: lib/junit-4.4.jar,
  .,
  lib/commons-lang-2.3.jar

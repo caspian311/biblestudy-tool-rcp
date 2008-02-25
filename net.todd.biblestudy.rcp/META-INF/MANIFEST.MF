@@ -10,8 +10,7 @@ Require-Bundle: org.eclipse.ui,
  net.todd.biblestudy.reference.common
 Eclipse-LazyStart: true
 Bundle-Vendor: todd.net
-Bundle-ClassPath: lib/junit-4.4.jar,
- .,
+Bundle-ClassPath: .,
  lib/commons-lang-2.3.jar,
  lib/ibatis-2.3.0.677.jar,
  lib/mysql-connector-java-5.1.5-bin.jar
