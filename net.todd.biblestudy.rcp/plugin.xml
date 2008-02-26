@@ -61,6 +61,7 @@
             visible="true">
          <action
                class="net.todd.biblestudy.rcp.actions.SaveNoteAction"
+               definitionId="org.eclipse.ui.file.save"
                icon="icons/floppy.png"
                id="net.todd.biblestudy.rcp.SaveNoteAction"
                label="Save Note"
