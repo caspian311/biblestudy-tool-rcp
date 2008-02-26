@@ -75,11 +75,11 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 	private static final int TEXT_MARGIN = 3;
 
-	private BibleVerse selectedVerse;
-
 	private Menu rightClickMenu;
 
 	private Point lastRightClickPosition;
+	
+	private TableItem[] currentSelection;
 
 	@Override
 	public void createPartControl(Composite parent)
@@ -147,12 +147,13 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 		resultsTable.addSelectionListener(new SelectionAdapter()
 		{
+
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				TableItem[] selection = resultsTable.getSelection();
 
-				selectedVerse = (BibleVerse) selection[0].getData();
+				currentSelection = selection;
 			}
 		});
 
@@ -224,6 +225,13 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 	public BibleVerse getSelectedVerse()
 	{
+		BibleVerse selectedVerse = null;
+		
+		if (currentSelection != null && currentSelection.length > 0)
+		{
+			selectedVerse = (BibleVerse) currentSelection[0].getData();
+		}
+		
 		return selectedVerse;
 	}
 
@@ -259,18 +267,27 @@ public class ReferenceView extends ViewPart implements IReferenceView
 				{
 					List<BibleVerse> verses = new ArrayList<BibleVerse>();
 
-					TableItem[] selectionList = resultsTableViewer.getTable().getSelection();
-					for (TableItem selectedItem : selectionList)
+					TableItem[] selectionList = getCurrentSelection();
+					
+					if (selectionList != null)
 					{
-						BibleVerse verse = (BibleVerse) selectedItem.getData();
-
-						verses.add(verse);
+						for (TableItem selectedItem : selectionList)
+						{
+							BibleVerse verse = (BibleVerse) selectedItem.getData();
+							
+							verses.add(verse);
+						}
 					}
 
 					event.data = verses;
 				}
 			}
 		});
+	}
+	
+	private TableItem[] getCurrentSelection() 
+	{
+		return currentSelection;
 	}
 
 	public void setResults(final BibleVerse[] results)
