@@ -22,6 +22,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,11 +36,11 @@ import org.eclipse.swt.widgets.Text;
 
 public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 {
-	private static final String NOTE_NAME_COLUMN_HEADER = "Note";
+	public static final String NOTE_NAME_COLUMN_HEADER = "Note";
 	private static final int NOTE_NAME_COLUMN_WIDTH = 200;
-	private static final String LAST_MODIFIED_COLUMN_HEADER = "Last Modified";
+	public static final String LAST_MODIFIED_COLUMN_HEADER = "Last Modified";
 	private static final int LAST_MODIFIED_COLUMN_WIDTH = 100;
-	private static final String CREATED_COLUMN_HEADER = "Created On";
+	public static final String CREATED_COLUMN_HEADER = "Created On";
 	private static final int CREATED_COLUMN_WIDTH = 100;
 
 	private Text filterText;
@@ -68,6 +70,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 	private TableColumn noteNameColumn;
 	private TableColumn lastModifiedColumn;
 	private TableColumn createdColumn;
+	private Table notesTable;
 
 	public void addOpenNoteEventListener(IOpenNoteEventListener listener)
 	{
@@ -113,11 +116,14 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 
 		filterText.setFocus();
 
-		notesTableViewer = new TableViewer(composite, SWT.V_SCROLL | SWT.BORDER | SWT.SHADOW_ETCHED_IN);
+		notesTableViewer = new TableViewer(composite, SWT.V_SCROLL | SWT.BORDER
+				| SWT.SHADOW_ETCHED_IN);
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
 		notesTableViewer.setLabelProvider(new NoteLabelProvider());
 
-		Table notesTable = notesTableViewer.getTable();
+		notesTableViewer.setSorter(new NoteViewerSorter());
+
+		notesTable = notesTableViewer.getTable();
 		notesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		notesTable.setHeaderVisible(true);
 		notesTable.setLinesVisible(true);
@@ -142,14 +148,44 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		noteNameColumn = new TableColumn(notesTable, SWT.LEFT);
 		noteNameColumn.setText(NOTE_NAME_COLUMN_HEADER);
 		noteNameColumn.setWidth(NOTE_NAME_COLUMN_WIDTH);
+		noteNameColumn.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				notesTable.setSortColumn(noteNameColumn);
+				((NoteViewerSorter) notesTableViewer.getSorter()).doSort(1);
+				notesTableViewer.refresh();
+			}
+		});
 
 		lastModifiedColumn = new TableColumn(notesTable, SWT.LEFT);
 		lastModifiedColumn.setText(LAST_MODIFIED_COLUMN_HEADER);
 		lastModifiedColumn.setWidth(LAST_MODIFIED_COLUMN_WIDTH);
+		lastModifiedColumn.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				notesTable.setSortColumn(noteNameColumn);
+				((NoteViewerSorter) notesTableViewer.getSorter()).doSort(2);
+				notesTableViewer.refresh();
+			}
+		});
 
 		createdColumn = new TableColumn(notesTable, SWT.LEFT);
 		createdColumn.setText(CREATED_COLUMN_HEADER);
 		createdColumn.setWidth(CREATED_COLUMN_WIDTH);
+		createdColumn.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				notesTable.setSortColumn(noteNameColumn);
+				((NoteViewerSorter) notesTableViewer.getSorter()).doSort(3);
+				notesTableViewer.refresh();
+			}
+		});
 
 		messageLabel = new Label(composite, SWT.NORMAL);
 		messageLabel.setVisible(false);
@@ -161,7 +197,8 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 
 	private void handleSelection()
 	{
-		StructuredSelection structuredSelection = (StructuredSelection) notesTableViewer.getSelection();
+		StructuredSelection structuredSelection = (StructuredSelection) notesTableViewer
+				.getSelection();
 		Object obj = structuredSelection.getFirstElement();
 
 		if (obj == null)
@@ -248,7 +285,8 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 
 	private void fireEvent(ViewEvent e)
 	{
-		IOpenNoteEventListener[] listeners = eventListeners.getListeners(IOpenNoteEventListener.class);
+		IOpenNoteEventListener[] listeners = eventListeners
+				.getListeners(IOpenNoteEventListener.class);
 
 		for (IOpenNoteEventListener listener : listeners)
 		{
@@ -270,7 +308,8 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 
 	public void removeAllListeners()
 	{
-		IOpenNoteEventListener[] listeners = eventListeners.getListeners(IOpenNoteEventListener.class);
+		IOpenNoteEventListener[] listeners = eventListeners
+				.getListeners(IOpenNoteEventListener.class);
 
 		List<IOpenNoteEventListener> clonedListeners = new ArrayList<IOpenNoteEventListener>();
 
