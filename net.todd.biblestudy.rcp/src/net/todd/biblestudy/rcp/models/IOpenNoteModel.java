@@ -13,13 +13,4 @@ public interface IOpenNoteModel
 	 * @return list of all notes available
 	 */
 	public List<Note> getAllNotes();
-
-	/**
-	 * this method will return false if the note 
-	 * by the given name does not exist and true otherwise
-	 * 
-	 * @param noteName
-	 * @return whether or not the note exists
-	 */
-	public boolean doesNoteExist(String noteName);
 }

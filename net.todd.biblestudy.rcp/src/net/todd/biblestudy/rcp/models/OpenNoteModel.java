@@ -34,20 +34,4 @@ public class OpenNoteModel implements IOpenNoteModel
 	{
 		return new NoteDao();
 	}
-
-	public boolean doesNoteExist(String noteName)
-	{
-		boolean noteExists = false;
-		
-		try
-		{
-			noteExists = getNoteDao().getNoteByName(noteName) != null;
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return noteExists;
-	}
 }

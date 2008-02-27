@@ -12,6 +12,8 @@ public class ViewEvent extends EventObject
 	public static final String OPEN_NOTE_OK_PRESSED = "openNote.okPressed";
 	public static final String OPEN_NOTE_CANCEL_PRESSED = "openNote.cancelPressed";
 	public static final String OPEN_NOTE_OPENED = "openNote.opened";
+	public static final String OPEN_NOTE_RENAME = "openNote.rename";
+	public static final String OPEN_NOTE_DELETE = "openNote.delete";
 
 	public static final String NOTE_CREATE_LINK_TO_NOTE_EVENT = "note.createLinkToNote";
 	public static final String NOTE_CREATE_LINK_TO_REFERENCE_EVENT = "note.createLinkToReference";

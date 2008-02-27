@@ -11,6 +11,7 @@ import net.todd.biblestudy.rcp.presenters.IOpenNoteEventListener;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -26,9 +27,10 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -44,8 +46,6 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 	private static final int CREATED_COLUMN_WIDTH = 100;
 
 	private Text filterText;
-
-	private String newNoteName;
 
 	public OpenNoteDialog(Shell shell)
 	{
@@ -65,12 +65,13 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 	EventListenerList eventListeners = new EventListenerList();
 	private TableViewer notesTableViewer;
 
-	private Label messageLabel;
-
 	private TableColumn noteNameColumn;
 	private TableColumn lastModifiedColumn;
 	private TableColumn createdColumn;
 	private Table notesTable;
+	private Button renameButton;
+	private Button deleteButton;
+	private Note selectedNote;
 
 	public void addOpenNoteEventListener(IOpenNoteEventListener listener)
 	{
@@ -86,11 +87,12 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		gridLayout.marginLeft = 2;
 		gridLayout.marginRight = 2;
 
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(gridLayout);
 		GridData compositeLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		compositeLayoutData.widthHint = 450;
 		compositeLayoutData.heightHint = 200;
+
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(gridLayout);
 		composite.setLayoutData(compositeLayoutData);
 
 		filterText = new Text(composite, SWT.BORDER);
@@ -187,10 +189,35 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 			}
 		});
 
-		messageLabel = new Label(composite, SWT.NORMAL);
-		messageLabel.setVisible(false);
-		messageLabel.setLayoutData(new GridData(SWT.CENTER, SWT.BOTTOM, false, false));
-		messageLabel.setText("You cannot have a colon in your note name.");
+		GridLayout extraButtonsCompositeLayout = new GridLayout(2, false);
+
+		Composite extraButtonsComposite = new Composite(composite, SWT.NONE);
+		extraButtonsComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
+		extraButtonsComposite.setLayout(extraButtonsCompositeLayout);
+
+		renameButton = new Button(extraButtonsComposite, SWT.PUSH);
+		renameButton.setText("Rename");
+		renameButton.setEnabled(false);
+		renameButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_RENAME));
+			}
+		});
+
+		deleteButton = new Button(extraButtonsComposite, SWT.PUSH);
+		deleteButton.setText("Delete");
+		deleteButton.setEnabled(false);
+		deleteButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_DELETE));
+			}
+		});
 
 		return parent;
 	}
@@ -199,63 +226,25 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 	{
 		StructuredSelection structuredSelection = (StructuredSelection) notesTableViewer
 				.getSelection();
-		Object obj = structuredSelection.getFirstElement();
+		selectedNote = (Note) structuredSelection.getFirstElement();
 
-		if (obj == null)
-		{
-			newNoteName = filterText.getText();
-		}
-		else
-		{
-			Note note = (Note) obj;
-
-			newNoteName = note.getName();
-		}
-
-		updateOkButtonStatus();
+		updateButtonStatus();
 	}
 
-	private void updateOkButtonStatus()
+	private void updateButtonStatus()
 	{
-		if (isValidNewNoteName())
-		{
-			getButton(OK).setEnabled(true);
-		}
-		else
+		if (selectedNote == null)
 		{
 			getButton(OK).setEnabled(false);
+			renameButton.setEnabled(false);
+			deleteButton.setEnabled(false);
 		}
-	}
-
-	private boolean isValidNewNoteName()
-	{
-		boolean isValid = false;
-
-		if (StringUtils.isEmpty(newNoteName) == false)
+		else
 		{
-			if (newNoteName.indexOf(":") == -1)
-			{
-				clearMessageLabel();
-				isValid = true;
-			}
-			else
-			{
-				notifyNoColonsInName();
-			}
+			getButton(OK).setEnabled(true);
+			renameButton.setEnabled(true);
+			deleteButton.setEnabled(true);
 		}
-
-		return isValid;
-	}
-
-	private void clearMessageLabel()
-	{
-		messageLabel.setText("You cannot have a colon in your note name.");
-		messageLabel.setVisible(false);
-	}
-
-	private void notifyNoColonsInName()
-	{
-		messageLabel.setVisible(true);
 	}
 
 	@Override
@@ -263,7 +252,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 	{
 		super.createButtonsForButtonBar(parent);
 
-		updateOkButtonStatus();
+		updateButtonStatus();
 	}
 
 	/*
@@ -329,9 +318,9 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 	 * 
 	 * @see net.todd.biblestudy.rcp.views.INewNoteDialog#getNewNoteName()
 	 */
-	public String getNoteName()
+	public Note getSelectedNote()
 	{
-		return newNoteName;
+		return selectedNote;
 	}
 
 	/*
@@ -368,9 +357,11 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		});
 	}
 
-	public void popuplateErrorMessage(String message)
+	public int openDeleteConfirmationWindow()
 	{
-		messageLabel.setText(message);
-		messageLabel.setVisible(true);
+		MessageDialog dialog = new MessageDialog(Display.getDefault().getActiveShell(),
+				"Are you sure?", null, "Are you sure you want to delete this note?",
+				MessageDialog.QUESTION, new String[] { "No", "Yes" }, 0);
+		return dialog.open();
 	}
 }
