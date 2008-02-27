@@ -257,9 +257,9 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	{
 		if (noteView.openDeleteConfirmationWindow() == 1)
 		{
-			String secondaryId = noteModel.getNote().getName();
+			String noteName = noteModel.getNote().getName();
 			noteModel.deleteNoteAndLinks();
-			noteView.closeView(secondaryId);
+			noteView.closeView(noteName);
 		}
 	}
 
@@ -371,7 +371,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see net.todd.biblestudy.rcp.presenters.ICreateLinkListener#handleCreateLinkEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
 	 */
 	public void handleCreateLinkEvent(ViewEvent viewEvent)

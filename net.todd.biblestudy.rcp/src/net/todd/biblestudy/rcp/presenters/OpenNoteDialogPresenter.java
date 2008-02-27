@@ -82,7 +82,7 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 
 	private void closeNoteViewIfOpen(String noteName)
 	{
-		// TODO: check to see if note is already open, if it is, close it
+		ViewerFactory.getViewer().closeNoteView(noteName);
 	}
 
 	private void doDeleteNote(String noteName)

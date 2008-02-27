@@ -35,8 +35,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public class NoteView extends ViewPart implements INoteView
@@ -313,12 +311,9 @@ public class NoteView extends ViewPart implements INoteView
 		fireEvent(new ViewEvent(ViewEvent.NOTE_DELETE));
 	}
 
-	public void closeView(String secondaryId)
+	public void closeView(String noteName)
 	{
-		IViewReference viewReference = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getActivePage().findViewReference(ID, secondaryId);
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.hideView(viewReference);
+		ViewerFactory.getViewer().closeNoteView(noteName);
 	}
 
 	public void replaceNoteStyles(List<NoteStyle> styleList)

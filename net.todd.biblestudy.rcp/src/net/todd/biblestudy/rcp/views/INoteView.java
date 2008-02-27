@@ -32,7 +32,7 @@ public interface INoteView
 
 	public void deleteNote();
 
-	public void closeView(String secondaryId);
+	public void closeView(String noteName);
 
 	public void replaceNoteStyles(List<NoteStyle> list);
 
