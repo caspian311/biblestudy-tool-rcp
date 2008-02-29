@@ -15,4 +15,8 @@ Bundle-ClassPath: .,
  lib/ibatis-2.3.0.677.jar,
  lib/mysql-connector-java-5.1.5-bin.jar
 Export-Package: net.todd.biblestudy.db,
- net.todd.biblestudy.rcp
+ net.todd.biblestudy.rcp,
+ net.todd.biblestudy.rcp.actions,
+ net.todd.biblestudy.rcp.models,
+ net.todd.biblestudy.rcp.presenters,
+ net.todd.biblestudy.rcp.views
