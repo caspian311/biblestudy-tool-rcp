@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -31,9 +32,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
@@ -72,6 +76,8 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 	private Button renameButton;
 	private Button deleteButton;
 	private Note selectedNote;
+	private TableEditor notesTableEditor;
+	private String renamedNoteName;
 
 	public void addOpenNoteEventListener(IOpenNoteEventListener listener)
 	{
@@ -129,6 +135,10 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		notesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		notesTable.setHeaderVisible(true);
 		notesTable.setLinesVisible(true);
+
+		notesTableEditor = new TableEditor(notesTable);
+		notesTableEditor.horizontalAlignment = SWT.LEFT;
+		notesTableEditor.grabHorizontal = true;
 
 		notesTableViewer.addDoubleClickListener(new IDoubleClickListener()
 		{
@@ -203,7 +213,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
-				fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_RENAME));
+				fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_RENAME_BUTTON_PRESSED));
 			}
 		});
 
@@ -353,6 +363,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 			public void run()
 			{
 				notesTableViewer.setInput(notes);
+				notesTableViewer.refresh();
 			}
 		});
 	}
@@ -363,5 +374,83 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 				"Are you sure?", null, "Are you sure you want to delete this note?",
 				MessageDialog.QUESTION, new String[] { "No", "Yes" }, 0);
 		return dialog.open();
+	}
+
+	public void makeSelectedNoteNameEditable()
+	{
+		TableItem[] tableItems = notesTable.getSelection();
+
+		if (tableItems != null && tableItems.length > 0)
+		{
+			final TableItem selection = tableItems[0];
+
+			String noteName = selection.getText(0);
+
+			final Text text = new Text(notesTable, SWT.BORDER);
+			Listener textListener = new Listener()
+			{
+				public void handleEvent(Event e)
+				{
+					if (e.type == SWT.FocusOut)
+					{
+						makeNoteNameEditable(selection, text);
+					}
+					else if (e.type == SWT.Traverse)
+					{
+						if (e.detail == SWT.TRAVERSE_RETURN)
+						{
+							changeNoteName(selection, text);
+							removeEditabilityOfNoteName(text);
+						}
+						else if (e.detail == SWT.TRAVERSE_ESCAPE)
+						{
+							removeEditabilityOfNoteName(text);
+							e.doit = false;
+						}
+					}
+				}
+			};
+
+			text.addListener(SWT.FocusOut, textListener);
+			text.addListener(SWT.Traverse, textListener);
+			text.setText(noteName);
+			text.setFocus();
+			text.selectAll();
+
+			notesTableEditor.setEditor(text, selection, 0);
+
+			notesTable.getShell().setDefaultButton(null);
+		}
+	}
+
+	private void removeEditabilityOfNoteName(final Text text)
+	{
+		text.dispose();
+		notesTable.getShell().setDefaultButton(getButton(OK));
+	}
+
+	private void makeNoteNameEditable(final TableItem selection, final Text text)
+	{
+		String newNoteName = text.getText();
+		text.dispose();
+
+		notesTable.getShell().setDefaultButton(getButton(OK));
+
+		selection.setText(0, newNoteName);
+	}
+
+	private void changeNoteName(final TableItem selection, final Text text)
+	{
+		String newNoteName = text.getText();
+		selection.setText(0, newNoteName);
+
+		renamedNoteName = newNoteName;
+
+		fireEvent(new ViewEvent(ViewEvent.OPEN_NOTE_RENAME));
+	}
+
+	public String getRenamedNoteName()
+	{
+		return renamedNoteName;
 	}
 }

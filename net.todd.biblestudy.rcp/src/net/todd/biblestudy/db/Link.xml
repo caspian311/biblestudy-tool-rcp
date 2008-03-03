@@ -61,10 +61,21 @@
 		WHERE	L_ID=#linkId#
 	</update>
 
-<delete id="removeAllLinksForNote" parameterClass="Note">
+	<delete id="removeAllLinksForNote" parameterClass="Note">
 		DELETE 
 		FROM		LINKS
 		WHERE		L_NOTE_ID=#noteId#
 	</delete>
+
+	<select id="getAllLinksThatLinkTo" parameterClass="string" resultClass="Link">
+		SELECT		L_ID as linkId,
+					L_NOTE_ID as containingNoteId,
+					L_TO_NOTE_NAME as linkToNoteName,
+					L_TO_REFERENCE as linkToReference,
+					L_START as start,
+					L_END as end
+		FROM		LINKS
+		WHERE		L_TO_NOTE_NAME=#value#
+	</select>
 
 </sqlMap>

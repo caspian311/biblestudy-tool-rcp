@@ -18,4 +18,8 @@ public interface IOpenNoteDialog
 	public void populateDropDown(Note[] notes);
 
 	public int openDeleteConfirmationWindow();
+
+	public void makeSelectedNoteNameEditable();
+
+	public String getRenamedNoteName();
 }

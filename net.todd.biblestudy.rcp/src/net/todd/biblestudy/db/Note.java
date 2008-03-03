@@ -83,4 +83,11 @@ public class Note
 	{
 		this.createdTimestamp = createdTimestamp;
 	}
+
+	@Override
+	public String toString()
+	{
+		String myText = text == null ? "" : text.substring(0, 10) + "...";
+		return noteId + " : " + name + " - " + myText;
+	}
 }

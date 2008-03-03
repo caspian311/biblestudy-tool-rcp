@@ -14,21 +14,27 @@ public class MockLinkDao implements ILinkDao
 	{
 		return null;
 	}
-	
+
 	public List<Link> getAllLinksForNote(Integer containingNoteId) throws SQLException
 	{
 		return new ArrayList<Link>();
 	}
-	
+
 	public void removeLink(Link link) throws SQLException
 	{
 	}
-	
+
 	public void updateLink(Link link) throws SQLException
 	{
 	}
 
 	public void removeAllLinksForNote(Note note)
 	{
+	}
+
+	public List<Link> getAllLinksThatLinkTo(String oldNoteName)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

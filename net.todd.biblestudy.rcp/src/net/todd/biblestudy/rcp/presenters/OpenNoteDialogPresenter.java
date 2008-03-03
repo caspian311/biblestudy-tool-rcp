@@ -47,22 +47,42 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 		}
 		else if (source.equals(ViewEvent.OPEN_NOTE_DELETE))
 		{
-			handleDelete();
+			handleDeleteButtonPressed();
+		}
+		else if (source.equals(ViewEvent.OPEN_NOTE_RENAME_BUTTON_PRESSED))
+		{
+			handleRenameButtonPressed();
 		}
 		else if (source.equals(ViewEvent.OPEN_NOTE_RENAME))
 		{
-			handleRename();
+			handleNoteRename();
 		}
 	}
 
-	private void handleRename()
+	private void handleNoteRename()
 	{
-		// TODO change view to allow for renaming of the note
+		Note selectedNote = view.getSelectedNote();
 
-		System.out.println("do note rename...");
+		if (selectedNote != null)
+		{
+			String oldNoteName = selectedNote.getName();
+			String newNoteName = view.getRenamedNoteName();
+
+			if (newNoteName != null)
+			{
+				model.renameNote(oldNoteName, newNoteName);
+			}
+
+			handlePostOpening();
+		}
 	}
 
-	private void handleDelete()
+	private void handleRenameButtonPressed()
+	{
+		view.makeSelectedNoteNameEditable();
+	}
+
+	private void handleDeleteButtonPressed()
 	{
 		Note selectedNote = view.getSelectedNote();
 
