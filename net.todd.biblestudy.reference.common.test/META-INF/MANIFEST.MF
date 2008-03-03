@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Reference Common Test Plug-in
+Bundle-SymbolicName: net.todd.biblestudy.reference.common.test
+Bundle-Version: 1.0.0
+Require-Bundle: net.todd.biblestudy.reference.common
