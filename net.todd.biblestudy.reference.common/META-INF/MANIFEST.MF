@@ -9,6 +9,11 @@ Require-Bundle: org.eclipse.ui,
  net.todd.biblestudy.common
 Eclipse-LazyStart: true
 Export-Package: net.todd.biblestudy.reference.common,
+ net.todd.biblestudy.reference.common.actions,
+ net.todd.biblestudy.reference.common.db,
+ net.todd.biblestudy.reference.common.models,
+ net.todd.biblestudy.reference.common.presenters,
+ net.todd.biblestudy.reference.common.util,
  net.todd.biblestudy.reference.common.views
 Bundle-ClassPath: lib/ibatis-2.3.0.677.jar,
  .,
