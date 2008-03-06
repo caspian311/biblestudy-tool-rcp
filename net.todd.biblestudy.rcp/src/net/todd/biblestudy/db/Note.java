@@ -87,7 +87,20 @@ public class Note
 	@Override
 	public String toString()
 	{
-		String myText = text == null ? "" : text.substring(0, 10) + "...";
+		String myText = "";
+
+		if (text != null)
+		{
+			if (text.length() > 10)
+			{
+				myText = text.substring(0, 10) + "...";
+			}
+			else
+			{
+				myText = text;
+			}
+		}
+
 		return noteId + " : " + name + " - " + myText;
 	}
 }

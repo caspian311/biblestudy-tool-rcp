@@ -85,6 +85,18 @@
                toolbarPath="main/global"
                tooltip="Create Note New Note">
          </action>
+         <action
+               class="net.todd.biblestudy.rcp.actions.ExportNotesAction"
+               id="net.todd.biblestudy.rcp.ExportNotes"
+               label="Export All Notes"
+               toolbarPath="main/global">
+         </action>
+         <action
+               class="net.todd.biblestudy.rcp.actions.ImportNotesAction"
+               id="net.todd.biblestudy.rcp.ImportNotes"
+               label="Import Notes"
+               toolbarPath="main/global">
+         </action>
       </actionSet>
    </extension>
    <extension

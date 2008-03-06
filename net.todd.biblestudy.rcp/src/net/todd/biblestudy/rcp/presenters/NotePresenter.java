@@ -101,7 +101,8 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 
 		for (BibleVerse bibleVerse : bibleVerses)
 		{
-			String linkContent = bibleVerse.getReference().toString() + " - " + bibleVerse.getText();
+			String linkContent = bibleVerse.getReference().toString() + " - "
+					+ bibleVerse.getText();
 			newContent.append(linkContent).append("\n");
 		}
 
@@ -159,7 +160,8 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		{
 			Reference reference = bibleVerse.getReference();
 
-			noteModel.addLinkToReference(reference, currentCarretPosition, currentCarretPosition + reference.toString().length());
+			noteModel.addLinkToReference(reference, currentCarretPosition, currentCarretPosition
+					+ reference.toString().length());
 			currentCarretPosition = currentCarretPosition + reference.toString().length() + 1;
 		}
 
@@ -227,18 +229,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 			{
 				noteView.changeCursorToPointer();
 
-				String message = "";
-
-				if (link.getLinkToNoteName() != null)
-				{
-					message = "Link to: " + link.getLinkToNoteName();
-				}
-				else if (link.getLinkToReference() != null)
-				{
-					message = "Link to: " + link.getLinkToReference();
-				}
-
-				LinkStatusLineUtil.setTextOnStatusLine(message);
+				LinkStatusLineUtil.setTextOnStatusLine(link.toString());
 			}
 			else
 			{
@@ -346,7 +337,8 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 
 	private void createLinkToNote()
 	{
-		createLinkDialog = new CreateLinkDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		createLinkDialog = new CreateLinkDialog(PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow());
 
 		createLinkDialog.addCreateLinkListener(this);
 
@@ -355,7 +347,8 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 
 	private void createLinkToReference()
 	{
-		createLinkDialog = new CreateLinkDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+		createLinkDialog = new CreateLinkDialog(PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow());
 
 		createLinkDialog.addCreateLinkListener(this);
 
@@ -371,7 +364,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see net.todd.biblestudy.rcp.presenters.ICreateLinkListener#handleCreateLinkEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
 	 */
 	public void handleCreateLinkEvent(ViewEvent viewEvent)
