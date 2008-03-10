@@ -1,4 +1,4 @@
-package net.todd.biblestudy.rcp.actions;
+package net.todd.biblestudy.rcp.actions.importExport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,9 +18,10 @@ import com.thoughtworks.xstream.XStream;
 
 public class XMLExportUtil
 {
-	private static final String LINK_FILE_PREFIX = "LINK_";
-	private static final String NOTE_FILE_PREFIX = "NOTE_";
-	private static final String XML_SUFFIX = ".xml";
+	public static final String LINK_FILE_PREFIX = "LINK_";
+	public static final String NOTE_FILE_PREFIX = "NOTE_";
+	public static final String XML_SUFFIX = ".xml";
+
 	private XStream xstream;
 	private String zipFilename;
 	private File tempDir;
@@ -110,7 +111,7 @@ public class XMLExportUtil
 			{
 				FileInputStream in = null;
 
-				String relativeFileToZip = "." + fileToZip.substring(dir.length());
+				String relativeFileToZip = fileToZip.substring(dir.length() + 1);
 
 				try
 				{
@@ -161,26 +162,8 @@ public class XMLExportUtil
 		}
 	}
 
-	public void cleanupTempDir()
+	public void cleanup()
 	{
-		deleteDir(tempDir);
-	}
-
-	private boolean deleteDir(File dir)
-	{
-		if (dir.isDirectory())
-		{
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++)
-			{
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success)
-				{
-					return false;
-				}
-			}
-		}
-
-		return dir.delete();
+		new FileUtil().recrusivelyDelete(tempDir);
 	}
 }

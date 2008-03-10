@@ -9,6 +9,7 @@ import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.LinkDao;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteDao;
+import net.todd.biblestudy.rcp.actions.importExport.XMLExportUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -70,7 +71,7 @@ public class ExportNotesAction implements IWorkbenchWindowActionDelegate
 
 	private void executeJob(final List<Note> allNotes, String filename)
 	{
-		final XMLExportUtil converter = new XMLExportUtil(filename);
+		final XMLExportUtil util = new XMLExportUtil(filename);
 
 		if (allNotes != null)
 		{
@@ -83,24 +84,24 @@ public class ExportNotesAction implements IWorkbenchWindowActionDelegate
 
 					monitor.subTask("Creating temporary directory...");
 
-					converter.createTemporaryDirectory();
+					util.createTemporaryDirectory();
 
 					monitor.worked(1);
 
 					for (Note note : allNotes)
 					{
-						try
-						{
-							Thread.sleep(1000);
-						}
-						catch (InterruptedException e)
-						{
-							e.printStackTrace();
-						}
+						// try
+						// {
+						// Thread.sleep(1000);
+						// }
+						// catch (InterruptedException e)
+						// {
+						// e.printStackTrace();
+						// }
 
 						monitor.subTask(note.getName());
 
-						converter.addNoteToXML(note);
+						util.addNoteToXML(note);
 
 						monitor.worked(1);
 
@@ -108,9 +109,7 @@ public class ExportNotesAction implements IWorkbenchWindowActionDelegate
 						{
 							monitor.subTask(link.toString());
 
-							converter.addLinkToXML(link);
-
-							monitor.worked(1);
+							util.addLinkToXML(link);
 
 							if (monitor.isCanceled())
 							{
@@ -124,10 +123,10 @@ public class ExportNotesAction implements IWorkbenchWindowActionDelegate
 						}
 					}
 
-					converter.zipFile();
+					util.zipFile();
 					monitor.worked(1);
 
-					converter.cleanupTempDir();
+					util.cleanup();
 					monitor.worked(1);
 
 					monitor.done();
