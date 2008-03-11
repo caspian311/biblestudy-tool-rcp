@@ -3,16 +3,16 @@ package net.todd.biblestudy.rcp.views;
 import java.util.List;
 
 import net.todd.biblestudy.db.NoteStyle;
-import net.todd.biblestudy.rcp.presenters.INoteListener;
+import net.todd.biblestudy.rcp.presenters.INoteViewListener;
 import net.todd.biblestudy.reference.common.BibleVerse;
 
 import org.eclipse.swt.graphics.Point;
 
 public interface INoteView
 {
-	public void addNoteViewListener(INoteListener noteListener);
+	public void addNoteViewListener(INoteViewListener noteListener);
 
-	public void removeNoteViewListener(INoteListener noteListener);
+	public void removeNoteViewListener(INoteViewListener noteListener);
 
 	public String getContentText();
 

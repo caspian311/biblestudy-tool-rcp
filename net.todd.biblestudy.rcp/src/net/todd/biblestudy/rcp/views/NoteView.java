@@ -5,7 +5,7 @@ import java.util.List;
 import javax.swing.event.EventListenerList;
 
 import net.todd.biblestudy.db.NoteStyle;
-import net.todd.biblestudy.rcp.presenters.INoteListener;
+import net.todd.biblestudy.rcp.presenters.INoteViewListener;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
 import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.ReferenceTransfer;
@@ -123,9 +123,9 @@ public class NoteView extends ViewPart implements INoteView
 
 	private void fireEvent(ViewEvent event)
 	{
-		INoteListener[] listeners = eventListeners.getListeners(INoteListener.class);
+		INoteViewListener[] listeners = eventListeners.getListeners(INoteViewListener.class);
 
-		for (INoteListener listener : listeners)
+		for (INoteViewListener listener : listeners)
 		{
 			listener.handleEvent(event);
 		}
@@ -251,9 +251,9 @@ public class NoteView extends ViewPart implements INoteView
 	{
 	}
 
-	public void addNoteViewListener(INoteListener noteListener)
+	public void addNoteViewListener(INoteViewListener noteListener)
 	{
-		eventListeners.add(INoteListener.class, noteListener);
+		eventListeners.add(INoteViewListener.class, noteListener);
 	}
 
 	public void setContentText(String text)
@@ -286,9 +286,9 @@ public class NoteView extends ViewPart implements INoteView
 		super.dispose();
 	}
 
-	public void removeNoteViewListener(INoteListener noteListener)
+	public void removeNoteViewListener(INoteViewListener noteListener)
 	{
-		eventListeners.remove(INoteListener.class, noteListener);
+		eventListeners.remove(INoteViewListener.class, noteListener);
 	}
 
 	public String getSelectedText()

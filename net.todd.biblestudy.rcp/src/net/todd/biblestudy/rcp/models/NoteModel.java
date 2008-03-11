@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.event.EventListenerList;
+
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -12,22 +14,21 @@ import net.todd.biblestudy.db.LinkDao;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteDao;
 import net.todd.biblestudy.db.NoteStyle;
+import net.todd.biblestudy.rcp.presenters.INoteModelListener;
+import net.todd.biblestudy.rcp.presenters.ModelEvent;
 import net.todd.biblestudy.reference.common.Reference;
 
 import org.apache.commons.lang.StringUtils;
 
 public class NoteModel implements INoteModel
 {
+	private EventListenerList eventListeners = new EventListenerList();
+
 	private Note note;
 
 	private List<Link> links = new ArrayList<Link>();
 	private Date timestampFromDB;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#populateNoteInfo(java.lang.String)
-	 */
 	public void populateNoteInfo(String noteName)
 	{
 		try
@@ -39,8 +40,6 @@ public class NoteModel implements INoteModel
 				getNoteDao().createNote(noteName);
 
 				note = getNoteDao().getNoteByName(noteName);
-
-				// throw new Exception("Note not found.");
 			}
 
 			this.note = note;
@@ -75,21 +74,11 @@ public class NoteModel implements INoteModel
 		return new LinkDao();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#getNote()
-	 */
 	public Note getNote()
 	{
 		return note;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#isDocumentDirty()
-	 */
 	public boolean isDocumentDirty()
 	{
 		return isLatestFromDBSameAsCurrent() == false;
@@ -100,12 +89,6 @@ public class NoteModel implements INoteModel
 		return note.getLastModified().equals(timestampFromDB);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#getNoteStylesForRange(int,
-	 *      int)
-	 */
 	public List<NoteStyle> getNoteStylesForRange(int start, int end)
 	{
 		List<NoteStyle> styles = new ArrayList<NoteStyle>();
@@ -150,12 +133,6 @@ public class NoteModel implements INoteModel
 		return style;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#addLink(java.lang.String,
-	 *      int, int)
-	 */
 	public void addLinkToNote(String noteName, int start, int stop)
 	{
 		Link link = new Link();
@@ -167,12 +144,6 @@ public class NoteModel implements INoteModel
 		addLink(link);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#addLinkToReference(net.todd.biblestudy.reference.common.Reference,
-	 *      int, int)
-	 */
 	public void addLinkToReference(Reference reference, int start, int stop)
 	{
 		Link link = new Link();
@@ -188,13 +159,30 @@ public class NoteModel implements INoteModel
 	{
 		getLinks().add(link);
 		getNote().setLastModified(new Date());
+
+		fireEvent(new ModelEvent(ModelEvent.MODEL_LINK_ADDED));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#saveNoteAndLinks()
-	 */
+	public void registerModelListener(INoteModelListener listener)
+	{
+		eventListeners.add(INoteModelListener.class, listener);
+	}
+
+	public void unRegisterModelListener(INoteModelListener listener)
+	{
+		eventListeners.remove(INoteModelListener.class, listener);
+	}
+
+	private void fireEvent(ModelEvent event)
+	{
+		INoteModelListener[] listeners = eventListeners.getListeners(INoteModelListener.class);
+
+		for (INoteModelListener listener : listeners)
+		{
+			listener.handleModelEvent(event);
+		}
+	}
+
 	public void saveNoteAndLinks()
 	{
 		try
@@ -221,11 +209,6 @@ public class NoteModel implements INoteModel
 		return new NoteDao();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#deleteNoteAndLinks()
-	 */
 	public void deleteNoteAndLinks()
 	{
 		try
@@ -247,11 +230,6 @@ public class NoteModel implements INoteModel
 		getLinks().clear();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#updateContent(java.lang.String)
-	 */
 	public void updateContent(String newContentText)
 	{
 		if (getNote().getText() != null)
@@ -299,7 +277,8 @@ public class NoteModel implements INoteModel
 					{
 						linksToBeDeleted.add(link);
 					}
-					else if (location >= link.getStart().intValue() && location <= link.getEnd().intValue())
+					else if (location >= link.getStart().intValue()
+							&& location <= link.getEnd().intValue())
 					{ // edit is in text
 
 						linksToBeDeleted.add(link);
@@ -357,7 +336,8 @@ public class NoteModel implements INoteModel
 			String reversedNewContentText = StringUtils.reverse(newContentText);
 			String reversedOldContetText = StringUtils.reverse(oldContentText);
 
-			int reversedStartDifference = StringUtils.indexOfDifference(reversedNewContentText, reversedOldContetText);
+			int reversedStartDifference = StringUtils.indexOfDifference(reversedNewContentText,
+					reversedOldContetText);
 
 			int stopDifference = originalNewContentText.length() - reversedStartDifference;
 
@@ -384,22 +364,20 @@ public class NoteModel implements INoteModel
 		return StringUtils.indexOfDifference(getNote().getText(), newContentText);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INoteModel#getLinkAtOffset(int)
-	 */
 	public Link getLinkAtOffset(int offset)
 	{
+		Link targetLink = null;
+
 		for (Link link : links)
 		{
 			if (offset >= link.getStart() && offset <= link.getEnd())
 			{
-				return link;
+				targetLink = link;
+				break;
 			}
 		}
 
-		return null;
+		return targetLink;
 	}
 
 	public void createNewNoteInfo(String noteName)

@@ -157,9 +157,19 @@ public class XMLImportUtil
 		}
 	}
 
-	public void updatingDatabase()
+	public void updateDatabase()
 	{
-		// TODO Auto-generated method stub
+		System.out.println("adding the following notes to the database:");
+		for (Note note : getNotes())
+		{
+			System.out.println(note);
+		}
+
+		System.out.println("adding the following links to the database:");
+		for (Link link : getLinks())
+		{
+			System.out.println(link);
+		}
 	}
 
 	public void readInLinks()

@@ -74,7 +74,7 @@ public class ImportNotesAction implements IWorkbenchWindowActionDelegate
 					monitor.worked(1);
 
 					monitor.subTask("Updating database...");
-					util.updatingDatabase();
+					util.updateDatabase();
 					monitor.worked(1);
 
 					monitor.done();

@@ -3,10 +3,12 @@ package net.todd.biblestudy.rcp.views;
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.NoteModel;
+import net.todd.biblestudy.rcp.presenters.CreateLinkPresenter;
 import net.todd.biblestudy.rcp.presenters.NewNoteDialogPresenter;
 import net.todd.biblestudy.rcp.presenters.NotePresenter;
 import net.todd.biblestudy.rcp.presenters.OpenNoteDialogPresenter;
 
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -33,8 +35,8 @@ public class ViewerImpl implements IViewer
 					noteModel.populateNoteInfo(noteName);
 
 					INoteView noteView = (INoteView) PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getActivePage()
-							.showView(NoteView.ID,noteName, IWorkbenchPage.VIEW_ACTIVATE);
+							.getActiveWorkbenchWindow().getActivePage().showView(NoteView.ID,
+									noteName, IWorkbenchPage.VIEW_ACTIVATE);
 
 					new NotePresenter(noteView, noteModel);
 				}
@@ -67,9 +69,25 @@ public class ViewerImpl implements IViewer
 
 			if (viewReference != null)
 			{
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-						.hideView(viewReference);
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(
+						viewReference);
 			}
 		}
+	}
+
+	public void openCreateLinkDialog(INoteView noteView, INoteModel noteModel)
+	{
+		IShellProvider shellProvider = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		ICreateLinkDialog createLinkDialog = new CreateLinkDialog(shellProvider);
+
+		new CreateLinkPresenter(createLinkDialog, noteView, noteModel).openLinkDialog();
+	}
+
+	public void openCreateLinkToReferenceDialog(INoteView noteView, INoteModel noteModel)
+	{
+		IShellProvider shellProvider = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		ICreateLinkDialog createLinkDialog = new CreateLinkDialog(shellProvider);
+
+		new CreateLinkPresenter(createLinkDialog, noteView, noteModel).openReferenceDialog();
 	}
 }

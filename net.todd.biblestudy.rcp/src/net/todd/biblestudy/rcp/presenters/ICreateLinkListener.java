@@ -5,4 +5,8 @@ import java.util.EventListener;
 public interface ICreateLinkListener extends EventListener
 {
 	public void handleCreateLinkEvent(ViewEvent viewEvent);
+
+	public void openLinkDialog();
+
+	public void openReferenceDialog();
 }

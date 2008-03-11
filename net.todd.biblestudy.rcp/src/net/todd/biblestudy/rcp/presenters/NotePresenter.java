@@ -6,8 +6,6 @@ import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.LinkStatusLineUtil;
 import net.todd.biblestudy.rcp.models.INoteModel;
-import net.todd.biblestudy.rcp.views.CreateLinkDialog;
-import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
 import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
 import net.todd.biblestudy.reference.common.BibleVerse;
@@ -16,13 +14,11 @@ import net.todd.biblestudy.reference.common.Reference;
 import net.todd.biblestudy.reference.common.views.ReferenceViewerFactory;
 
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.ui.PlatformUI;
 
-public class NotePresenter implements INoteListener, ICreateLinkListener
+public class NotePresenter implements INoteViewListener, INoteModelListener
 {
 	private INoteView noteView;
 	private INoteModel noteModel;
-	private ICreateLinkDialog createLinkDialog;
 
 	public NotePresenter(INoteView noteView, INoteModel noteModel)
 	{
@@ -32,6 +28,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		handleOpenNote();
 
 		noteView.addNoteViewListener(this);
+		noteModel.registerModelListener(this);
 	}
 
 	public void handleEvent(ViewEvent event)
@@ -263,6 +260,7 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 	private void handleCloseNote()
 	{
 		noteView.removeNoteViewListener(this);
+		noteModel.unRegisterModelListener(this);
 
 		noteModel = null;
 		noteView = null;
@@ -337,22 +335,12 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 
 	private void createLinkToNote()
 	{
-		createLinkDialog = new CreateLinkDialog(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow());
-
-		createLinkDialog.addCreateLinkListener(this);
-
-		createLinkDialog.openDialog(false);
+		ViewerFactory.getViewer().openCreateLinkDialog(noteView, noteModel);
 	}
 
 	private void createLinkToReference()
 	{
-		createLinkDialog = new CreateLinkDialog(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow());
-
-		createLinkDialog.addCreateLinkListener(this);
-
-		createLinkDialog.openDialog(true);
+		ViewerFactory.getViewer().openCreateLinkToReferenceDialog(noteView, noteModel);
 	}
 
 	private List<NoteStyle> getStylesForRange(int startPoint, int stopPoint)
@@ -362,112 +350,14 @@ public class NotePresenter implements INoteListener, ICreateLinkListener
 		return noteStylesForRange;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.presenters.ICreateLinkListener#handleCreateLinkEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
-	 */
-	public void handleCreateLinkEvent(ViewEvent viewEvent)
+	public void handleModelEvent(ModelEvent event)
 	{
-		String source = (String) viewEvent.getSource();
+		String source = (String) event.getSource();
 
-		if (ViewEvent.CREATE_LINK_DIALOG_OPENED.equals(source))
+		if (ModelEvent.MODEL_LINK_ADDED.equals(source))
 		{
-			handleCreateLinkDialogOpened();
+			updateStylesOnView();
+			updateDocumentTitle();
 		}
-		else if (ViewEvent.CREATE_LINK_DIALOG_CLOSED.equals(source))
-		{
-			handleCreateLinkDialogClosed();
-		}
-		else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_NOTE.equals(source))
-		{
-			handleDoCreateLinkToNote();
-		}
-		else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_REFERENCE.equals(source))
-		{
-			handleDoCreateLinkToReference();
-		}
-		else if (ViewEvent.CREATE_LINK_VALIDATE_REFERENCE.equals(source))
-		{
-			validateReference();
-		}
-	}
-
-	private void validateReference()
-	{
-		String referenceText = createLinkDialog.getLinkText();
-		try
-		{
-			new Reference(referenceText);
-			createLinkDialog.hideErrorMessage();
-		}
-		catch (InvalidReferenceException e)
-		{
-			createLinkDialog.showErrorMessage();
-		}
-	}
-
-	private void handleDoCreateLinkToReference()
-	{
-		String referenceText = createLinkDialog.getLinkText();
-		Point selection = noteView.getSelectionPoint();
-
-		int start = selection.x;
-		int stop = selection.y;
-
-		Reference reference = null;
-
-		try
-		{
-			reference = new Reference(referenceText);
-
-			addLinkToReferenceAndUpdateView(reference, start, stop);
-
-			createLinkDialog.closeDialog();
-		}
-		catch (InvalidReferenceException e)
-		{
-		}
-	}
-
-	private void addLinkToReferenceAndUpdateView(Reference reference, int start, int stop)
-	{
-		noteModel.addLinkToReference(reference, start, stop);
-
-		updateStylesOnView();
-		updateDocumentTitle();
-	}
-
-	private void handleDoCreateLinkToNote()
-	{
-		String linkText = createLinkDialog.getLinkText();
-		Point selection = noteView.getSelectionPoint();
-
-		int start = selection.x;
-		int stop = selection.y;
-
-		addLinkToNoteAndUpdateView(linkText, start, stop);
-
-		createLinkDialog.closeDialog();
-	}
-
-	private void addLinkToNoteAndUpdateView(String linkText, int start, int stop)
-	{
-		noteModel.addLinkToNote(linkText, start, stop);
-
-		updateStylesOnView();
-		updateDocumentTitle();
-	}
-
-	private void handleCreateLinkDialogClosed()
-	{
-		createLinkDialog.removeCreateLinkListener(this);
-	}
-
-	private void handleCreateLinkDialogOpened()
-	{
-		String selectionText = noteView.getSelectedText();
-
-		createLinkDialog.setSelectedLinkText(selectionText);
 	}
 }

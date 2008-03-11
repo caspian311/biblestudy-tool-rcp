@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.todd.biblestudy.rcp.models.INewNoteDialogModel;
+import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.INewNoteDialog;
+import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.rcp.views.IViewer;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
 
@@ -218,6 +220,14 @@ public class NewNoteDialogPresenterTest
 		public String getOpenedNote()
 		{
 			return openedNote;
+		}
+
+		public void openCreateLinkDialog(INoteView noteView, INoteModel noteModel)
+		{
+		}
+
+		public void openCreateLinkToReferenceDialog(INoteView noteView, INoteModel noteModel)
+		{
 		}
 	}
 }
