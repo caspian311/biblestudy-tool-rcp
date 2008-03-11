@@ -1,22 +1,21 @@
 package net.todd.biblestudy.rcp.presenters;
 
-import org.apache.commons.lang.StringUtils;
-
-import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.models.INewNoteDialogModel;
 import net.todd.biblestudy.rcp.models.NewNoteDialogModel;
 import net.todd.biblestudy.rcp.views.INewNoteDialog;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
+
+import org.apache.commons.lang.StringUtils;
 
 public class NewNoteDialogPresenter implements INewNoteDialogListener
 {
 	private INewNoteDialog view;
 	private INewNoteDialogModel model;
 
-	public NewNoteDialogPresenter(INewNoteDialog view)
+	public NewNoteDialogPresenter(INewNoteDialog v)
 	{
-		this.view = view;
-		
+		this.view = v;
+
 		model = new NewNoteDialogModel();
 		view.addNewNoteDialogListener(this);
 		view.openDialog();
@@ -24,8 +23,8 @@ public class NewNoteDialogPresenter implements INewNoteDialogListener
 
 	public void handleEvent(ViewEvent event)
 	{
-		String source = (String)event.getSource();
-		
+		String source = (String) event.getSource();
+
 		if (ViewEvent.NEW_NOTE_OPENED.equals(source))
 		{
 			handleNewNoteDialogOpened();
@@ -52,46 +51,45 @@ public class NewNoteDialogPresenter implements INewNoteDialogListener
 	private void handleKeyPressed()
 	{
 		final String newNoteName = view.getNewNoteName();
-		
+
 		if (StringUtils.isEmpty(newNoteName))
 		{
 			view.disableOkButton();
 		}
 		else
 		{
-			ViewHelper.runWithoutBusyIndicator(new Runnable() 
+			if (noteAlreadyExists(newNoteName))
 			{
-				public void run()
-				{
-					if (noteAlreadyExists(newNoteName))
-					{
-						view.showErrorMessage();
-						view.disableOkButton();
-					}
-					else
-					{
-						view.hideErrorMessage();
-						view.enableOkButton();
-					}
-				}
-			});
+				view.showErrorMessage();
+				view.disableOkButton();
+			}
+			else
+			{
+				view.hideErrorMessage();
+				view.enableOkButton();
+			}
 		}
 	}
 
 	private boolean noteAlreadyExists(String newNoteName)
 	{
-		return model.noteAlreadyExists(newNoteName);
+		return getModel().noteAlreadyExists(newNoteName);
 	}
 
 	private void handleOkPressed()
 	{
 		String newNoteName = view.getNewNoteName();
-		
+
 		view.closeDialog();
-		
-		model.createNewNote(newNoteName);
-		
+
+		getModel().createNewNote(newNoteName);
+
 		ViewerFactory.getViewer().openNoteView(newNoteName);
+	}
+
+	INewNoteDialogModel getModel()
+	{
+		return model;
 	}
 
 	private void handleNewNoteDialogOpened()
