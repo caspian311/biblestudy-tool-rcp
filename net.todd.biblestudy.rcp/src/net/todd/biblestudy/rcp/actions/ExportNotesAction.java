@@ -3,6 +3,7 @@ package net.todd.biblestudy.rcp.actions;
 import java.sql.SQLException;
 import java.util.List;
 
+import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -80,36 +81,35 @@ public class ExportNotesAction implements IWorkbenchWindowActionDelegate
 				@Override
 				protected IStatus run(IProgressMonitor monitor)
 				{
-					monitor.beginTask("Exporting...", allNotes.size() + 3);
-
-					monitor.subTask("Creating temporary directory...");
-
-					util.createTemporaryDirectory();
-
-					monitor.worked(1);
-
-					for (Note note : allNotes)
+					try
 					{
-						// try
-						// {
-						// Thread.sleep(1000);
-						// }
-						// catch (InterruptedException e)
-						// {
-						// e.printStackTrace();
-						// }
+						monitor.beginTask("Exporting...", allNotes.size() + 3);
 
-						monitor.subTask(note.getName());
+						monitor.subTask("Creating temporary directory...");
 
-						util.addNoteToXML(note);
+						util.createTemporaryDirectory();
 
 						monitor.worked(1);
 
-						for (Link link : allLinksForNote(note))
+						for (Note note : allNotes)
 						{
-							monitor.subTask(link.toString());
+							monitor.subTask(note.getName());
 
-							util.addLinkToXML(link);
+							util.addNoteToXML(note);
+
+							monitor.worked(1);
+
+							for (Link link : allLinksForNote(note))
+							{
+								monitor.subTask(link.toString());
+
+								util.addLinkToXML(link);
+
+								if (monitor.isCanceled())
+								{
+									return Status.CANCEL_STATUS;
+								}
+							}
 
 							if (monitor.isCanceled())
 							{
@@ -117,20 +117,20 @@ public class ExportNotesAction implements IWorkbenchWindowActionDelegate
 							}
 						}
 
-						if (monitor.isCanceled())
-						{
-							return Status.CANCEL_STATUS;
-						}
+						util.zipFile();
+						monitor.worked(1);
+
+						util.cleanup();
+						monitor.worked(1);
+
+						monitor.done();
+						return Status.OK_STATUS;
 					}
-
-					util.zipFile();
-					monitor.worked(1);
-
-					util.cleanup();
-					monitor.worked(1);
-
-					monitor.done();
-					return Status.OK_STATUS;
+					catch (Exception e)
+					{
+						ViewHelper.showError(e);
+						return Status.CANCEL_STATUS;
+					}
 				}
 			};
 

@@ -7,7 +7,17 @@ public class LinkStatusLineUtil
 {
 	private static StatusLineContributionItem item;
 
-	public static StatusLineContributionItem getStatusItem()
+	public void setTextOnStatusLine(String text)
+	{
+		if (item == null)
+		{
+			item = new StatusLineContributionItem("noteTakerStatus");
+		}
+
+		item.setText(text);
+	}
+
+	public StatusLineContributionItem getStatusItem()
 	{
 		if (item == null)
 		{
@@ -15,10 +25,5 @@ public class LinkStatusLineUtil
 		}
 
 		return item;
-	}
-
-	public static void setTextOnStatusLine(String text)
-	{
-		item.setText(text);
 	}
 }

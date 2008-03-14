@@ -226,18 +226,18 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 			{
 				noteView.changeCursorToPointer();
 
-				LinkStatusLineUtil.setTextOnStatusLine(link.toString());
+				new LinkStatusLineUtil().setTextOnStatusLine(link.toString());
 			}
 			else
 			{
 				noteView.changeCursorToText();
-				LinkStatusLineUtil.setTextOnStatusLine("");
+				new LinkStatusLineUtil().setTextOnStatusLine("");
 			}
 		}
 		else
 		{
 			noteView.changeCursorToText();
-			LinkStatusLineUtil.setTextOnStatusLine("");
+			new LinkStatusLineUtil().setTextOnStatusLine("");
 		}
 	}
 
@@ -248,6 +248,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 			String noteName = noteModel.getNote().getName();
 			noteModel.deleteNoteAndLinks();
 			noteView.closeView(noteName);
+			handleCloseNote();
 		}
 	}
 

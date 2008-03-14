@@ -23,7 +23,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 	@Override
 	protected void fillStatusLine(IStatusLineManager statusLine)
 	{
-		statusLine.add(LinkStatusLineUtil.getStatusItem());
+		statusLine.add(new LinkStatusLineUtil().getStatusItem());
 	}
 
 	@Override

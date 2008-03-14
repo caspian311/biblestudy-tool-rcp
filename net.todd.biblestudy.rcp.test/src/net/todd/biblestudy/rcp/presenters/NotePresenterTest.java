@@ -2,6 +2,8 @@ package net.todd.biblestudy.rcp.presenters;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -47,10 +49,15 @@ public class NotePresenterTest
 	@Test
 	public void noteOpenedAndEverythingIsSetCorrectly()
 	{
-		new NotePresenter(noteView, noteModel);
+		assertNull(noteView.getNoteViewListener());
+
+		NotePresenter presenter = new NotePresenter(noteView, noteModel);
 
 		assertEquals("Test", noteView.getViewTitle());
 		assertEquals("blah blah blah", noteView.getContentText());
+
+		assertNotNull(noteView.getNoteViewListener());
+		assertTrue(presenter == noteView.getNoteViewListener());
 	}
 
 	@Test
@@ -77,9 +84,16 @@ public class NotePresenterTest
 		private Point selectionPoint;
 		private String selectionText;
 		private boolean didPopupDeleteConfirmation;
+		private INoteViewListener noteListener;
 
 		public void addNoteViewListener(INoteViewListener noteListener)
 		{
+			this.noteListener = noteListener;
+		}
+
+		public INoteViewListener getNoteViewListener()
+		{
+			return noteListener;
 		}
 
 		public Point getLastClickedCoordinates()

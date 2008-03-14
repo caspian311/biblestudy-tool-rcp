@@ -1,7 +1,10 @@
 package net.todd.biblestudy.rcp.presenters;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -10,24 +13,29 @@ import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.INoteView;
+import net.todd.biblestudy.rcp.views.IViewer;
+import net.todd.biblestudy.rcp.views.ViewerFactory;
 import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.Reference;
 
 import org.eclipse.swt.graphics.Point;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NotePresenterHandleEventTest
 {
-	private MockNoteModel mockModel;
-	private MockNoteView mockView;
+	private MockNoteModel model;
+	private MockNoteView view;
+	private MockViewer mockViewer;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		mockModel = new MockNoteModel();
-		mockView = new MockNoteView();
+		model = new MockNoteModel();
+		view = new MockNoteView();
+		mockViewer = new MockViewer();
+
+		ViewerFactory.setViewer(mockViewer);
 	}
 
 	@Test
@@ -35,16 +43,16 @@ public class NotePresenterHandleEventTest
 	{
 		Note note = new Note();
 		note.setName("test");
-		mockModel.setNote(note);
+		model.setNote(note);
 
-		NotePresenter presenter = new NotePresenter(mockView, mockModel);
+		NotePresenter presenter = new NotePresenter(view, model);
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
-		assertNull(mockModel.getUpdatedContent());
+		assertNull(model.getUpdatedContent());
 
-		mockView.setContentText("test");
+		view.setContentText("test");
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
-		assertEquals("test", mockModel.getUpdatedContent());
-		assertEquals("test*", mockView.getViewTitle());
+		assertEquals("test", model.getUpdatedContent());
+		assertEquals("test*", view.getViewTitle());
 	}
 
 	@Test
@@ -52,30 +60,123 @@ public class NotePresenterHandleEventTest
 	{
 		Note note = new Note();
 		note.setName("test");
-		mockModel.setNote(note);
+		model.setNote(note);
 
-		mockView.setLastClickedCoordinates(new Point(0, 0));
+		view.setLastClickedCoordinates(new Point(0, 0));
 
-		NotePresenter presenter = new NotePresenter(mockView, mockModel);
+		NotePresenter presenter = new NotePresenter(view, model);
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_SHOW_RIGHT_CLICK_MENU));
-		assertEquals(0, mockView.getRightClickPopupLocation().x);
-		assertEquals(0, mockView.getRightClickPopupLocation().y);
+		assertEquals(0, view.getRightClickPopupLocation().x);
+		assertEquals(0, view.getRightClickPopupLocation().y);
 
-		mockView.setLastClickedCoordinates(new Point(1, 2));
+		view.setLastClickedCoordinates(new Point(1, 2));
 
-		presenter = new NotePresenter(mockView, mockModel);
+		presenter = new NotePresenter(view, model);
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_SHOW_RIGHT_CLICK_MENU));
-		assertEquals(1, mockView.getRightClickPopupLocation().x);
-		assertEquals(2, mockView.getRightClickPopupLocation().y);
+		assertEquals(1, view.getRightClickPopupLocation().x);
+		assertEquals(2, view.getRightClickPopupLocation().y);
 	}
 
-	@Ignore
 	@Test
 	public void testHandleLinkToNote() throws Exception
 	{
-		NotePresenter presenter = new NotePresenter(mockView, mockModel);
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		assertFalse(mockViewer.wasCreateLinkDialogOpened());
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CREATE_LINK_TO_NOTE_EVENT));
-		// TODO: finish this...
+		assertTrue(mockViewer.wasCreateLinkDialogOpened());
+	}
+
+	@Test
+	public void testHandleLinkToReference() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		assertFalse(mockViewer.wasCreateLinkToReferenceDialogOpened());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CREATE_LINK_TO_REFERENCE_EVENT));
+		assertTrue(mockViewer.wasCreateLinkToReferenceDialogOpened());
+	}
+
+	@Test
+	public void testHandleNoteClosed() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		assertNotNull(view.getNoteViewListener());
+		assertTrue(presenter == view.getNoteViewListener());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CLOSE));
+		assertNull(view.getNoteViewListener());
+	}
+
+	@Test
+	public void testHandleNoteSaved() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		assertFalse(model.wasSaveCalled());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_SAVE));
+		assertTrue(model.wasSaveCalled());
+	}
+
+	@Test
+	public void testTitleGetsFixedWhenNoteIsSaved() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		view.setContentText("test");
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
+
+		assertEquals("test*", view.getViewTitle());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_SAVE));
+		assertEquals("test", view.getViewTitle());
+	}
+
+	@Test
+	public void testHandleNoteDeleted() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		assertNotNull(view.getNoteViewListener());
+
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DELETE));
+		assertNotNull(view.getNoteViewListener());
+		assertFalse(model.wasDeleteCalled());
+
+		view.setConfirmDelete(1);
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DELETE));
+		assertNull(view.getNoteViewListener());
+		assertTrue(model.wasDeleteCalled());
+	}
+
+	@Test
+	public void testHandleNoteHovering() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_HOVERING);
+		viewEvent.setData(null);
+		presenter.handleEvent(viewEvent);
 	}
 
 	private class MockNoteModel implements INoteModel
@@ -92,8 +193,16 @@ public class NotePresenterHandleEventTest
 		{
 		}
 
+		private boolean deleteCalled = false;
+
 		public void deleteNoteAndLinks()
 		{
+			deleteCalled = true;
+		}
+
+		public boolean wasDeleteCalled()
+		{
+			return deleteCalled;
 		}
 
 		public Link getLinkAtOffset(int offset)
@@ -129,8 +238,17 @@ public class NotePresenterHandleEventTest
 		{
 		}
 
+		private boolean saveCalled = false;
+
+		public boolean wasSaveCalled()
+		{
+			return saveCalled;
+		}
+
 		public void saveNoteAndLinks()
 		{
+			saveCalled = true;
+			documentIsDirty = false;
 		}
 
 		private String newContentText;
@@ -157,7 +275,24 @@ public class NotePresenterHandleEventTest
 
 	private class MockNoteView implements INoteView
 	{
+		private INoteViewListener noteViewListener;
+
+		public INoteViewListener getNoteViewListener()
+		{
+			return noteViewListener;
+		}
+
 		public void addNoteViewListener(INoteViewListener noteListener)
+		{
+			this.noteViewListener = noteListener;
+		}
+
+		public void removeNoteViewListener(INoteViewListener noteListener)
+		{
+			this.noteViewListener = null;
+		}
+
+		public void closeView(String noteName)
 		{
 		}
 
@@ -166,10 +301,6 @@ public class NotePresenterHandleEventTest
 		}
 
 		public void changeCursorToText()
-		{
-		}
-
-		public void closeView(String noteName)
 		{
 		}
 
@@ -226,9 +357,16 @@ public class NotePresenterHandleEventTest
 			return null;
 		}
 
+		private int confirmDelete = 0;
+
+		public void setConfirmDelete(int i)
+		{
+			this.confirmDelete = i;
+		}
+
 		public int openDeleteConfirmationWindow()
 		{
-			return 0;
+			return confirmDelete;
 		}
 
 		public void openDropReferenceOptions(int x, int y)
@@ -236,10 +374,6 @@ public class NotePresenterHandleEventTest
 		}
 
 		public void removeNoteStyles()
-		{
-		}
-
-		public void removeNoteViewListener(INoteViewListener noteListener)
 		{
 		}
 
@@ -273,6 +407,49 @@ public class NotePresenterHandleEventTest
 		public Point getRightClickPopupLocation()
 		{
 			return rightClickPopupLocation;
+		}
+	}
+
+	private class MockViewer implements IViewer
+	{
+		public void closeNoteView(String noteName)
+		{
+		}
+
+		private boolean createLinkDialogOpened;
+
+		public boolean wasCreateLinkDialogOpened()
+		{
+			return createLinkDialogOpened;
+		}
+
+		public void openCreateLinkDialog(INoteView noteView, INoteModel noteModel)
+		{
+			createLinkDialogOpened = true;
+		}
+
+		private boolean createLinkToReferenceDialogOpened = false;
+
+		public void openCreateLinkToReferenceDialog(INoteView noteView, INoteModel noteModel)
+		{
+			createLinkToReferenceDialogOpened = true;
+		}
+
+		public boolean wasCreateLinkToReferenceDialogOpened()
+		{
+			return createLinkToReferenceDialogOpened;
+		}
+
+		public void openNewNoteDialog()
+		{
+		}
+
+		public void openNoteDialog()
+		{
+		}
+
+		public void openNoteView(String noteName)
+		{
 		}
 	}
 }

@@ -42,7 +42,7 @@ public class XMLImportUtil
 		linksFromZip = new ArrayList<Link>();
 	}
 
-	public void unpackageZipFile() throws ImportExportException
+	public void unpackageZipFile() throws Exception
 	{
 		ZipFile zipFile = null;
 
@@ -74,13 +74,6 @@ public class XMLImportUtil
 						out.write(buffer, 0, len);
 					}
 				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-					throw new ImportExportException(
-							"An error occurred while trying to unpackage the zip file: " + filename,
-							e);
-				}
 				finally
 				{
 					if (out != null)
@@ -94,24 +87,11 @@ public class XMLImportUtil
 				}
 			}
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw new ImportExportException(
-					"An error occurred while trying to unpackage the zip file: " + filename, e);
-		}
 		finally
 		{
 			if (zipFile != null)
 			{
-				try
-				{
-					zipFile.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+				zipFile.close();
 			}
 		}
 	}
@@ -121,7 +101,7 @@ public class XMLImportUtil
 		new FileUtil().recrusivelyDelete(tempDir);
 	}
 
-	public void readInNotes()
+	public void readInNotes() throws Exception
 	{
 		for (String xmlFile : tempDir.list())
 		{
@@ -135,44 +115,34 @@ public class XMLImportUtil
 					Note note = (Note) xstream.fromXML(in);
 					notesFromZip.add(note);
 				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
 				finally
 				{
 					if (in != null)
 					{
-						try
-						{
-							in.close();
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
+						in.close();
 					}
 				}
 			}
 		}
 	}
 
+	// TODO: need to actually do something here...
 	public void updateDatabase()
 	{
-		System.out.println("adding the following notes to the database:");
-		for (Note note : getNotes())
-		{
-			System.out.println(note);
-		}
-
-		System.out.println("adding the following links to the database:");
-		for (Link link : getLinks())
-		{
-			System.out.println(link);
-		}
+		// System.out.println("adding the following notes to the database:");
+		// for (Note note : getNotes())
+		// {
+		// System.out.println(note);
+		// }
+		//
+		// System.out.println("adding the following links to the database:");
+		// for (Link link : getLinks())
+		// {
+		// System.out.println(link);
+		// }
 	}
 
-	public void readInLinks()
+	public void readInLinks() throws Exception
 	{
 		for (String xmlFile : tempDir.list())
 		{
@@ -186,22 +156,11 @@ public class XMLImportUtil
 					Link link = (Link) xstream.fromXML(in);
 					linksFromZip.add(link);
 				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
 				finally
 				{
 					if (in != null)
 					{
-						try
-						{
-							in.close();
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
+						in.close();
 					}
 				}
 			}

@@ -1,7 +1,6 @@
 package net.todd.biblestudy.rcp.actions;
 
 import net.todd.biblestudy.common.ViewHelper;
-import net.todd.biblestudy.rcp.actions.importExport.ImportExportException;
 import net.todd.biblestudy.rcp.actions.importExport.XMLImportUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,38 +46,38 @@ public class ImportNotesAction implements IWorkbenchWindowActionDelegate
 				@Override
 				protected IStatus run(IProgressMonitor monitor)
 				{
-					monitor.beginTask("Importing...", 5);
-
-					monitor.subTask("Inflating zip file to temp dir...");
 					try
 					{
+						monitor.beginTask("Importing...", 5);
+
+						monitor.subTask("Inflating zip file to temp dir...");
 						util.unpackageZipFile();
+						monitor.worked(1);
+
+						monitor.subTask("Reading in Notes...");
+						util.readInNotes();
+						monitor.worked(1);
+
+						monitor.subTask("Reading in Links...");
+						util.readInLinks();
+						monitor.worked(1);
+
+						monitor.subTask("Cleaning up temp dir...");
+						util.cleanup();
+						monitor.worked(1);
+
+						monitor.subTask("Updating database...");
+						util.updateDatabase();
+						monitor.worked(1);
+
+						monitor.done();
+						return Status.OK_STATUS;
 					}
-					catch (ImportExportException e)
+					catch (Exception e)
 					{
 						ViewHelper.showError(e);
 						return Status.CANCEL_STATUS;
 					}
-					monitor.worked(1);
-
-					monitor.subTask("Reading in Notes...");
-					util.readInNotes();
-					monitor.worked(1);
-
-					monitor.subTask("Reading in Links...");
-					util.readInLinks();
-					monitor.worked(1);
-
-					monitor.subTask("Cleaning up temp dir...");
-					util.cleanup();
-					monitor.worked(1);
-
-					monitor.subTask("Updating database...");
-					util.updateDatabase();
-					monitor.worked(1);
-
-					monitor.done();
-					return Status.OK_STATUS;
 				}
 			};
 

@@ -3,7 +3,6 @@ package net.todd.biblestudy.rcp.actions.importExport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,31 +39,24 @@ public class XMLExportUtil
 		filesToZip = new ArrayList<String>();
 	}
 
-	public File createTemporaryDirectory()
+	public File createTemporaryDirectory() throws Exception
 	{
 		tempParentDir = new File(new File(zipFilename).getParent());
 
-		try
-		{
-			String tempDirName = "biblestudy_temp" + new Date().getTime();
-			tempDir = new File(tempParentDir, tempDirName);
-			tempDir.mkdir();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		String tempDirName = "biblestudy_temp" + new Date().getTime();
+		tempDir = new File(tempParentDir, tempDirName);
+		tempDir.mkdir();
 
 		return tempDir;
 	}
 
-	public void addNoteToXML(Note note)
+	public void addNoteToXML(Note note) throws Exception
 	{
 		File noteFile = new File(tempDir, NOTE_FILE_PREFIX + note.getNoteId() + XML_SUFFIX);
 		writeObjectToFile(note, noteFile);
 	}
 
-	private void writeObjectToFile(Object obj, File objectFile)
+	private void writeObjectToFile(Object obj, File objectFile) throws Exception
 	{
 		filesToZip.add(objectFile.getAbsolutePath());
 
@@ -75,10 +67,6 @@ public class XMLExportUtil
 			out = new PrintWriter(objectFile);
 			xstream.toXML(obj, out);
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 		finally
 		{
 			out.flush();
@@ -86,13 +74,13 @@ public class XMLExportUtil
 		}
 	}
 
-	public void addLinkToXML(Link link)
+	public void addLinkToXML(Link link) throws Exception
 	{
 		File noteFile = new File(tempDir, LINK_FILE_PREFIX + link.getLinkId() + XML_SUFFIX);
 		writeObjectToFile(link, noteFile);
 	}
 
-	public void zipFile()
+	public void zipFile() throws Exception
 	{
 		if (zipFilename.endsWith(".zip") == false)
 		{
@@ -128,10 +116,6 @@ public class XMLExportUtil
 
 					out.closeEntry();
 				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
 				finally
 				{
 					if (in != null)
@@ -141,23 +125,12 @@ public class XMLExportUtil
 				}
 			}
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 		finally
 		{
 			if (out != null)
 			{
-				try
-				{
-					out.flush();
-					out.close();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
+				out.flush();
+				out.close();
 			}
 		}
 	}
