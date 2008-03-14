@@ -2,7 +2,9 @@ package net.todd.biblestudy.rcp.views;
 
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.models.INoteModel;
+import net.todd.biblestudy.rcp.models.IOpenNoteModel;
 import net.todd.biblestudy.rcp.models.NoteModel;
+import net.todd.biblestudy.rcp.models.OpenNoteModel;
 import net.todd.biblestudy.rcp.presenters.CreateLinkPresenter;
 import net.todd.biblestudy.rcp.presenters.NewNoteDialogPresenter;
 import net.todd.biblestudy.rcp.presenters.NotePresenter;
@@ -20,7 +22,8 @@ public class ViewerImpl implements IViewer
 	public void openNoteDialog()
 	{
 		IOpenNoteDialog view = new OpenNoteDialog(Display.getCurrent().getActiveShell());
-		new OpenNoteDialogPresenter(view);
+		IOpenNoteModel model = new OpenNoteModel();
+		new OpenNoteDialogPresenter(view, model);
 	}
 
 	public void openNoteView(final String noteName)
