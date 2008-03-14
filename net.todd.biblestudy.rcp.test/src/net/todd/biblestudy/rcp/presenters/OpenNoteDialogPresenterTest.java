@@ -35,6 +35,7 @@ public class OpenNoteDialogPresenterTest
 	public void tearDown() throws Exception
 	{
 		openedNote = null;
+		ViewerFactory.setViewer(null);
 	}
 
 	@Before
