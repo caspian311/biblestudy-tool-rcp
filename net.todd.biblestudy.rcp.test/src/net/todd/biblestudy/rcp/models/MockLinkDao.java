@@ -34,7 +34,6 @@ public class MockLinkDao implements ILinkDao
 
 	public List<Link> getAllLinksThatLinkTo(String oldNoteName)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

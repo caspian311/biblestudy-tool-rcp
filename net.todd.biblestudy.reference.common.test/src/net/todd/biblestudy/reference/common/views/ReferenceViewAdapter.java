@@ -47,31 +47,23 @@ public class ReferenceViewAdapter implements IReferenceView
 
 	public void displayLimitResultsMessage(int totalSize)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	public void hideLimitResultsMessage()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	public String getKeywordOrReference()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public BibleVerse getSelectedVerse()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void showRightClickMenu()
 	{
-		// TODO Auto-generated method stub
-
 	}
 }
