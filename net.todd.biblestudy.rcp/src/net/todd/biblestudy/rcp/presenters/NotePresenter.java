@@ -69,7 +69,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 		}
 		else if (source.equals(ViewEvent.NOTE_CLICKED))
 		{
-			handleNoteClicked(((Integer) event.getData()).intValue());
+			handleNoteClicked(((Integer) event.getData()));
 		}
 		else if (source.equals(ViewEvent.NOTE_DROPPED_REFERENCE))
 		{
@@ -193,24 +193,27 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 
 	private void handleNoteClicked(Integer offset)
 	{
-		Link link = noteModel.getLinkAtOffset(offset);
-
-		if (link != null)
+		if (offset != null)
 		{
-			if (link.getLinkToNoteName() != null)
+			Link link = noteModel.getLinkAtOffset(offset);
+
+			if (link != null)
 			{
-				ViewerFactory.getViewer().openNoteView(link.getLinkToNoteName());
-			}
-			else if (link.getLinkToReference() != null)
-			{
-				try
+				if (link.getLinkToNoteName() != null)
 				{
-					Reference reference = new Reference(link.getLinkToReference());
-					ReferenceViewerFactory.getViewer().openReferenceView(reference);
+					ViewerFactory.getViewer().openNoteView(link.getLinkToNoteName());
 				}
-				catch (InvalidReferenceException e)
+				else if (link.getLinkToReference() != null)
 				{
-					e.printStackTrace();
+					try
+					{
+						Reference reference = new Reference(link.getLinkToReference());
+						ReferenceViewerFactory.getViewer().openReferenceView(reference);
+					}
+					catch (InvalidReferenceException e)
+					{
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -225,7 +228,6 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 			if (link != null)
 			{
 				noteView.changeCursorToPointer();
-
 				new LinkStatusLineUtil().setTextOnStatusLine(link.toString());
 			}
 			else

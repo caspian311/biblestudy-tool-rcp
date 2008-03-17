@@ -17,8 +17,11 @@ import net.todd.biblestudy.rcp.views.IViewer;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
 import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.common.views.IReferenceViewer;
+import net.todd.biblestudy.reference.common.views.ReferenceViewerFactory;
 
 import org.eclipse.swt.graphics.Point;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +30,7 @@ public class NotePresenterHandleEventTest
 	private MockNoteModel model;
 	private MockNoteView view;
 	private MockViewer mockViewer;
+	private MockRefViewer mockRefViewer;
 
 	@Before
 	public void setUp() throws Exception
@@ -34,8 +38,17 @@ public class NotePresenterHandleEventTest
 		model = new MockNoteModel();
 		view = new MockNoteView();
 		mockViewer = new MockViewer();
+		mockRefViewer = new MockRefViewer();
 
 		ViewerFactory.setViewer(mockViewer);
+		ReferenceViewerFactory.setViewer(mockRefViewer);
+	}
+
+	@After
+	public void tearDown() throws Exception
+	{
+		ViewerFactory.setViewer(null);
+		ReferenceViewerFactory.setViewer(null);
 	}
 
 	@Test
@@ -177,6 +190,57 @@ public class NotePresenterHandleEventTest
 		ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_HOVERING);
 		viewEvent.setData(null);
 		presenter.handleEvent(viewEvent);
+		assertEquals("text", view.getCursor());
+
+		viewEvent.setData(new Integer(2));
+		presenter.handleEvent(viewEvent);
+		assertEquals("pointer", view.getCursor());
+
+		viewEvent.setData(new Integer(1));
+		presenter.handleEvent(viewEvent);
+		assertEquals("text", view.getCursor());
+	}
+
+	@Test
+	public void testHandleNoteClicked() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
+		viewEvent.setData(null);
+		presenter.handleEvent(viewEvent);
+		assertNull(mockViewer.getRecentlyOpenedNote());
+		assertFalse(mockViewer.isNoteViewOpened());
+
+		viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
+		viewEvent.setData(new Integer(50));
+		presenter.handleEvent(viewEvent);
+		assertEquals("woot", mockViewer.getRecentlyOpenedNote());
+		assertTrue(mockViewer.isNoteViewOpened());
+	}
+
+	@Test
+	public void testHandleNoteClickedWithLinkToRef() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		ViewEvent viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
+		viewEvent.setData(null);
+		presenter.handleEvent(viewEvent);
+		assertNull(mockViewer.getRecentlyOpenedNote());
+		assertFalse(mockViewer.isNoteViewOpened());
+
+		viewEvent = new ViewEvent(ViewEvent.NOTE_CLICKED);
+		viewEvent.setData(new Integer(100));
+		presenter.handleEvent(viewEvent);
+		assertEquals("john 3:16", mockRefViewer.getRecentlyOpenedRef());
+		assertTrue(mockRefViewer.isRefOpened());
 	}
 
 	private class MockNoteModel implements INoteModel
@@ -207,7 +271,24 @@ public class NotePresenterHandleEventTest
 
 		public Link getLinkAtOffset(int offset)
 		{
-			return null;
+			Link link = null;
+
+			if (offset == 50)
+			{
+				link = new Link();
+				link.setLinkToNoteName("woot");
+			}
+			else if (offset == 100)
+			{
+				link = new Link();
+				link.setLinkToReference("john 3:16");
+			}
+			else if (offset % 2 == 0)
+			{
+				link = new Link();
+			}
+
+			return link;
 		}
 
 		private Note note;
@@ -296,12 +377,21 @@ public class NotePresenterHandleEventTest
 		{
 		}
 
+		private String cursor = "text";
+
 		public void changeCursorToPointer()
 		{
+			cursor = "pointer";
 		}
 
 		public void changeCursorToText()
 		{
+			cursor = "text";
+		}
+
+		public String getCursor()
+		{
+			return cursor;
 		}
 
 		public void deleteNote()
@@ -448,8 +538,45 @@ public class NotePresenterHandleEventTest
 		{
 		}
 
+		private boolean noteViewOpened;
+		private String recentlyOpenedNote;
+
 		public void openNoteView(String noteName)
 		{
+			noteViewOpened = true;
+			recentlyOpenedNote = noteName;
+		}
+
+		public String getRecentlyOpenedNote()
+		{
+			return recentlyOpenedNote;
+		}
+
+		public boolean isNoteViewOpened()
+		{
+			return noteViewOpened;
+		}
+	}
+
+	private class MockRefViewer implements IReferenceViewer
+	{
+		private boolean refOpen = false;
+		private String recentlyOpenedRef;
+
+		public void openReferenceView(Reference reference)
+		{
+			recentlyOpenedRef = reference.toString();
+			refOpen = true;
+		}
+
+		public boolean isRefOpened()
+		{
+			return refOpen;
+		}
+
+		public String getRecentlyOpenedRef()
+		{
+			return recentlyOpenedRef;
 		}
 	}
 }
