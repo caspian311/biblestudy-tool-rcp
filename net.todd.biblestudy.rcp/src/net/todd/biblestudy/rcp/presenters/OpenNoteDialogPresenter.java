@@ -2,11 +2,9 @@ package net.todd.biblestudy.rcp.presenters;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.IOpenNoteModel;
-import net.todd.biblestudy.rcp.models.NoteModel;
 import net.todd.biblestudy.rcp.views.IOpenNoteDialog;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
 
@@ -14,11 +12,13 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 {
 	private IOpenNoteDialog view;
 	private IOpenNoteModel model;
+	private INoteModel noteModel;
 
-	public OpenNoteDialogPresenter(IOpenNoteDialog view, IOpenNoteModel model)
+	public OpenNoteDialogPresenter(IOpenNoteDialog view, IOpenNoteModel model, INoteModel noteModel)
 	{
 		this.view = view;
 		this.model = model;
+		this.noteModel = noteModel;
 		view.addOpenNoteEventListener(this);
 		view.openDialog();
 	}
@@ -106,15 +106,8 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 
 	private void doDeleteNote(String noteName)
 	{
-		INoteModel noteModel = getNoteModel();
-
 		noteModel.populateNoteInfo(noteName);
 		noteModel.deleteNoteAndLinks();
-	}
-
-	INoteModel getNoteModel()
-	{
-		return new NoteModel();
 	}
 
 	private void handlePostOpening()
@@ -139,17 +132,6 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 
 		view.closeDialog();
 
-		openNoteView(note);
-	}
-
-	void openNoteView(final Note note)
-	{
-		ViewHelper.runWithBusyIndicator(new Runnable()
-		{
-			public void run()
-			{
-				ViewerFactory.getViewer().openNoteView(note.getName());
-			}
-		});
+		ViewerFactory.getViewer().openNoteView(note.getName());
 	}
 }

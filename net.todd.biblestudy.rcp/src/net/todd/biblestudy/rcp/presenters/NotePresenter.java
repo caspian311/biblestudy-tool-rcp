@@ -162,8 +162,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 			currentCarretPosition = currentCarretPosition + reference.toString().length() + 1;
 		}
 
-		updateStylesOnView();
-		updateDocumentTitle();
+		handleModelAddedLink();
 	}
 
 	private void handleInsertReferenceText()
@@ -359,8 +358,13 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 
 		if (ModelEvent.MODEL_LINK_ADDED.equals(source))
 		{
-			updateStylesOnView();
-			updateDocumentTitle();
+			handleModelAddedLink();
 		}
+	}
+
+	void handleModelAddedLink()
+	{
+		updateStylesOnView();
+		updateDocumentTitle();
 	}
 }

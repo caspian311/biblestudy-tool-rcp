@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.db.Link;
@@ -243,14 +244,184 @@ public class NotePresenterHandleEventTest
 		assertTrue(mockRefViewer.isRefOpened());
 	}
 
+	@Test
+	public void testHandleOpenDropReferenceOptions() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+		assertFalse(view.isRefOptionOpen());
+
+		view.setDropCoordinates(new Point(1, 2));
+
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROPPED_REFERENCE));
+
+		assertTrue(view.isRefOptionOpen());
+		assertEquals(1, view.getRefOptionMenuCoordX());
+		assertEquals(2, view.getRefOptionMenuCoordY());
+
+		view.setDropCoordinates(new Point(3, 4));
+
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROPPED_REFERENCE));
+
+		assertTrue(view.isRefOptionOpen());
+		assertEquals(3, view.getRefOptionMenuCoordX());
+		assertEquals(4, view.getRefOptionMenuCoordY());
+	}
+
+	@Test
+	public void testHandleInsertReferenceTextWithNoVerses() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(1);
+		view.setDroppedVerse(new ArrayList<BibleVerse>());
+
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_TEXT));
+		assertEquals("abcdefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertReferenceTextWithOneVerse() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(1);
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+		BibleVerse verse = new BibleVerse();
+		verse.setText("a");
+		verses.add(verse);
+		view.setDroppedVerse(verses);
+
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_TEXT));
+		assertEquals("aa\nbcdefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertReferenceTextWithTwoVerses() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(4);
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+		BibleVerse verse1 = new BibleVerse();
+		verse1.setText("a");
+		BibleVerse verse2 = new BibleVerse();
+		verse2.setText("b");
+		verses.add(verse1);
+		verses.add(verse2);
+		view.setDroppedVerse(verses);
+
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_TEXT));
+		assertEquals("abcda\nb\nefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertReferenceAndText() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(4);
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+		BibleVerse verse1 = new BibleVerse();
+		verse1.setBook("ref");
+		verse1.setChapter(1);
+		verse1.setVerse(2);
+		verse1.setText("test");
+		verses.add(verse1);
+		view.setDroppedVerse(verses);
+
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_AND_TEXT));
+		assertEquals("abcdref 1:2 - test\nefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertLinkToReferenceInsertsOnlyRefIntoTextOfNote() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(4);
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+		BibleVerse verse1 = new BibleVerse();
+		verse1.setBook("ref");
+		verse1.setChapter(1);
+		verse1.setVerse(2);
+		verse1.setText("test");
+		verses.add(verse1);
+		view.setDroppedVerse(verses);
+
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
+		assertEquals("abcdref 1:2\nefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertLinkToReferenceAddsLinkToRefInNote() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(4);
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+		BibleVerse verse1 = new BibleVerse();
+		verse1.setBook("ref");
+		verse1.setChapter(1);
+		verse1.setVerse(2);
+		verse1.setText("test");
+		verses.add(verse1);
+		view.setDroppedVerse(verses);
+
+		assertFalse(model.isLinkToRefAdded());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
+		assertTrue(model.isLinkToRefAdded());
+	}
+
 	private class MockNoteModel implements INoteModel
 	{
 		public void addLinkToNote(String noteName, int start, int stop)
 		{
 		}
 
+		private boolean linkToRefAdded = false;
+
 		public void addLinkToReference(Reference reference, int start, int stop)
 		{
+			linkToRefAdded = true;
+		}
+
+		public boolean isLinkToRefAdded()
+		{
+			return linkToRefAdded;
 		}
 
 		public void createNewNoteInfo(String noteName)
@@ -410,19 +581,40 @@ public class NotePresenterHandleEventTest
 			return contentText;
 		}
 
+		private int currentCarretPosition;
+
+		public void setCurrentCarretPosition(int i)
+		{
+			currentCarretPosition = i;
+		}
+
 		public int getCurrentCarretPosition()
 		{
-			return 0;
+			return currentCarretPosition;
 		}
+
+		private Point dropCoordinates;
 
 		public Point getDropCoordinates()
 		{
-			return null;
+			return dropCoordinates;
+		}
+
+		public void setDropCoordinates(Point dropCoordinates)
+		{
+			this.dropCoordinates = dropCoordinates;
+		}
+
+		private List<BibleVerse> droppedVerses;
+
+		public void setDroppedVerse(List<BibleVerse> verses)
+		{
+			droppedVerses = verses;
 		}
 
 		public List<BibleVerse> getDroppedVerse()
 		{
-			return null;
+			return droppedVerses;
 		}
 
 		private Point lastClickedCoordinates;
@@ -459,8 +651,31 @@ public class NotePresenterHandleEventTest
 			return confirmDelete;
 		}
 
+		private boolean refOptionOpen = false;
+
+		public boolean isRefOptionOpen()
+		{
+			return refOptionOpen;
+		}
+
 		public void openDropReferenceOptions(int x, int y)
 		{
+			refOptionOpen = true;
+			refOptionMenuCoordX = x;
+			refOptionMenuCoordY = y;
+		}
+
+		private int refOptionMenuCoordX = -1;
+		private int refOptionMenuCoordY = -1;
+
+		public int getRefOptionMenuCoordX()
+		{
+			return refOptionMenuCoordX;
+		}
+
+		public int getRefOptionMenuCoordY()
+		{
+			return refOptionMenuCoordY;
 		}
 
 		public void removeNoteStyles()

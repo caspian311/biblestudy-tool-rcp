@@ -61,6 +61,11 @@ public class NoteModel implements INoteModel
 			try
 			{
 				links = getLinkDao().getAllLinksForNote(note.getNoteId());
+
+				if (links == null)
+				{
+					links = new ArrayList<Link>();
+				}
 			}
 			catch (SQLException e)
 			{

@@ -69,6 +69,7 @@ public class OpenNoteDialogPresenterTest
 
 			public void openNoteView(String noteName)
 			{
+				openedNote = noteName;
 			}
 		});
 	}
@@ -76,7 +77,7 @@ public class OpenNoteDialogPresenterTest
 	@Test
 	public void testCreatingThePresenterOpensTheView() throws Exception
 	{
-		new OpenNoteDialogPresenter(view, model);
+		new OpenNoteDialogPresenter(view, model, mockNoteModel);
 		assertTrue(view.isOpenDialog());
 	}
 
@@ -88,14 +89,7 @@ public class OpenNoteDialogPresenterTest
 
 		view.setSelectedNote(note);
 
-		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model)
-		{
-			@Override
-			void openNoteView(Note note)
-			{
-				openedNote = note.getName();
-			}
-		};
+		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model, mockNoteModel);
 		assertTrue(view.isOpenDialog());
 
 		presenter.handleEvent(new ViewEvent(ViewEvent.OPEN_NOTE_OK_PRESSED));
@@ -108,7 +102,7 @@ public class OpenNoteDialogPresenterTest
 	@Test
 	public void testHandleCancelPressed() throws Exception
 	{
-		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model);
+		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model, mockNoteModel);
 		presenter.handleEvent(new ViewEvent(ViewEvent.OPEN_NOTE_CANCEL_PRESSED));
 		assertFalse(view.isOpenDialog());
 	}
@@ -122,7 +116,7 @@ public class OpenNoteDialogPresenterTest
 		allNotes.add(new Note());
 		model.setAllNotes(allNotes);
 
-		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model);
+		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model, mockNoteModel);
 		assertNull(view.getNotesInDropDown());
 		presenter.handleEvent(new ViewEvent(ViewEvent.OPEN_NOTE_OPENED));
 		assertNotNull(view.getNotesInDropDown());
@@ -139,14 +133,7 @@ public class OpenNoteDialogPresenterTest
 
 		model.setAllNotes(new ArrayList<Note>());
 
-		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model)
-		{
-			@Override
-			INoteModel getNoteModel()
-			{
-				return mockNoteModel;
-			}
-		};
+		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model, mockNoteModel);
 		presenter.handleEvent(new ViewEvent(ViewEvent.OPEN_NOTE_DELETE));
 		assertNull(mockNoteModel.getNoteToDelete());
 		assertFalse(mockNoteModel.isNoteDeleted());
@@ -160,7 +147,7 @@ public class OpenNoteDialogPresenterTest
 	@Test
 	public void testHandleRenameButtonPressed() throws Exception
 	{
-		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model);
+		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model, mockNoteModel);
 		assertFalse(view.wasSelectedNoteNameMadeEditable());
 		presenter.handleEvent(new ViewEvent(ViewEvent.OPEN_NOTE_RENAME_BUTTON_PRESSED));
 		assertTrue(view.wasSelectedNoteNameMadeEditable());
@@ -176,7 +163,7 @@ public class OpenNoteDialogPresenterTest
 		view.setSelectedNote(note);
 		view.setRenamedNoteName("newNoteName");
 
-		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model);
+		IOpenNoteEventListener presenter = new OpenNoteDialogPresenter(view, model, mockNoteModel);
 		presenter.handleEvent(new ViewEvent(ViewEvent.OPEN_NOTE_RENAME));
 
 		assertEquals("newNoteName", model.getRenameNewNoteName());

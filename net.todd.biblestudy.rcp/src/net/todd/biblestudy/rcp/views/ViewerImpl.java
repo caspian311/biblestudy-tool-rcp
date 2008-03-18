@@ -23,7 +23,8 @@ public class ViewerImpl implements IViewer
 	{
 		IOpenNoteDialog view = new OpenNoteDialog(Display.getCurrent().getActiveShell());
 		IOpenNoteModel model = new OpenNoteModel();
-		new OpenNoteDialogPresenter(view, model);
+		INoteModel noteModel = new NoteModel();
+		new OpenNoteDialogPresenter(view, model, noteModel);
 	}
 
 	public void openNoteView(final String noteName)
