@@ -5,7 +5,7 @@ import java.util.EventObject;
 public class ViewEvent extends EventObject
 {
 	/**
-	 *
+	 * 
 	 */
 	private static final long serialVersionUID = -3608603346116267989L;
 
@@ -41,6 +41,9 @@ public class ViewEvent extends EventObject
 	public static final String NEW_NOTE_OK_PRESSED = "newNote.okPressed";
 	public static final String NEW_NOTE_KEY_PRESSED = "newNote.keyPressed";
 	public static final String NEW_NOTE_CANCEL_PRESSED = "newNote.cancelPressed";
+
+	public static final String EXPORT_NOTES_DIALOG_OPENED = "exportNotes.dialogOpened";
+	public static final String EXPORT_NOTES_DIALOG_CLOSED = "exportNotes.dialogClosed";
 
 	private Object data;
 
