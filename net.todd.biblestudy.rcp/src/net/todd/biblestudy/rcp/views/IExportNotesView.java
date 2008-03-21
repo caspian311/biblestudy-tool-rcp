@@ -14,4 +14,8 @@ public interface IExportNotesView
 	public void populateAllNotes(List<Note> notes);
 
 	public void removeListener(IExportNotesListener exportNotesPresenter);
+
+	public List<Note> getSelectedNotes();
+
+	public String openFileDialog();
 }
