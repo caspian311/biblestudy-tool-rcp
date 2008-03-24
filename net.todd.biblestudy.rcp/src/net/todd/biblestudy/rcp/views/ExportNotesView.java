@@ -279,6 +279,16 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 				Display.getCurrent().getActiveShell(), job);
 
 		job.setUser(true);
+		job.setPriority(Job.INTERACTIVE);
 		job.schedule();
+
+		// job.addJobChangeListener(new JobChangeAdapter()
+		// {
+		// @Override
+		// public void done(IJobChangeEvent event)
+		// {
+		// fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_JOB_FINISHED));
+		// }
+		// });
 	}
 }

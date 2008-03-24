@@ -222,15 +222,12 @@ public class ExportNotesModel implements IExportNotesModel
 
 					monitor.beginTask("Exporting...", totalWork);
 
-					monitor.subTask("Creating temporary directory...");
 					createTemporaryDirectory();
-
 					monitor.worked(1);
+
 					for (Note note : notesToExport)
 					{
-						monitor.subTask(note.getName());
 						addNoteToXML(note);
-
 						monitor.worked(1);
 
 						if (monitor.isCanceled())
@@ -241,8 +238,8 @@ public class ExportNotesModel implements IExportNotesModel
 
 					for (Link link : associatedLinks)
 					{
-						monitor.subTask(link.toString());
 						addLinkToXML(link);
+						monitor.worked(1);
 
 						if (monitor.isCanceled())
 						{
