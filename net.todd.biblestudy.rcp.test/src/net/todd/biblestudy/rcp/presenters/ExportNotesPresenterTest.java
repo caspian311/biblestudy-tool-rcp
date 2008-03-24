@@ -13,6 +13,9 @@ import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.IExportNotesModel;
 import net.todd.biblestudy.rcp.views.IExportNotesView;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.Job;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -102,10 +105,10 @@ public class ExportNotesPresenterTest
 	}
 
 	@Test
-	public void testWhenDoExportTakeAllSelectedNotesFromViewAndPutIntoModel() throws Exception
+	public void testWhenExportTakeAllSelectedNotesFromViewAndPutIntoModel() throws Exception
 	{
 		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
-		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DO_EXPORT));
+		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
 		assertNull(model.getSelectedNotes());
 
 		List<Note> notes = new ArrayList<Note>();
@@ -124,7 +127,7 @@ public class ExportNotesPresenterTest
 
 		view.setSelectedNotes(notes);
 
-		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DO_EXPORT));
+		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
 		List<Note> selectedNotes = model.getSelectedNotes();
 		assertNotNull(selectedNotes);
 		assertEquals(2, selectedNotes.size());
@@ -133,22 +136,67 @@ public class ExportNotesPresenterTest
 	}
 
 	@Test
-	public void testWhenDoExportPopupFileDialog() throws Exception
+	public void testWhenExportPopupFileDialog() throws Exception
 	{
 		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
 		assertFalse(view.isFileDialogOpen());
 		assertNull(model.getFileToExportTo());
 
 		view.setFileToExportTo("test.xml");
-		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DO_EXPORT));
+		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
 
 		assertTrue(view.isFileDialogOpen());
 		assertEquals("test.xml", model.getFileToExportTo());
 	}
 
+	@Test
+	public void testCallExportOnModelAndPutJobIntoView() throws Exception
+	{
+		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
+
+		assertFalse(model.wasCreateExportJobCalled());
+		assertNull(view.getExportJob());
+		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
+
+		assertTrue(model.wasCreateExportJobCalled());
+		Job exportJob = view.getExportJob();
+		assertNotNull(exportJob);
+	}
+
+	@Test
+	public void testWhenExportDialogIsClosed() throws Exception
+	{
+		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
+		assertTrue(view.isExportDialogOpen());
+		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
+		assertFalse(view.isExportDialogOpen());
+	}
+
 	private class MockExportNotesView implements IExportNotesView
 	{
-		private boolean exportDialogOpen;
+		private boolean exportDialogOpen = false;
+
+		public void openExportDialog()
+		{
+			exportDialogOpen = true;
+		}
+
+		private Job exportJob;
+
+		public Job getExportJob()
+		{
+			return exportJob;
+		}
+
+		public void startExportJob(Job job)
+		{
+			exportJob = job;
+		}
+
+		public void closeExportDialog()
+		{
+			exportDialogOpen = false;
+		}
 
 		public boolean isExportDialogOpen()
 		{
@@ -200,11 +248,6 @@ public class ExportNotesPresenterTest
 			allNotesPopulated = true;
 		}
 
-		public void openExportDialog()
-		{
-			exportDialogOpen = true;
-		}
-
 		private List<Note> notes;
 
 		public List<Note> getAllNotes()
@@ -235,6 +278,26 @@ public class ExportNotesPresenterTest
 
 	private class MockExportNotesModel implements IExportNotesModel
 	{
+		private boolean createExportJobCalled = false;
+
+		public Job createExportJob()
+		{
+			createExportJobCalled = true;
+			return new Job("")
+			{
+				@Override
+				protected IStatus run(IProgressMonitor monitor)
+				{
+					return null;
+				}
+			};
+		}
+
+		public boolean wasCreateExportJobCalled()
+		{
+			return createExportJobCalled;
+		}
+
 		private List<Note> allNotes;
 
 		public void setAllNotes(List<Note> notes)
@@ -266,7 +329,7 @@ public class ExportNotesPresenterTest
 			return selectedNotes;
 		}
 
-		public void setSelectedNotes(List<Note> selectedNotes)
+		public void setNotesToExport(List<Note> selectedNotes)
 		{
 			this.selectedNotes = selectedNotes;
 		}

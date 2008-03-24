@@ -13,11 +13,16 @@ import java.util.zip.ZipFile;
 
 import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.Note;
+import net.todd.biblestudy.rcp.models.FileUtil;
 
 import com.thoughtworks.xstream.XStream;
 
 public class XMLImportUtil
 {
+	public static final String LINK_FILE_PREFIX = "LINK_";
+	public static final String NOTE_FILE_PREFIX = "NOTE_";
+	public static final String XML_SUFFIX = ".xml";
+
 	private XStream xstream;
 
 	private byte[] buffer = new byte[1024];
@@ -105,8 +110,8 @@ public class XMLImportUtil
 	{
 		for (String xmlFile : tempDir.list())
 		{
-			if (xmlFile.startsWith(XMLExportUtil.NOTE_FILE_PREFIX)
-					&& xmlFile.endsWith(XMLExportUtil.XML_SUFFIX))
+			if (xmlFile.startsWith(XMLImportUtil.NOTE_FILE_PREFIX)
+					&& xmlFile.endsWith(XMLImportUtil.XML_SUFFIX))
 			{
 				FileInputStream in = null;
 				try
@@ -129,25 +134,25 @@ public class XMLImportUtil
 	// TODO: need to actually do something here...
 	public void updateDatabase()
 	{
-		// System.out.println("adding the following notes to the database:");
-		// for (Note note : getNotes())
-		// {
-		// System.out.println(note);
-		// }
-		//
-		// System.out.println("adding the following links to the database:");
-		// for (Link link : getLinks())
-		// {
-		// System.out.println(link);
-		// }
+		System.out.println("adding the following notes to the database:");
+		for (Note note : getNotes())
+		{
+			System.out.println(note);
+		}
+
+		System.out.println("adding the following links to the database:");
+		for (Link link : getLinks())
+		{
+			System.out.println(link);
+		}
 	}
 
 	public void readInLinks() throws Exception
 	{
 		for (String xmlFile : tempDir.list())
 		{
-			if (xmlFile.startsWith(XMLExportUtil.LINK_FILE_PREFIX)
-					&& xmlFile.endsWith(XMLExportUtil.XML_SUFFIX))
+			if (xmlFile.startsWith(XMLImportUtil.LINK_FILE_PREFIX)
+					&& xmlFile.endsWith(XMLImportUtil.XML_SUFFIX))
 			{
 				FileInputStream in = null;
 				try

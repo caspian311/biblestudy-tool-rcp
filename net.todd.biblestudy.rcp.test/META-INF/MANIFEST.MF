@@ -5,4 +5,5 @@ Bundle-SymbolicName: net.todd.biblestudy.rcp.test
 Bundle-Version: 1.0.0
 Require-Bundle: net.todd.biblestudy.rcp,
  org.eclipse.ui,
- net.todd.biblestudy.reference.common
+ net.todd.biblestudy.reference.common,
+ org.eclipse.core.runtime

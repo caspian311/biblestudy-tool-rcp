@@ -1,6 +1,7 @@
 package net.todd.biblestudy.rcp.views;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.presenters.IExportNotesListener;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -24,9 +26,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.PlatformUI;
 
 public class ExportNotesView extends Dialog implements IExportNotesView
 {
@@ -44,6 +51,7 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 	private TableColumn noteNameColumn;
 	private TableColumn lastModifiedColumn;
 	private TableColumn createdColumn;
+	private List<Note> selectedNotes = new ArrayList<Note>();
 
 	public ExportNotesView(Shell shell)
 	{
@@ -84,6 +92,8 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 		notesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		notesTable.setHeaderVisible(true);
 		notesTable.setLinesVisible(true);
+
+		addCheckListener();
 
 		noteNameColumn = new TableColumn(notesTable, SWT.LEFT);
 		noteNameColumn.setText(NOTE_NAME_COLUMN_HEADER);
@@ -132,10 +142,34 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 		return parent;
 	}
 
+	private void addCheckListener()
+	{
+		notesTable.addListener(SWT.Selection, new Listener()
+		{
+			public void handleEvent(Event event)
+			{
+				if (event.detail == SWT.CHECK)
+				{
+					TableItem tableItem = (TableItem) event.item;
+					Note note = (Note) tableItem.getData();
+					if (tableItem.getChecked())
+					{
+						selectedNotes.add(note);
+					}
+					else
+					{
+						selectedNotes.remove(note);
+					}
+				}
+			}
+
+		});
+	}
+
 	@Override
 	protected void okPressed()
 	{
-		fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DO_EXPORT));
+		fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
 	}
 
 	@Override
@@ -223,12 +257,28 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 
 	public List<Note> getSelectedNotes()
 	{
-		return null;
+		return selectedNotes;
 	}
 
 	public String openFileDialog()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		FileDialog dlg = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+
+		return dlg.open();
+	}
+
+	public void closeExportDialog()
+	{
+		fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DIALOG_CLOSED));
+		close();
+	}
+
+	public void startExportJob(Job job)
+	{
+		PlatformUI.getWorkbench().getProgressService().showInDialog(
+				Display.getCurrent().getActiveShell(), job);
+
+		job.setUser(true);
+		job.schedule();
 	}
 }

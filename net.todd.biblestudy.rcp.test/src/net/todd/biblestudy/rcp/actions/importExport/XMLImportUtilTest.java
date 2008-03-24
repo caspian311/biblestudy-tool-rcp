@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
+import net.todd.biblestudy.rcp.models.FileUtil;
+
 import org.junit.Test;
 
 public class XMLImportUtilTest
@@ -86,7 +88,8 @@ public class XMLImportUtilTest
 		{
 			// FIXME: want to have better errors
 			assertTrue(e instanceof Exception);
-			// assertEquals("An error occurred while trying to unpackage the zip file: " +
+			// assertEquals("An error occurred while trying to unpackage the zip
+			// file: " +
 			// filename, e
 			// .getMessage());
 		}

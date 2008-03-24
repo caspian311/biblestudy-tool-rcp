@@ -33,19 +33,23 @@ public class ExportNotesPresenter implements IExportNotesListener
 		{
 			handleDialogClosed();
 		}
-		else if (ViewEvent.EXPORT_NOTES_DO_EXPORT.equals(source))
+		else if (ViewEvent.EXPORT_NOTES_EXPORT.equals(source))
 		{
-			handleDoExportNotes();
+			handleExportNotes();
 		}
 	}
 
-	private void handleDoExportNotes()
+	private void handleExportNotes()
 	{
 		List<Note> notes = view.getSelectedNotes();
-		model.setSelectedNotes(notes);
+		model.setNotesToExport(notes);
 
 		String filename = view.openFileDialog();
 		model.setFileToExportTo(filename);
+
+		view.closeExportDialog();
+
+		view.startExportJob(model.createExportJob());
 	}
 
 	private void handleDialogClosed()

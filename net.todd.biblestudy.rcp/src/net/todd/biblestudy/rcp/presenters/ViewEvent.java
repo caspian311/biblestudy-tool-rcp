@@ -44,7 +44,7 @@ public class ViewEvent extends EventObject
 
 	public static final String EXPORT_NOTES_DIALOG_OPENED = "exportNotes.dialogOpened";
 	public static final String EXPORT_NOTES_DIALOG_CLOSED = "exportNotes.dialogClosed";
-	public static final String EXPORT_NOTES_DO_EXPORT = "exportNotes.doExport";
+	public static final String EXPORT_NOTES_EXPORT = "exportNotes.export";
 
 	private Object data;
 

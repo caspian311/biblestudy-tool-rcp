@@ -1,4 +1,4 @@
-package net.todd.biblestudy.rcp.actions.importExport;
+package net.todd.biblestudy.rcp.models;
 
 import java.io.File;
 

@@ -1,13 +1,19 @@
 package net.todd.biblestudy.rcp.models;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
+import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.Note;
 
 import org.junit.Test;
@@ -71,5 +77,153 @@ public class ExportNotesModelTest
 		assertEquals(2, allNotes.size());
 		assertEquals("1 : test1 - text1", allNotes.get(0).toString());
 		assertEquals("2 : test2 - text2", allNotes.get(1).toString());
+	}
+
+	@Test
+	public void testWhenSetNotesToBeExportedGrabAllLinksAssociatedWithThoseNotes() throws Exception
+	{
+		ExportNotesModel model = new ExportNotesModel()
+		{
+			@Override
+			ILinkDao getLinkDao()
+			{
+				return new ILinkDao()
+				{
+					public Link createLink(Link link) throws SQLException
+					{
+						return null;
+					}
+
+					public List<Link> getAllLinksForNote(Integer containingNoteId)
+							throws SQLException
+					{
+						ArrayList<Link> links = new ArrayList<Link>();
+
+						Link link1 = new Link();
+						link1.setLinkToNoteName("note1");
+						Link link2 = new Link();
+						link2.setLinkToNoteName("note2");
+
+						links.add(link1);
+						links.add(link2);
+
+						return links;
+					}
+
+					public List<Link> getAllLinksThatLinkTo(String oldNoteName) throws SQLException
+					{
+						return null;
+					}
+
+					public void removeAllLinksForNote(Note note) throws SQLException
+					{
+					}
+
+					public void removeLink(Link link) throws SQLException
+					{
+					}
+
+					public void updateLink(Link link) throws SQLException
+					{
+					}
+				};
+			}
+		};
+		model.setNotesToExport(null);
+		List<Link> assocaitedLinks = model.getAssociatedLinks();
+		assertNotNull(assocaitedLinks);
+		assertEquals(0, assocaitedLinks.size());
+
+		List<Note> notes = new ArrayList<Note>();
+
+		Note note1 = new Note();
+
+		notes.add(note1);
+
+		model.setNotesToExport(notes);
+		assocaitedLinks = model.getAssociatedLinks();
+		assertNotNull(assocaitedLinks);
+		assertEquals(2, assocaitedLinks.size());
+		assertEquals("Link to: note1", assocaitedLinks.get(0).toString());
+		assertEquals("Link to: note2", assocaitedLinks.get(1).toString());
+	}
+
+	private File tempDir;
+
+	@Test
+	public void testExporting() throws Exception
+	{
+		createTempDir();
+
+		String filename = tempDir.getAbsolutePath() + "/test.zip";
+
+		try
+		{
+			ExportNotesModel model = new ExportNotesModel();
+			model.setFileToExportTo(filename);
+			model.createTemporaryDirectory();
+
+			String[] fileList = new File(tempDir.getAbsolutePath()).list();
+			assertEquals(1, fileList.length);
+
+			assertEquals(0, new File(tempDir.getAbsolutePath() + "/" + fileList[0]).list().length);
+
+			// add notes
+			model.addNoteToXML(new Note());
+			assertEquals(1, new File(tempDir.getAbsolutePath() + "/" + fileList[0]).list().length);
+
+			boolean hasANote = false;
+			for (String child : new File(tempDir.getAbsolutePath() + "/" + fileList[0]).list())
+			{
+				if (child.startsWith(ExportNotesModel.NOTE_FILE_PREFIX))
+				{
+					hasANote = true;
+				}
+			}
+			assertTrue(hasANote);
+
+			// add links
+			model.addLinkToXML(new Link());
+			assertEquals(2, new File(tempDir.getAbsolutePath() + "/" + fileList[0]).list().length);
+
+			boolean hasALink = false;
+			for (String child : new File(tempDir.getAbsolutePath() + "/" + fileList[0]).list())
+			{
+				if (child.startsWith(ExportNotesModel.LINK_FILE_PREFIX))
+				{
+					hasALink = true;
+				}
+			}
+			assertTrue(hasALink);
+
+			// zip file
+			model.zipFile();
+			assertEquals(2, tempDir.list().length);
+			boolean hasAZipFile = false;
+			for (String child : tempDir.list())
+			{
+				if (child.equals("test.zip"))
+				{
+					hasAZipFile = true;
+				}
+			}
+			assertTrue(hasAZipFile);
+
+			// cleanup
+			model.cleanup();
+			assertFalse(new File(tempDir.getAbsolutePath() + "/" + fileList[0]).exists());
+		}
+		finally
+		{
+			new FileUtil().recrusivelyDelete(tempDir);
+			assertFalse(tempDir.exists());
+		}
+	}
+
+	private void createTempDir()
+	{
+		tempDir = new File(System.getProperty("java.io.tmpdir"), "xmlExportTest"
+				+ new Date().getTime());
+		tempDir.mkdirs();
 	}
 }
