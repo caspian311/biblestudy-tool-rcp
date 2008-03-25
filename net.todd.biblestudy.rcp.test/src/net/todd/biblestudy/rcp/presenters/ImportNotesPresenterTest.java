@@ -301,7 +301,7 @@ public class ImportNotesPresenterTest
 			this.job = job;
 		}
 
-		public Job getJob()
+		public Job createImportJob()
 		{
 			return job;
 		}
@@ -313,7 +313,7 @@ public class ImportNotesPresenterTest
 			return importedIntoDatabase;
 		}
 
-		public void importIntoDatabase()
+		public void importSelectedNotesIntoDatabase()
 		{
 			importedIntoDatabase = true;
 		}

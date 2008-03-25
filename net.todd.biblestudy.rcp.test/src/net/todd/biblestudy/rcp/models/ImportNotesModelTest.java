@@ -20,7 +20,7 @@ public class ImportNotesModelTest
 	@Test
 	public void testCreateJob() throws Exception
 	{
-		Job job = new ImportNotesModel().getJob();
+		Job job = new ImportNotesModel().createImportJob();
 		assertNotNull(job);
 		assertEquals("Importing Notes from file", job.getName());
 	}

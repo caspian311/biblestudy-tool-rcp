@@ -48,7 +48,7 @@ public class ImportNotesModel implements IImportNotesModel
 		linksFromZip = new ArrayList<Link>();
 	}
 
-	public Job getJob()
+	public Job createImportJob()
 	{
 		return new Job("Importing Notes from file")
 		{
@@ -200,7 +200,7 @@ public class ImportNotesModel implements IImportNotesModel
 		return linksFromZip;
 	}
 
-	public void importIntoDatabase()
+	public void importSelectedNotesIntoDatabase()
 	{
 		System.out.println("import notes into database...");
 		for (Note note : selectedNotes)

@@ -14,7 +14,7 @@ public interface IImportNotesModel
 
 	public void setSelectedNotes(List<Note> notes);
 
-	public Job getJob();
+	public Job createImportJob();
 
-	public void importIntoDatabase();
+	public void importSelectedNotesIntoDatabase();
 }

@@ -22,7 +22,7 @@ public class ImportNotesPresenter implements IImportNotesListener
 		String filename = view.openFileDialog();
 		model.setFilename(filename);
 
-		Job job = model.getJob();
+		Job job = model.createImportJob();
 		view.startImportJob(job);
 	}
 
@@ -58,7 +58,7 @@ public class ImportNotesPresenter implements IImportNotesListener
 		List<Note> selectedNotes = view.getSelectedNotes();
 		model.setSelectedNotes(selectedNotes);
 
-		model.importIntoDatabase();
+		model.importSelectedNotesIntoDatabase();
 	}
 
 	private void handleViewClosed()
