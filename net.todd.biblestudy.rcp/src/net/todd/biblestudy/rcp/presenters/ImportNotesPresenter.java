@@ -23,7 +23,7 @@ public class ImportNotesPresenter implements IImportNotesListener
 		model.setFilename(filename);
 
 		Job job = model.getJob();
-		view.setJob(job);
+		view.startImportJob(job);
 	}
 
 	public void handleEvent(ViewEvent event)
@@ -70,6 +70,6 @@ public class ImportNotesPresenter implements IImportNotesListener
 	{
 		List<Note> notesFromFile = model.getNotesFromFile();
 
-		view.setNotes(notesFromFile);
+		view.populateAllNotes(notesFromFile);
 	}
 }

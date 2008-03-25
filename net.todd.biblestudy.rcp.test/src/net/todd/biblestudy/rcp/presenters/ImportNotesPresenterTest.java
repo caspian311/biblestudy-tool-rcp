@@ -221,7 +221,7 @@ public class ImportNotesPresenterTest
 
 		private List<Note> notes;
 
-		public void setNotes(List<Note> notes)
+		public void populateAllNotes(List<Note> notes)
 		{
 			this.notes = notes;
 		}
@@ -250,7 +250,7 @@ public class ImportNotesPresenterTest
 			return job;
 		}
 
-		public void setJob(Job job)
+		public void startImportJob(Job job)
 		{
 			this.job = job;
 		}

@@ -8,10 +8,13 @@ import java.util.List;
 import javax.swing.event.EventListenerList;
 
 import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.rcp.presenters.IExportNotesListener;
+import net.todd.biblestudy.rcp.presenters.IImportNotesListener;
+import net.todd.biblestudy.rcp.presenters.ImportNotesPresenter;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
 
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -35,7 +38,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 
-public class ExportNotesView extends Dialog implements IExportNotesView
+public class ImportNotesView extends Dialog implements IImportNotesView
 {
 	private static final String NOTE_NAME_COLUMN_HEADER = "Note";
 	private static final String LAST_MODIFIED_COLUMN_HEADER = "Last modified";
@@ -45,25 +48,25 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 	private static final int LAST_MODIFIED_COLUMN_WIDTH = 100;
 	private static final int CREATED_COLUMN_WIDTH = 100;
 
-	private EventListenerList eventListeners = new EventListenerList();
 	private TableViewer notesTableViewer;
 	private Table notesTable;
 	private TableColumn noteNameColumn;
 	private TableColumn lastModifiedColumn;
 	private TableColumn createdColumn;
-	private List<Note> selectedNotes = new ArrayList<Note>();
 
-	public ExportNotesView(Shell shell)
+	private List<Note> selectedNotes = new ArrayList<Note>();
+	private EventListenerList eventListeners = new EventListenerList();
+
+	public ImportNotesView(Shell shell)
 	{
 		super(shell);
-		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
 	@Override
 	protected void configureShell(Shell newShell)
 	{
 		super.configureShell(newShell);
-		newShell.setText("Export Notes");
+		newShell.setText("Import Notes");
 	}
 
 	@Override
@@ -86,7 +89,7 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 		notesTableViewer = new TableViewer(composite, SWT.CHECK | SWT.V_SCROLL | SWT.BORDER
 				| SWT.SHADOW_ETCHED_IN);
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
-		notesTableViewer.setLabelProvider(new ExportNoteLabelProvider());
+		notesTableViewer.setLabelProvider(new ImportNoteLabelProvider());
 
 		notesTable = notesTableViewer.getTable();
 		notesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -137,7 +140,7 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 			}
 		});
 
-		fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DIALOG_OPENED));
+		fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_DIALOG_HAS_OPENED));
 
 		return parent;
 	}
@@ -162,30 +165,68 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 					}
 				}
 			}
-
 		});
 	}
 
-	@Override
-	protected void okPressed()
+	public List<Note> getSelectedNotes()
 	{
-		fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
+		return selectedNotes;
 	}
 
-	@Override
-	public boolean close()
+	public String openFileDialog()
 	{
-		fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DIALOG_CLOSED));
-		return super.close();
+		FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
+		dialog.setFilterExtensions(new String[] { "*.zip" });
+
+		return dialog.open();
 	}
 
-	public void openExportDialog()
+	public void openImportDialog()
 	{
 		Display.getDefault().asyncExec(new Runnable()
 		{
 			public void run()
 			{
 				open();
+			}
+		});
+	}
+
+	private void fireEvent(ViewEvent event)
+	{
+		IImportNotesListener[] listeners = eventListeners.getListeners(IImportNotesListener.class);
+
+		for (IImportNotesListener listener : listeners)
+		{
+			listener.handleEvent(event);
+		}
+	}
+
+	public void registerListener(IImportNotesListener listener)
+	{
+		eventListeners.add(IImportNotesListener.class, listener);
+	}
+
+	public void unregisterListener(ImportNotesPresenter listener)
+	{
+		eventListeners.remove(IImportNotesListener.class, listener);
+	}
+
+	public void startImportJob(Job job)
+	{
+		PlatformUI.getWorkbench().getProgressService().showInDialog(
+				Display.getCurrent().getActiveShell(), job);
+
+		job.setUser(true);
+		job.setPriority(Job.INTERACTIVE);
+		job.schedule();
+
+		job.addJobChangeListener(new JobChangeAdapter()
+		{
+			@Override
+			public void done(IJobChangeEvent event)
+			{
+				fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_JOB_FINISHED));
 			}
 		});
 	}
@@ -198,27 +239,21 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 		notesTableViewer.refresh();
 	}
 
-	public void addListener(IExportNotesListener listener)
+	@Override
+	protected void okPressed()
 	{
-		eventListeners.add(IExportNotesListener.class, listener);
+		fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_IMPORT));
+		close();
 	}
 
-	public void removeListener(IExportNotesListener listener)
+	@Override
+	public boolean close()
 	{
-		eventListeners.remove(IExportNotesListener.class, listener);
+		fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_DIALOG_CLOSED));
+		return super.close();
 	}
 
-	private void fireEvent(ViewEvent event)
-	{
-		IExportNotesListener[] listeners = eventListeners.getListeners(IExportNotesListener.class);
-
-		for (IExportNotesListener listener : listeners)
-		{
-			listener.handleEvent(event);
-		}
-	}
-
-	private class ExportNoteLabelProvider extends LabelProvider implements ITableLabelProvider
+	private class ImportNoteLabelProvider extends LabelProvider implements ITableLabelProvider
 	{
 		public Image getColumnImage(Object element, int columnIndex)
 		{
@@ -253,34 +288,5 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 
 			return columnText;
 		}
-	}
-
-	public List<Note> getSelectedNotes()
-	{
-		return selectedNotes;
-	}
-
-	public String openFileDialog()
-	{
-		FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
-		dialog.setFilterExtensions(new String[] { "*.zip" });
-
-		return dialog.open();
-	}
-
-	public void closeExportDialog()
-	{
-		fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DIALOG_CLOSED));
-		close();
-	}
-
-	public void startExportJob(Job job)
-	{
-		PlatformUI.getWorkbench().getProgressService().showInDialog(
-				Display.getCurrent().getActiveShell(), job);
-
-		job.setUser(true);
-		job.setPriority(Job.INTERACTIVE);
-		job.schedule();
 	}
 }

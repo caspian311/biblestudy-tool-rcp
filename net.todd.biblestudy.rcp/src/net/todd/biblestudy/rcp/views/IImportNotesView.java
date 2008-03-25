@@ -16,11 +16,11 @@ public interface IImportNotesView
 
 	public void openImportDialog();
 
-	public void setNotes(List<Note> notes);
+	public void populateAllNotes(List<Note> notes);
 
 	public void unregisterListener(ImportNotesPresenter listener);
 
 	public List<Note> getSelectedNotes();
 
-	public void setJob(Job job);
+	public void startImportJob(Job job);
 }

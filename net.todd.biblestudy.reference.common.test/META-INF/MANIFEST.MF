@@ -3,4 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Reference Common Test Plug-in
 Bundle-SymbolicName: net.todd.biblestudy.reference.common.test
 Bundle-Version: 1.0.0
-Require-Bundle: net.todd.biblestudy.reference.common
+Fragment-Host: net.todd.biblestudy.reference.common;bundle-version="1.0.0"
+Require-Bundle: org.junit4
