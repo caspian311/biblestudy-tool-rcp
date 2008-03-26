@@ -5,14 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import net.todd.biblestudy.db.ILinkDao;
+import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
+import net.todd.biblestudy.db.LinkDao;
 import net.todd.biblestudy.db.Note;
+import net.todd.biblestudy.db.NoteDao;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -195,17 +200,44 @@ public class ImportNotesModel implements IImportNotesModel
 		return notesFromZip;
 	}
 
-	List<Link> getLinks()
+	List<Link> getLinksFromFile()
 	{
 		return linksFromZip;
 	}
 
 	public void importSelectedNotesIntoDatabase()
 	{
-		System.out.println("import notes into database...");
 		for (Note note : selectedNotes)
 		{
-			System.out.println(note.toString());
+			List<Link> linksToImport = new ArrayList<Link>();
+
+			for (Link link : getLinksFromFile())
+			{
+				if (note.getNoteId().equals(link.getContainingNoteId()))
+				{
+					linksToImport.add(link);
+				}
+			}
+
+			try
+			{
+				getNoteDao().deleteNoteByName(note.getName());
+
+				Note newNote = getNoteDao().createNote(note.getName());
+				note.setNoteId(newNote.getNoteId());
+
+				getNoteDao().saveNote(note);
+				for (Link link : linksToImport)
+				{
+					getLinkDao().removeLink(link);
+					link.setContainingNoteId(note.getNoteId());
+					getLinkDao().createLink(link);
+				}
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -221,4 +253,13 @@ public class ImportNotesModel implements IImportNotesModel
 		selectedNotes = notes;
 	}
 
+	INoteDao getNoteDao()
+	{
+		return new NoteDao();
+	}
+
+	ILinkDao getLinkDao()
+	{
+		return new LinkDao();
+	}
 }

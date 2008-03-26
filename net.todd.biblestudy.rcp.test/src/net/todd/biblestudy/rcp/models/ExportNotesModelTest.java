@@ -67,6 +67,10 @@ public class ExportNotesModelTest
 					public void saveNote(Note note) throws SQLException
 					{
 					}
+
+					public void deleteNoteByName(String noteName)
+					{
+					}
 				};
 			}
 		};
