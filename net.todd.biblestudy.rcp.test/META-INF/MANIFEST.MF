@@ -6,5 +6,5 @@ Bundle-Version: 1.0.0
 Fragment-Host: net.todd.biblestudy.rcp;bundle-version="1.0.0"
 Require-Bundle: org.junit4,
  org.eclipse.ui,
- net.todd.biblestudy.reference.common,
+ net.todd.biblestudy.reference,
  org.eclipse.core.runtime

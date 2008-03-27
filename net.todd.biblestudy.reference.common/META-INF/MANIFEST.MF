@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common Plug-in
-Bundle-SymbolicName: net.todd.biblestudy.reference.common;singleton:=true
+Bundle-SymbolicName: net.todd.biblestudy.reference;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: net.todd.biblestudy.reference.common.Activator
 Require-Bundle: org.eclipse.ui,

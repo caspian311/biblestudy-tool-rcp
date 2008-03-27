@@ -4,7 +4,7 @@
    <extension
          id="nasb"
          name="NASB"
-         point="net.todd.biblestudy.reference.common.dbScripts">
+         point="net.todd.biblestudy.reference.dbScripts">
       <script
             filename="resources/data.sql">
       </script>

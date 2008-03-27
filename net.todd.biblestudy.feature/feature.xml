@@ -46,7 +46,7 @@
          unpack="false"/>
 
    <plugin
-         id="net.todd.biblestudy.reference.common"
+         id="net.todd.biblestudy.reference"
          download-size="0"
          install-size="0"
          version="0.0.0"
