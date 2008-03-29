@@ -15,7 +15,7 @@ import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.NoteModel;
 import net.todd.biblestudy.rcp.views.INoteView;
-import net.todd.biblestudy.reference.common.BibleVerse;
+import net.todd.biblestudy.reference.BibleVerse;
 
 import org.eclipse.swt.graphics.Point;
 import org.junit.Test;

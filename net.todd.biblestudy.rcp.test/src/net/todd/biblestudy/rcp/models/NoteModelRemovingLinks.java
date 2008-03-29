@@ -7,7 +7,7 @@ import java.util.List;
 
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteStyle;
-import net.todd.biblestudy.reference.common.ReferenceFactory;
+import net.todd.biblestudy.reference.ReferenceFactory;
 
 import org.junit.Before;
 import org.junit.Test;

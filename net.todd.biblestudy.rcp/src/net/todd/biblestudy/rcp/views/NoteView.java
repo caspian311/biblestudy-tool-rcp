@@ -7,8 +7,8 @@ import javax.swing.event.EventListenerList;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.presenters.INoteViewListener;
 import net.todd.biblestudy.rcp.presenters.ViewEvent;
-import net.todd.biblestudy.reference.common.BibleVerse;
-import net.todd.biblestudy.reference.common.ReferenceTransfer;
+import net.todd.biblestudy.reference.BibleVerse;
+import net.todd.biblestudy.reference.ReferenceTransfer;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;

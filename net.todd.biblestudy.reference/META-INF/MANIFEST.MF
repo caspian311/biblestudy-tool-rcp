@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Common Plug-in
 Bundle-SymbolicName: net.todd.biblestudy.reference;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: net.todd.biblestudy.reference.common.Activator
+Bundle-Activator: net.todd.biblestudy.reference.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.todd.biblestudy.common
@@ -11,5 +11,5 @@ Eclipse-LazyStart: true
 Bundle-ClassPath: lib/ibatis-2.3.0.677.jar,
  .,
  lib/hsqldb.jar
-Export-Package: net.todd.biblestudy.reference.common,
- net.todd.biblestudy.reference.common.views
+Export-Package: net.todd.biblestudy.reference,
+ net.todd.biblestudy.reference.views

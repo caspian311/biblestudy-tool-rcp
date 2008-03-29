@@ -6,7 +6,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="true"
-            class="net.todd.biblestudy.reference.common.views.ReferenceView"
+            class="net.todd.biblestudy.reference.views.ReferenceView"
             icon="icons/docs.png"
             id="net.todd.biblestudy.reference.common.ReferenceView"
             name="ReferenceView">
@@ -19,7 +19,7 @@
             label="Global Actions"
             visible="true">
          <action
-               class="net.todd.biblestudy.reference.common.actions.OpenReferenceAction"
+               class="net.todd.biblestudy.reference.actions.OpenReferenceAction"
                icon="icons/docs.png"
                id="net.todd.biblestudy.reference.common.OpenReferenceAction"
                label="Open Reference"
@@ -31,7 +31,7 @@
    <extension
          point="org.eclipse.ui.startup">
       <startup
-            class="net.todd.biblestudy.reference.common.Startup">
+            class="net.todd.biblestudy.reference.Startup">
       </startup>
    </extension>
 

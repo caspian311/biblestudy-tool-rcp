@@ -3,9 +3,9 @@ package net.todd.biblestudy.rcp.presenters;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
 import net.todd.biblestudy.rcp.views.INoteView;
-import net.todd.biblestudy.reference.common.InvalidReferenceException;
-import net.todd.biblestudy.reference.common.Reference;
-import net.todd.biblestudy.reference.common.ReferenceFactory;
+import net.todd.biblestudy.reference.InvalidReferenceException;
+import net.todd.biblestudy.reference.Reference;
+import net.todd.biblestudy.reference.ReferenceFactory;
 
 import org.eclipse.swt.graphics.Point;
 

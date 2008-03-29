@@ -6,7 +6,7 @@ import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.presenters.INoteModelListener;
-import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.Reference;
 
 public interface INoteModel
 {

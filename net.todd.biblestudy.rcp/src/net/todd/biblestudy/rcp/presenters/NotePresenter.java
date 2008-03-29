@@ -8,11 +8,11 @@ import net.todd.biblestudy.rcp.LinkStatusLineUtil;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
-import net.todd.biblestudy.reference.common.BibleVerse;
-import net.todd.biblestudy.reference.common.InvalidReferenceException;
-import net.todd.biblestudy.reference.common.Reference;
-import net.todd.biblestudy.reference.common.ReferenceFactory;
-import net.todd.biblestudy.reference.common.views.ReferenceViewerFactory;
+import net.todd.biblestudy.reference.BibleVerse;
+import net.todd.biblestudy.reference.InvalidReferenceException;
+import net.todd.biblestudy.reference.Reference;
+import net.todd.biblestudy.reference.ReferenceFactory;
+import net.todd.biblestudy.reference.views.ReferenceViewerFactory;
 
 import org.eclipse.swt.graphics.Point;
 

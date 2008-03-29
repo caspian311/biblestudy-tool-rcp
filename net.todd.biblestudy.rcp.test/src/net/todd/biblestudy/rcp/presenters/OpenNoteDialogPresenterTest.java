@@ -18,7 +18,7 @@ import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.rcp.views.IOpenNoteDialog;
 import net.todd.biblestudy.rcp.views.IViewer;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
-import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.Reference;
 
 import org.junit.After;
 import org.junit.Before;

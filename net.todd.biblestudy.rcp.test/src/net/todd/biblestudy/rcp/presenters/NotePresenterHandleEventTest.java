@@ -16,10 +16,10 @@ import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.rcp.views.IViewer;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
-import net.todd.biblestudy.reference.common.BibleVerse;
-import net.todd.biblestudy.reference.common.Reference;
-import net.todd.biblestudy.reference.common.views.IReferenceViewer;
-import net.todd.biblestudy.reference.common.views.ReferenceViewerFactory;
+import net.todd.biblestudy.reference.BibleVerse;
+import net.todd.biblestudy.reference.Reference;
+import net.todd.biblestudy.reference.views.IReferenceViewer;
+import net.todd.biblestudy.reference.views.ReferenceViewerFactory;
 
 import org.eclipse.swt.graphics.Point;
 import org.junit.After;

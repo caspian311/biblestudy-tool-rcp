@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.presenters.INoteViewListener;
-import net.todd.biblestudy.reference.common.BibleVerse;
+import net.todd.biblestudy.reference.BibleVerse;
 
 import org.eclipse.swt.graphics.Point;
 

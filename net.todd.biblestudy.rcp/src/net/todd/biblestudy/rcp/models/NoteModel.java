@@ -16,7 +16,7 @@ import net.todd.biblestudy.db.NoteDao;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.presenters.INoteModelListener;
 import net.todd.biblestudy.rcp.presenters.ModelEvent;
-import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.Reference;
 
 import org.apache.commons.lang.StringUtils;
 

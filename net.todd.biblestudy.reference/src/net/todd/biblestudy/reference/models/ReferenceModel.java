@@ -1,0 +1,45 @@
+package net.todd.biblestudy.reference.models;
+
+import java.util.List;
+
+import net.todd.biblestudy.reference.BibleVerse;
+import net.todd.biblestudy.reference.InvalidReferenceException;
+import net.todd.biblestudy.reference.ReferenceFactory;
+import net.todd.biblestudy.reference.db.BibleDao;
+import net.todd.biblestudy.reference.db.IBibleDao;
+
+public class ReferenceModel implements IReferenceModel
+{
+	public List<BibleVerse> performSearchOnReference(String searchText, String referenceShortName)
+	{
+		List<BibleVerse> search = null;
+
+		try
+		{
+			search = getBibleDao().referenceLookup(new ReferenceFactory().getReference(searchText));
+		}
+		catch (InvalidReferenceException e)
+		{
+			e.printStackTrace();
+		}
+
+		return search;
+	}
+
+	public List<BibleVerse> performSearchOnKeyword(String searchText, String referenceShortName)
+	{
+		List<BibleVerse> search = getBibleDao().keywordLookup(searchText);
+
+		return search;
+	}
+
+	private IBibleDao getBibleDao()
+	{
+		return new BibleDao();
+	}
+
+	public List<String> getAllBibleVersions()
+	{
+		return getBibleDao().listAllVersions();
+	}
+}
