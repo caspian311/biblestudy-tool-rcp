@@ -17,13 +17,15 @@ public abstract class BaseDao
 		{
 			try
 			{
-				Reader reader = Resources.getResourceAsReader("net/todd/biblestudy/reference/common/db/SqlMapConfig.xml");
+				Reader reader = Resources
+						.getResourceAsReader("net/todd/biblestudy/reference/db/SqlMapConfig.xml");
 				sqlMapper = SqlMapClientBuilder.buildSqlMapClient(reader);
 				reader.close();
 			}
 			catch (IOException e)
 			{
-				throw new RuntimeException("Something bad happened while building the SqlMapClient instance." + e, e);
+				throw new RuntimeException(
+						"Something bad happened while building the SqlMapClient instance." + e, e);
 			}
 		}
 

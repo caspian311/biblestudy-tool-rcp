@@ -2,8 +2,8 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="Verse">
 
-	<typeAlias alias="BibleVerse" type="net.todd.biblestudy.reference.common.BibleVerse" />
-	<typeAlias alias="Reference" type="net.todd.biblestudy.reference.common.Reference" />
+	<typeAlias alias="BibleVerse" type="net.todd.biblestudy.reference.BibleVerse" />
+	<typeAlias alias="Reference" type="net.todd.biblestudy.reference.Reference" />
 
 
 	<resultMap id="bibleResult" class="BibleVerse">
@@ -16,8 +16,10 @@
 
 	<select id="keywordLookup" parameterClass="String"
 		resultMap="bibleResult">
-		SELECT BIBLE.* FROM BIBLE WHERE LCASE(BIB_TEXT) like
-		LCASE('%$value$%') ORDER BY BIB_SEQUENCE_ID
+		SELECT		BIBLE.*
+		FROM 		BIBLE
+		WHERE		LCASE(BIB_TEXT) like LCASE('%$value$%')
+		ORDER BY	BIB_SEQUENCE_ID
 	</select>
 
 	<select id="referenceLookup" parameterClass="Reference"
