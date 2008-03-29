@@ -4,7 +4,7 @@
 
 	<typeAlias alias="BibleVerse" type="net.todd.biblestudy.reference.common.BibleVerse" />
 	<typeAlias alias="Reference" type="net.todd.biblestudy.reference.common.Reference" />
-	
+
 
 	<resultMap id="bibleResult" class="BibleVerse">
 		<result property="version" column="BIB_VERSION" />
@@ -14,32 +14,35 @@
 		<result property="text" column="BIB_TEXT" />
 	</resultMap>
 
-	<select id="keywordLookup" parameterClass="String" resultMap="bibleResult">
-		SELECT		BIBLE.*
-		FROM		BIBLE
-		WHERE		LCASE(BIB_TEXT) like LCASE('%$value$%')
-		ORDER BY	BIB_SEQUENCE_ID
+	<select id="keywordLookup" parameterClass="String"
+		resultMap="bibleResult">
+		SELECT BIBLE.* FROM BIBLE WHERE LCASE(BIB_TEXT) like
+		LCASE('%$value$%') ORDER BY BIB_SEQUENCE_ID
 	</select>
-	
-	<select id="referenceLookup" parameterClass="Reference" resultMap="bibleResult">
-		SELECT		BIBLE.*
-		FROM		BIBLE
-		WHERE		LCASE(BIB_BOOK) like LCASE('$book$%')
-		<isNotEmpty prepend="AND" property="chapter">
-		BIB_CHAPTER = #chapter#
+
+	<select id="referenceLookup" parameterClass="Reference"
+		resultMap="bibleResult">
+		SELECT BIBLE.* FROM BIBLE WHERE LCASE(BIB_BOOK) like
+		LCASE('$book$%')
+		<isNotEmpty property="chapters">
+			<iterate prepend="AND" property="chapters" open="(" close=")" conjunction="OR">
+				BIB_CHAPTER = #chapters[]#
+			</iterate>
 		</isNotEmpty>
-		<isNotEmpty prepend="AND" property="verse">
-		BIB_VERSE = #verse#
+		<isNotEmpty property="verses">
+			<iterate prepend="AND" property="verses" open="(" close=")" conjunction="OR">
+				BIB_VERSE = #verses[]#
+			</iterate>
 		</isNotEmpty>
-		
-		ORDER BY	BIB_SEQUENCE_ID
+
+		ORDER BY BIB_SEQUENCE_ID
 	</select>
 
 	<select id="listAllVersions" resultClass="String">
-		SELECT		BIB_VERSION
-		FROM		BIBLE
-		GROUP BY	BIB_VERSION
-		ORDER BY	BIB_VERSION
+		SELECT		BIB_VERSION 
+		FROM 		BIBLE 
+		GROUP BY 	BIB_VERSION
+		ORDER BY 	BIB_VERSION
 	</select>
 
 </sqlMap>

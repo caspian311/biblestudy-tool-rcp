@@ -1,142 +1,53 @@
 package net.todd.biblestudy.reference.common;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 public class ReferenceTest
 {
 	@Test
-	public void testParseReferenceWithNull()
+	public void testReferenceToString() throws Exception
 	{
-		try
-		{
-			new Reference(null);
-			fail();
-		}
-		catch (InvalidReferenceException e)
-		{
-		}
+		Reference reference = new Reference();
+		reference.setBook("John");
+		reference.setChapters(new Integer[] { 1 });
+		reference.setVerses(new Integer[] { 1 });
+		assertEquals("John 1:1", reference.toString());
+
+		reference = new Reference();
+		reference.setBook("John");
+		reference.setChapters(new Integer[] { 1, 2 });
+		assertEquals("John 1-2", reference.toString());
+
+		reference = new Reference();
+		reference.setBook("John");
+		reference.setChapters(new Integer[] { 1 });
+		reference.setVerses(new Integer[] { 1, 2 });
+		assertEquals("John 1:1-2", reference.toString());
 	}
 
 	@Test
-	public void testParseReferenceWithEmptyString()
+	public void testReferenceToStringFromReferenceFactory() throws Exception
 	{
-		try
-		{
-			new Reference("");
-			fail();
-		}
-		catch (InvalidReferenceException e)
-		{
-		}
-	}
+		String refStr = "John 1:1";
+		Reference reference = new ReferenceFactory().getReference(refStr);
+		assertEquals(refStr, reference.toString());
 
-	@Test
-	public void testParseReferenceWithInvalidReference() throws Exception
-	{
-		try
-		{
-			new Reference("john asdf:asdf");
-			fail();
-		}
-		catch (InvalidReferenceException e)
-		{
-		}
-	}
+		refStr = "John 1:1-2";
+		reference = new ReferenceFactory().getReference(refStr);
+		assertEquals(refStr, reference.toString());
 
-	@Test
-	public void testParseReferenceWithRealReference() throws Exception
-	{
-		Reference reference = new Reference("john 3:16");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("john", reference.getBook());
-		assertNotNull(reference.getChapter());
-		assertEquals(new Integer(3), reference.getChapter());
-		assertNotNull(reference.getVerse());
-		assertEquals(new Integer(16), reference.getVerse());
-	}
+		refStr = "John 1-2";
+		reference = new ReferenceFactory().getReference(refStr);
+		assertEquals(refStr, reference.toString());
 
-	@Test
-	public void testParseReferenceWithComplexBookNameReference() throws Exception
-	{
-		Reference reference = new Reference("1 john 1:1");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("1 john", reference.getBook());
-		assertNotNull(reference.getChapter());
-		assertEquals(new Integer(1), reference.getChapter());
-		assertNotNull(reference.getVerse());
-		assertEquals(new Integer(1), reference.getVerse());
-	}
+		refStr = "1 John 1-2";
+		reference = new ReferenceFactory().getReference(refStr);
+		assertEquals(refStr, reference.toString());
 
-	@Test
-	public void testParseReferenceWithJustBookName() throws Exception
-	{
-		Reference reference = new Reference("1 john");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("1 john", reference.getBook());
-
-		reference = new Reference("john");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("john", reference.getBook());
-	}
-
-	@Test
-	public void testParseReferenceWithJustBookNameAndChapter() throws Exception
-	{
-		Reference reference = new Reference("1 john 1");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("1 john", reference.getBook());
-		assertEquals(new Integer(1), reference.getChapter());
-
-		reference = new Reference("john 1");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("john", reference.getBook());
-		assertEquals(new Integer(1), reference.getChapter());
-	}
-
-	@Test
-	public void testParseSongOfSolomonWithBookAndChapterAndVerse() throws Exception
-	{
-		Reference reference = new Reference("Song of Solomon 5:1");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("Song of Solomon", reference.getBook());
-		assertNotNull(reference.getChapter());
-		assertEquals(new Integer(5), reference.getChapter());
-		assertNotNull(reference.getVerse());
-		assertEquals(new Integer(1), reference.getVerse());
-	}
-
-	@Test
-	public void testParseSongOfSolomonWithJustBookAndChapter() throws Exception
-	{
-		Reference reference = new Reference("Song of Solomon 5");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("Song of Solomon", reference.getBook());
-		assertNotNull(reference.getChapter());
-		assertEquals(new Integer(5), reference.getChapter());
-		assertNull(reference.getVerse());
-	}
-
-	@Test
-	public void testParseSongOfSolomonWithJustBook() throws Exception
-	{
-		Reference reference = new Reference("Song of Solomon");
-		assertNotNull(reference);
-		assertNotNull(reference.getBook());
-		assertEquals("Song of Solomon", reference.getBook());
-		assertNull(reference.getChapter());
-		assertNull(reference.getVerse());
+		refStr = "1 John 1:1";
+		reference = new ReferenceFactory().getReference(refStr);
+		assertEquals(refStr, reference.toString());
 	}
 }

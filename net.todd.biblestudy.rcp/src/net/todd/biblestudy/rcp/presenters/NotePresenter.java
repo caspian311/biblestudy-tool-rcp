@@ -11,6 +11,7 @@ import net.todd.biblestudy.rcp.views.ViewerFactory;
 import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.InvalidReferenceException;
 import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.common.ReferenceFactory;
 import net.todd.biblestudy.reference.common.views.ReferenceViewerFactory;
 
 import org.eclipse.swt.graphics.Point;
@@ -206,7 +207,8 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 				{
 					try
 					{
-						Reference reference = new Reference(link.getLinkToReference());
+						Reference reference = new ReferenceFactory().getReference(link
+								.getLinkToReference());
 						ReferenceViewerFactory.getViewer().openReferenceView(reference);
 					}
 					catch (InvalidReferenceException e)

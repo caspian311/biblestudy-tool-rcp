@@ -5,6 +5,7 @@ import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
 import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.reference.common.InvalidReferenceException;
 import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.common.ReferenceFactory;
 
 import org.eclipse.swt.graphics.Point;
 
@@ -56,7 +57,7 @@ public class CreateLinkPresenter implements ICreateLinkListener
 		String referenceText = createLinkView.getLinkText();
 		try
 		{
-			new Reference(referenceText);
+			new ReferenceFactory().getReference(referenceText);
 			createLinkView.hideErrorMessage();
 		}
 		catch (InvalidReferenceException e)
@@ -77,7 +78,7 @@ public class CreateLinkPresenter implements ICreateLinkListener
 
 		try
 		{
-			reference = new Reference(referenceText);
+			reference = new ReferenceFactory().getReference(referenceText);
 
 			addLinkToReferenceAndUpdateView(reference, start, stop);
 

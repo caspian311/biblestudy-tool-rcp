@@ -1,19 +1,10 @@
 package net.todd.biblestudy.reference.common;
 
-import java.util.StringTokenizer;
-
-import org.apache.commons.lang.StringUtils;
-
 public class Reference
 {
 	private String book;
-	private Integer chapter;
-	private Integer verse;
-
-	public Reference(String referenceStr) throws InvalidReferenceException
-	{
-		validateReferenceStr(referenceStr);
-	}
+	private Integer[] chapters;
+	private Integer[] verses;
 
 	public String getBook()
 	{
@@ -25,145 +16,24 @@ public class Reference
 		this.book = book;
 	}
 
-	public Integer getChapter()
+	public Integer[] getChapters()
 	{
-		return chapter;
+		return chapters;
 	}
 
-	public void setChapter(Integer chapter)
+	public void setChapters(Integer[] chapters)
 	{
-		this.chapter = chapter;
+		this.chapters = chapters;
 	}
 
-	public Integer getVerse()
+	public Integer[] getVerses()
 	{
-		return verse;
+		return verses;
 	}
 
-	public void setVerse(Integer verse)
+	public void setVerses(Integer[] verses)
 	{
-		this.verse = verse;
-	}
-
-	private void validateReferenceStr(String referenceStr) throws InvalidReferenceException
-	{
-		boolean isValid = false;
-
-		if (referenceStr != null)
-		{
-			StringTokenizer tokenizer = new StringTokenizer(referenceStr);
-
-			if (tokenizer.countTokens() > 0)
-			{
-				String firstToken = tokenizer.nextToken();
-
-				if (StringUtils.isNumeric(firstToken))
-				{
-					if (tokenizer.hasMoreTokens())
-					{
-						String secondToken = tokenizer.nextToken();
-						if (StringUtils.isAlpha(secondToken))
-						{
-							if (tokenizer.hasMoreTokens())
-							{
-								String thirdToken = tokenizer.nextToken();
-
-								if (StringUtils.isNumeric(thirdToken))
-								{
-									isValid = true;
-									book = firstToken + " " + secondToken;
-									chapter = new Integer(thirdToken);
-								}
-								else
-								{
-									StringTokenizer refTokenizer = new StringTokenizer(thirdToken, ":");
-
-									if (refTokenizer.countTokens() == 2)
-									{
-										String firstRefToken = refTokenizer.nextToken();
-										String secondRefToken = refTokenizer.nextToken();
-
-										if (StringUtils.isNumeric(firstRefToken) && StringUtils.isNumeric(secondRefToken))
-										{
-											isValid = true;
-											book = firstToken + " " + secondToken;
-											chapter = new Integer(firstRefToken);
-											verse = new Integer(secondRefToken);
-										}
-									}
-								}
-							}
-							else
-							{
-								isValid = true;
-								book = firstToken + " " + secondToken;
-							}
-						}
-					}
-				}
-				else if (StringUtils.isAlpha(firstToken))
-				{
-					String bookName = firstToken;
-
-					if (tokenizer.hasMoreTokens())
-					{
-						String nextToken = tokenizer.nextToken();
-
-						while (nextToken.indexOf(":") == -1 && StringUtils.isNumeric(nextToken) == false)
-						{
-							bookName += " " + nextToken;
-
-							if (tokenizer.hasMoreTokens() == false)
-							{
-								break;
-							}
-
-							nextToken = tokenizer.nextToken();
-						}
-
-						if (StringUtils.isNumeric(nextToken))
-						{
-							isValid = true;
-							book = bookName;
-							chapter = new Integer(nextToken);
-						}
-						else if (nextToken.indexOf(":") != -1)
-						{
-							StringTokenizer refTokenizer = new StringTokenizer(nextToken, ":");
-
-							if (refTokenizer.countTokens() == 2)
-							{
-								String firstRefToken = refTokenizer.nextToken();
-								String secondRefToken = refTokenizer.nextToken();
-
-								if (StringUtils.isNumeric(firstRefToken) && StringUtils.isNumeric(secondRefToken))
-								{
-									isValid = true;
-									book = bookName;
-									chapter = new Integer(firstRefToken);
-									verse = new Integer(secondRefToken);
-								}
-							}
-						}
-						else
-						{
-							isValid = true;
-							book = bookName;
-						}
-					}
-					else
-					{
-						isValid = true;
-						book = bookName;
-					}
-				}
-			}
-		}
-
-		if (isValid == false)
-		{
-			throw new InvalidReferenceException();
-		}
+		this.verses = verses;
 	}
 
 	@Override
@@ -171,15 +41,45 @@ public class Reference
 	{
 		String s = book;
 
-		if (chapter != null && verse != null)
+		if (chapters != null && verses != null)
 		{
-			s += " " + chapter + ":" + verse;
+			s += " " + chaptersToString() + ":" + versesToString();
 		}
-		else if (chapter != null && verse == null)
+		else if (chapters != null && verses == null)
 		{
-			s += " " + chapter;
+			s += " " + chaptersToString();
 		}
 
+		return s;
+	}
+
+	private String versesToString()
+	{
+		String s = "";
+
+		if (verses.length == 1)
+		{
+			s = "" + verses[0];
+		}
+		else
+		{
+			s = verses[0] + "-" + verses[verses.length - 1];
+		}
+		return s;
+	}
+
+	private String chaptersToString()
+	{
+		String s = "";
+
+		if (chapters.length == 1)
+		{
+			s = "" + chapters[0];
+		}
+		else
+		{
+			s = chapters[0] + "-" + chapters[chapters.length - 1];
+		}
 		return s;
 	}
 }

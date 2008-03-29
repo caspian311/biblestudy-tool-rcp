@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.todd.biblestudy.reference.common.BibleVerse;
 import net.todd.biblestudy.reference.common.InvalidReferenceException;
-import net.todd.biblestudy.reference.common.Reference;
+import net.todd.biblestudy.reference.common.ReferenceFactory;
 import net.todd.biblestudy.reference.common.db.BibleDao;
 import net.todd.biblestudy.reference.common.db.IBibleDao;
 
@@ -16,7 +16,7 @@ public class ReferenceModel implements IReferenceModel
 
 		try
 		{
-			search = getBibleDao().referenceLookup(new Reference(searchText));
+			search = getBibleDao().referenceLookup(new ReferenceFactory().getReference(searchText));
 		}
 		catch (InvalidReferenceException e)
 		{

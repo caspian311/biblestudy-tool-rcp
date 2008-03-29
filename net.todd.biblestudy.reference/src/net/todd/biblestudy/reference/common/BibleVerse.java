@@ -71,7 +71,7 @@ public class BibleVerse implements Serializable
 
 		try
 		{
-			reference = new Reference(book + " " + chapter + ":" + verse);
+			reference = new ReferenceFactory().getReference(book + " " + chapter + ":" + verse);
 		}
 		catch (InvalidReferenceException e)
 		{

@@ -17,6 +17,7 @@ import net.todd.biblestudy.reference.common.db.IBibleDao;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
@@ -24,37 +25,42 @@ public class DataInitializer
 {
 	private static final String FILENAME_ATTRIBUTE = "filename";
 
-	private static final String DB_SCRIPTS_EXTENSION_POINT_TYPE = "net.todd.biblestudy.reference.common.dbScripts";
+	private static final String DB_SCRIPTS_EXTENSION_POINT_TYPE = "net.todd.biblestudy.reference.dbScripts";
 	private static final String DB_SCRIPT_EXTENSION_NAME = "script";
 
 	public void initializeData()
 	{
-		IExtensionPoint dbScripts = Platform.getExtensionRegistry().getExtensionPoint(DB_SCRIPTS_EXTENSION_POINT_TYPE);
-		if (dbScripts != null)
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+		if (extensionRegistry != null)
 		{
-			IExtension[] extensions = dbScripts.getExtensions();
-			for (IExtension extension : extensions)
+			IExtensionPoint dbScripts = extensionRegistry
+					.getExtensionPoint(DB_SCRIPTS_EXTENSION_POINT_TYPE);
+			if (dbScripts != null)
 			{
-				IConfigurationElement[] elements = extension.getConfigurationElements();
-				for (IConfigurationElement element : elements)
+				IExtension[] extensions = dbScripts.getExtensions();
+				for (IExtension extension : extensions)
 				{
-					if (element.getName().equals(DB_SCRIPT_EXTENSION_NAME))
+					IConfigurationElement[] elements = extension.getConfigurationElements();
+					for (IConfigurationElement element : elements)
 					{
-						String filename = element.getAttribute(FILENAME_ATTRIBUTE);
-
-						String contributorName = extension.getContributor().getName();
-
-						Bundle bundle = Platform.getBundle(contributorName);
-						InputStream resource = null;
-						try
+						if (element.getName().equals(DB_SCRIPT_EXTENSION_NAME))
 						{
-							resource = bundle.getEntry(filename).openStream();
+							String filename = element.getAttribute(FILENAME_ATTRIBUTE);
 
-							processSQLFile(resource);
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
+							String contributorName = extension.getContributor().getName();
+
+							Bundle bundle = Platform.getBundle(contributorName);
+							InputStream resource = null;
+							try
+							{
+								resource = bundle.getEntry(filename).openStream();
+
+								processSQLFile(resource);
+							}
+							catch (Exception e)
+							{
+								e.printStackTrace();
+							}
 						}
 					}
 				}
