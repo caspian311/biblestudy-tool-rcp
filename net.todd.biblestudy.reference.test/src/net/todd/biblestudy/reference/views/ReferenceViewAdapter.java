@@ -4,8 +4,6 @@ import java.util.List;
 
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.presenters.IReferenceViewListener;
-import net.todd.biblestudy.reference.views.IReferenceView;
-import net.todd.biblestudy.reference.views.ReferenceViewEvent;
 
 public class ReferenceViewAdapter implements IReferenceView
 {
@@ -39,10 +37,6 @@ public class ReferenceViewAdapter implements IReferenceView
 	{
 	}
 
-	public void popupErrorMessage(String errorNoSearchInfoGiven)
-	{
-	}
-
 	public void setLookupText(String lookupText)
 	{
 	}
@@ -66,6 +60,10 @@ public class ReferenceViewAdapter implements IReferenceView
 	}
 
 	public void showRightClickMenu()
+	{
+	}
+
+	public void displayErrorMessage(String message)
 	{
 	}
 }

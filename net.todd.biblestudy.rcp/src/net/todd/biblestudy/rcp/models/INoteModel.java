@@ -2,6 +2,7 @@ package net.todd.biblestudy.rcp.models;
 
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteStyle;
@@ -22,15 +23,15 @@ public interface INoteModel
 
 	public void addLinkToReference(Reference reference, int start, int stop);
 
-	public void saveNoteAndLinks();
+	public void saveNoteAndLinks() throws BiblestudyException;
 
-	public void deleteNoteAndLinks();
+	public void deleteNoteAndLinks() throws BiblestudyException;
 
-	public void updateContent(String newContentText);
+	public void updateContent(String newContentText) throws BiblestudyException;
 
-	public void populateNoteInfo(String noteName);
+	public void populateNoteInfo(String noteName) throws BiblestudyException;
 
-	public void createNewNoteInfo(String noteName);
+	public void createNewNoteInfo(String noteName) throws BiblestudyException;
 
 	public void registerModelListener(INoteModelListener listener);
 

@@ -75,7 +75,6 @@ public class BibleVerse implements Serializable
 		}
 		catch (InvalidReferenceException e)
 		{
-			e.printStackTrace();
 		}
 
 		return reference;

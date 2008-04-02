@@ -6,7 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.reference.BibleVerse;
+import net.todd.biblestudy.reference.InvalidReferenceException;
 import net.todd.biblestudy.reference.Reference;
 import net.todd.biblestudy.reference.models.IReferenceModel;
 import net.todd.biblestudy.reference.models.ReferenceModel;
@@ -33,42 +36,56 @@ public class ReferencePresenter implements IReferenceViewListener
 
 	public void handleEvent(ReferenceViewEvent event)
 	{
-		String source = (String) event.getSource();
+		try
+		{
+			String source = (String) event.getSource();
 
-		if (ReferenceViewEvent.REFERENCE_VIEW_OPENED.equals(source))
-		{
-			handleViewOpened();
+			if (ReferenceViewEvent.REFERENCE_VIEW_OPENED.equals(source))
+			{
+				handleViewOpened();
+			}
+			else if (ReferenceViewEvent.REFERENCE_VIEW_DISPOSED.equals(source))
+			{
+				handleViewDisposed();
+			}
+			else if (ReferenceViewEvent.REFERENCE_VIEW_SEARCH.equals(source))
+			{
+				handleSearch();
+			}
+			else if (ReferenceViewEvent.REFERENCE_VIEW_POPULATE_REFERENCE.equals(source))
+			{
+				Reference reference = (Reference) event.getData();
+				handlePopulateReferece(reference);
+			}
+			else if (ReferenceViewEvent.REFERENCE_VIEW_SHOW_RIGHT_CLICK_MENU.equals(source))
+			{
+				handleShowRightClickMenu();
+			}
+			else if (ReferenceViewEvent.REFERENCE_VIEW_SHOW_ENTIRE_CHAPTER.equals(source))
+			{
+				handleShowEntireChapter();
+			}
 		}
-		else if (ReferenceViewEvent.REFERENCE_VIEW_DISPOSED.equals(source))
+		catch (BiblestudyException e)
 		{
-			handleViewDisposed();
-		}
-		else if (ReferenceViewEvent.REFERENCE_VIEW_SEARCH.equals(source))
-		{
-			handleSearch();
-		}
-		else if (ReferenceViewEvent.REFERENCE_VIEW_POPULATE_REFERENCE.equals(source))
-		{
-			Reference reference = (Reference) event.getData();
-			handlePopulateReferece(reference);
-		}
-		else if (ReferenceViewEvent.REFERENCE_VIEW_SHOW_RIGHT_CLICK_MENU.equals(source))
-		{
-			handleShowRightClickMenu();
-		}
-		else if (ReferenceViewEvent.REFERENCE_VIEW_SHOW_ENTIRE_CHAPTER.equals(source))
-		{
-			handleShowEntireChapter();
+			ViewHelper.showError(e);
 		}
 	}
 
-	private void handleShowEntireChapter()
+	private void handleShowEntireChapter() throws BiblestudyException
 	{
 		BibleVerse selectedVerse = referenceView.getSelectedVerse();
 
 		String searchText = selectedVerse.getBook() + " " + selectedVerse.getChapter();
 
-		doSearch(searchText, referenceView.getReferenceSourceId(), "reference");
+		try
+		{
+			doSearch(searchText, referenceView.getReferenceSourceId(), "reference");
+		}
+		catch (InvalidReferenceException e)
+		{
+			referenceView.displayErrorMessage(e.getMessage());
+		}
 	}
 
 	private void handleShowRightClickMenu()
@@ -76,13 +93,13 @@ public class ReferencePresenter implements IReferenceViewListener
 		referenceView.showRightClickMenu();
 	}
 
-	private void handlePopulateReferece(Reference reference)
+	private void handlePopulateReferece(Reference reference) throws BiblestudyException
 	{
 		referenceView.setLookupText(reference.toString());
 		handleSearch();
 	}
 
-	private void handleSearch()
+	private void handleSearch() throws BiblestudyException
 	{
 		String searchText = referenceView.getLookupText();
 		String referenceShortName = referenceView.getReferenceSourceId();
@@ -90,15 +107,23 @@ public class ReferencePresenter implements IReferenceViewListener
 
 		if (StringUtils.isEmpty(searchText) || StringUtils.isEmpty(referenceShortName))
 		{
-			referenceView.popupErrorMessage(ERROR_NO_SEARCH_INFO_GIVEN);
+			referenceView.displayErrorMessage(ERROR_NO_SEARCH_INFO_GIVEN);
 		}
 		else
 		{
-			doSearch(searchText, referenceShortName, keywordOrReference);
+			try
+			{
+				doSearch(searchText, referenceShortName, keywordOrReference);
+			}
+			catch (InvalidReferenceException e)
+			{
+				referenceView.displayErrorMessage(e.getMessage());
+			}
 		}
 	}
 
 	protected void doSearch(String searchText, String referenceShortName, String keywordOrReference)
+			throws BiblestudyException, InvalidReferenceException
 	{
 		List<BibleVerse> results = null;
 
@@ -150,7 +175,7 @@ public class ReferencePresenter implements IReferenceViewListener
 		return referenceModel;
 	}
 
-	private void handleViewOpened()
+	private void handleViewOpened() throws BiblestudyException
 	{
 		Set<String> versions = new HashSet<String>();
 

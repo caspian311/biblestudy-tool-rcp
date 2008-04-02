@@ -5,13 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -81,7 +81,6 @@ public class ImportNotesModel implements IImportNotesModel
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
 					return Status.CANCEL_STATUS;
 				}
 			}
@@ -205,7 +204,7 @@ public class ImportNotesModel implements IImportNotesModel
 		return linksFromZip;
 	}
 
-	public void importSelectedNotesIntoDatabase()
+	public void importSelectedNotesIntoDatabase() throws BiblestudyException
 	{
 		for (Note note : selectedNotes)
 		{
@@ -219,24 +218,17 @@ public class ImportNotesModel implements IImportNotesModel
 				}
 			}
 
-			try
-			{
-				getNoteDao().deleteNoteByName(note.getName());
+			getNoteDao().deleteNoteByName(note.getName());
 
-				Note newNote = getNoteDao().createNote(note.getName());
-				note.setNoteId(newNote.getNoteId());
+			Note newNote = getNoteDao().createNote(note.getName());
+			note.setNoteId(newNote.getNoteId());
 
-				getNoteDao().saveNote(note);
-				for (Link link : linksToImport)
-				{
-					getLinkDao().removeLink(link);
-					link.setContainingNoteId(note.getNoteId());
-					getLinkDao().createLink(link);
-				}
-			}
-			catch (SQLException e)
+			getNoteDao().saveNote(note);
+			for (Link link : linksToImport)
 			{
-				e.printStackTrace();
+				getLinkDao().removeLink(link);
+				link.setContainingNoteId(note.getNoteId());
+				getLinkDao().createLink(link);
 			}
 		}
 	}

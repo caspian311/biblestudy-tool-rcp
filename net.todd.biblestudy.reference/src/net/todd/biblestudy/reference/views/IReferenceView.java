@@ -23,7 +23,7 @@ public interface IReferenceView
 
 	public void setResults(BibleVerse[] results);
 
-	public void popupErrorMessage(String errorNoSearchInfoGiven);
+	public void displayErrorMessage(final String message);
 
 	public void displayLimitResultsMessage(int totalSize);
 

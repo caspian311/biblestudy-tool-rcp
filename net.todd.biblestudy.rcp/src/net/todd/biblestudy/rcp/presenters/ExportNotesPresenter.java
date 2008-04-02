@@ -3,6 +3,7 @@ package net.todd.biblestudy.rcp.presenters;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.IExportNotesModel;
 import net.todd.biblestudy.rcp.views.IExportNotesView;
@@ -23,23 +24,30 @@ public class ExportNotesPresenter implements IExportNotesListener
 
 	public void handleEvent(ViewEvent viewEvent)
 	{
-		String source = (String) viewEvent.getSource();
+		try
+		{
+			String source = (String) viewEvent.getSource();
 
-		if (ViewEvent.EXPORT_NOTES_DIALOG_OPENED.equals(source))
-		{
-			handleDialogOpened();
+			if (ViewEvent.EXPORT_NOTES_DIALOG_OPENED.equals(source))
+			{
+				handleDialogOpened();
+			}
+			else if (ViewEvent.EXPORT_NOTES_DIALOG_CLOSED.equals(source))
+			{
+				handleDialogClosed();
+			}
+			else if (ViewEvent.EXPORT_NOTES_EXPORT.equals(source))
+			{
+				handleExportNotes();
+			}
 		}
-		else if (ViewEvent.EXPORT_NOTES_DIALOG_CLOSED.equals(source))
+		catch (BiblestudyException e)
 		{
-			handleDialogClosed();
-		}
-		else if (ViewEvent.EXPORT_NOTES_EXPORT.equals(source))
-		{
-			handleExportNotes();
+			e.printStackTrace();
 		}
 	}
 
-	private void handleExportNotes()
+	private void handleExportNotes() throws BiblestudyException
 	{
 		List<Note> notes = view.getSelectedNotes();
 		model.setNotesToExport(notes);
@@ -57,7 +65,7 @@ public class ExportNotesPresenter implements IExportNotesListener
 		view.removeListener(this);
 	}
 
-	private void handleDialogOpened()
+	private void handleDialogOpened() throws BiblestudyException
 	{
 		List<Note> allNotes = model.getAllNotes();
 		if (allNotes == null)

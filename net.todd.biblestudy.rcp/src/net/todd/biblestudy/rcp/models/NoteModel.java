@@ -1,12 +1,12 @@
 package net.todd.biblestudy.rcp.models;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -29,47 +29,33 @@ public class NoteModel implements INoteModel
 	private List<Link> links = new ArrayList<Link>();
 	private Date timestampFromDB;
 
-	public void populateNoteInfo(String noteName)
+	public void populateNoteInfo(String noteName) throws BiblestudyException
 	{
-		try
+		Note note = getNoteDao().getNoteByName(noteName);
+
+		if (note == null)
 		{
-			Note note = getNoteDao().getNoteByName(noteName);
+			getNoteDao().createNote(noteName);
 
-			if (note == null)
-			{
-				getNoteDao().createNote(noteName);
-
-				note = getNoteDao().getNoteByName(noteName);
-			}
-
-			this.note = note;
-
-			timestampFromDB = (Date) note.getLastModified().clone();
+			note = getNoteDao().getNoteByName(noteName);
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+
+		this.note = note;
+
+		timestampFromDB = (Date) note.getLastModified().clone();
 
 		populateAllLinksForNoteInDB(note);
 	}
 
-	private void populateAllLinksForNoteInDB(Note note)
+	private void populateAllLinksForNoteInDB(Note note) throws BiblestudyException
 	{
 		if (note != null)
 		{
-			try
-			{
-				links = getLinkDao().getAllLinksForNote(note.getNoteId());
+			links = getLinkDao().getAllLinksForNote(note.getNoteId());
 
-				if (links == null)
-				{
-					links = new ArrayList<Link>();
-				}
-			}
-			catch (SQLException e)
+			if (links == null)
 			{
-				e.printStackTrace();
+				links = new ArrayList<Link>();
 			}
 		}
 	}
@@ -188,25 +174,18 @@ public class NoteModel implements INoteModel
 		}
 	}
 
-	public void saveNoteAndLinks()
+	public void saveNoteAndLinks() throws BiblestudyException
 	{
-		try
+		getNoteDao().saveNote(getNote());
+
+		getLinkDao().removeAllLinksForNote(getNote());
+
+		for (Link link : getLinks())
 		{
-			getNoteDao().saveNote(getNote());
-
-			getLinkDao().removeAllLinksForNote(getNote());
-
-			for (Link link : getLinks())
-			{
-				getLinkDao().createLink(link);
-			}
-
-			timestampFromDB = (Date) getNote().getLastModified().clone();
+			getLinkDao().createLink(link);
 		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+
+		timestampFromDB = (Date) getNote().getLastModified().clone();
 	}
 
 	protected INoteDao getNoteDao()
@@ -214,17 +193,10 @@ public class NoteModel implements INoteModel
 		return new NoteDao();
 	}
 
-	public void deleteNoteAndLinks()
+	public void deleteNoteAndLinks() throws BiblestudyException
 	{
-		try
-		{
-			getNoteDao().deleteNote(getNote());
-			getLinkDao().removeAllLinksForNote(getNote());
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		getNoteDao().deleteNote(getNote());
+		getLinkDao().removeAllLinksForNote(getNote());
 
 		clearModel();
 	}
@@ -235,7 +207,7 @@ public class NoteModel implements INoteModel
 		getLinks().clear();
 	}
 
-	public void updateContent(String newContentText)
+	public void updateContent(String newContentText) throws BiblestudyException
 	{
 		if (getNote().getText() != null)
 		{
@@ -245,7 +217,7 @@ public class NoteModel implements INoteModel
 			}
 			catch (Throwable e)
 			{
-				e.printStackTrace();
+				throw new BiblestudyException(e.getMessage(), e);
 			}
 		}
 
@@ -385,18 +357,11 @@ public class NoteModel implements INoteModel
 		return targetLink;
 	}
 
-	public void createNewNoteInfo(String noteName)
+	public void createNewNoteInfo(String noteName) throws BiblestudyException
 	{
-		try
-		{
-			note = getNoteDao().createNote(noteName);
+		note = getNoteDao().createNote(noteName);
 
-			timestampFromDB = (Date) note.getLastModified().clone();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		timestampFromDB = (Date) note.getLastModified().clone();
 
 		populateAllLinksForNoteInDB(note);
 	}

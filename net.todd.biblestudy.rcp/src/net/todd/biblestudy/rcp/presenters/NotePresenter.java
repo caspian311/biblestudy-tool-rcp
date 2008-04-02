@@ -2,6 +2,7 @@ package net.todd.biblestudy.rcp.presenters;
 
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.LinkStatusLineUtil;
@@ -34,59 +35,66 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 
 	public void handleEvent(ViewEvent event)
 	{
-		String source = (String) event.getSource();
+		try
+		{
+			String source = (String) event.getSource();
 
-		if (source.equals(ViewEvent.NOTE_CONTENT_CHANGED))
-		{
-			handleContentChanged();
+			if (source.equals(ViewEvent.NOTE_CONTENT_CHANGED))
+			{
+				handleContentChanged();
+			}
+			else if (source.equals(ViewEvent.NOTE_SHOW_RIGHT_CLICK_MENU))
+			{
+				handleShowRightClickMenu();
+			}
+			else if (source.equals(ViewEvent.NOTE_CREATE_LINK_TO_NOTE_EVENT))
+			{
+				createLinkToNote();
+			}
+			else if (source.equals(ViewEvent.NOTE_CREATE_LINK_TO_REFERENCE_EVENT))
+			{
+				createLinkToReference();
+			}
+			else if (source.equals(ViewEvent.NOTE_CLOSE))
+			{
+				handleCloseNote();
+			}
+			else if (source.equals(ViewEvent.NOTE_SAVE))
+			{
+				handleSaveNote();
+			}
+			else if (source.equals(ViewEvent.NOTE_DELETE))
+			{
+				handleNoteDeleted();
+			}
+			else if (source.equals(ViewEvent.NOTE_HOVERING))
+			{
+				handleNoteHovering(((Integer) event.getData()));
+			}
+			else if (source.equals(ViewEvent.NOTE_CLICKED))
+			{
+				handleNoteClicked(((Integer) event.getData()));
+			}
+			else if (source.equals(ViewEvent.NOTE_DROPPED_REFERENCE))
+			{
+				handleOpenDropReferenceOptions();
+			}
+			else if (source.equals(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE))
+			{
+				handleInsertReferenceLink();
+			}
+			else if (source.equals(ViewEvent.NOTE_DROP_REFERENCE_TEXT))
+			{
+				handleInsertReferenceText();
+			}
+			else if (source.equals(ViewEvent.NOTE_DROP_REFERENCE_AND_TEXT))
+			{
+				handleInsertReferenceAndText();
+			}
 		}
-		else if (source.equals(ViewEvent.NOTE_SHOW_RIGHT_CLICK_MENU))
+		catch (BiblestudyException e)
 		{
-			handleShowRightClickMenu();
-		}
-		else if (source.equals(ViewEvent.NOTE_CREATE_LINK_TO_NOTE_EVENT))
-		{
-			createLinkToNote();
-		}
-		else if (source.equals(ViewEvent.NOTE_CREATE_LINK_TO_REFERENCE_EVENT))
-		{
-			createLinkToReference();
-		}
-		else if (source.equals(ViewEvent.NOTE_CLOSE))
-		{
-			handleCloseNote();
-		}
-		else if (source.equals(ViewEvent.NOTE_SAVE))
-		{
-			handleSaveNote();
-		}
-		else if (source.equals(ViewEvent.NOTE_DELETE))
-		{
-			handleNoteDeleted();
-		}
-		else if (source.equals(ViewEvent.NOTE_HOVERING))
-		{
-			handleNoteHovering(((Integer) event.getData()));
-		}
-		else if (source.equals(ViewEvent.NOTE_CLICKED))
-		{
-			handleNoteClicked(((Integer) event.getData()));
-		}
-		else if (source.equals(ViewEvent.NOTE_DROPPED_REFERENCE))
-		{
-			handleOpenDropReferenceOptions();
-		}
-		else if (source.equals(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE))
-		{
-			handleInsertReferenceLink();
-		}
-		else if (source.equals(ViewEvent.NOTE_DROP_REFERENCE_TEXT))
-		{
-			handleInsertReferenceText();
-		}
-		else if (source.equals(ViewEvent.NOTE_DROP_REFERENCE_AND_TEXT))
-		{
-			handleInsertReferenceAndText();
+			e.printStackTrace();
 		}
 	}
 
@@ -191,7 +199,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 		noteView.setContentText(newNoteText);
 	}
 
-	private void handleNoteClicked(Integer offset)
+	private void handleNoteClicked(Integer offset) throws BiblestudyException
 	{
 		if (offset != null)
 		{
@@ -213,7 +221,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 					}
 					catch (InvalidReferenceException e)
 					{
-						e.printStackTrace();
+						throw new BiblestudyException(e.getMessage(), e);
 					}
 				}
 			}
@@ -244,7 +252,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 		}
 	}
 
-	private void handleNoteDeleted()
+	private void handleNoteDeleted() throws BiblestudyException
 	{
 		if (noteView.openDeleteConfirmationWindow() == 1)
 		{
@@ -255,7 +263,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 		}
 	}
 
-	private void handleSaveNote()
+	private void handleSaveNote() throws BiblestudyException
 	{
 		noteModel.saveNoteAndLinks();
 		updateDocumentTitle();
@@ -277,7 +285,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 		noteView.showRightClickPopup(lastClickedCoordinates.x, lastClickedCoordinates.y);
 	}
 
-	private void handleContentChanged()
+	private void handleContentChanged() throws BiblestudyException
 	{
 		noteModel.updateContent(noteView.getContentText());
 

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.reference.db.BibleDao;
 import net.todd.biblestudy.reference.db.IBibleDao;
 
@@ -28,7 +29,7 @@ public class DataInitializer
 	private static final String DB_SCRIPTS_EXTENSION_POINT_TYPE = "net.todd.biblestudy.reference.dbScripts";
 	private static final String DB_SCRIPT_EXTENSION_NAME = "script";
 
-	public void initializeData()
+	public void initializeData() throws BiblestudyException
 	{
 		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
 		if (extensionRegistry != null)
@@ -59,7 +60,7 @@ public class DataInitializer
 							}
 							catch (Exception e)
 							{
-								e.printStackTrace();
+								throw new BiblestudyException(e.getMessage(), e);
 							}
 						}
 					}
@@ -68,7 +69,7 @@ public class DataInitializer
 		}
 	}
 
-	private void processSQLFile(InputStream resource)
+	private void processSQLFile(InputStream resource) throws BiblestudyException
 	{
 		String sql = getSQLFromFile(resource);
 
@@ -77,7 +78,7 @@ public class DataInitializer
 		doSQL(batchQueries);
 	}
 
-	private String getSQLFromFile(InputStream resource)
+	private String getSQLFromFile(InputStream resource) throws BiblestudyException
 	{
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource));
 
@@ -99,7 +100,7 @@ public class DataInitializer
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			throw new BiblestudyException(e.getMessage(), e);
 		}
 
 		return textBuffer.toString();
@@ -125,7 +126,7 @@ public class DataInitializer
 		return newLine;
 	}
 
-	private void doSQL(List<String> batchQueries)
+	private void doSQL(List<String> batchQueries) throws BiblestudyException
 	{
 		Connection connection = null;
 
@@ -151,16 +152,16 @@ public class DataInitializer
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-
 			try
 			{
 				connection.rollback();
 			}
 			catch (SQLException e1)
 			{
-				e1.printStackTrace();
+				throw new BiblestudyException(e.getMessage(), e);
 			}
+
+			throw new BiblestudyException(e.getMessage(), e);
 		}
 		finally
 		{
@@ -172,7 +173,7 @@ public class DataInitializer
 				}
 				catch (SQLException e)
 				{
-					e.printStackTrace();
+					throw new BiblestudyException(e.getMessage(), e);
 				}
 			}
 		}

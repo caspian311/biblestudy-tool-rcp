@@ -26,7 +26,7 @@ public class NotePresenterTest
 	private MockNoteView noteView;
 
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		noteView = new MockNoteView();
 		noteModel = new NoteModelHarness()

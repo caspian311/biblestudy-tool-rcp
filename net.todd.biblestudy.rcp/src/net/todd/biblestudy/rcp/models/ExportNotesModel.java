@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -49,17 +49,11 @@ public class ExportNotesModel implements IExportNotesModel
 		xstream.alias("link", Link.class);
 	}
 
-	public List<Note> getAllNotes()
+	public List<Note> getAllNotes() throws BiblestudyException
 	{
 		List<Note> allNotes = null;
-		try
-		{
-			allNotes = getNoteDao().getAllNotes();
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+
+		allNotes = getNoteDao().getAllNotes();
 
 		return allNotes;
 	}
@@ -69,7 +63,7 @@ public class ExportNotesModel implements IExportNotesModel
 		return new NoteDao();
 	}
 
-	public void setNotesToExport(List<Note> noteToExport)
+	public void setNotesToExport(List<Note> noteToExport) throws BiblestudyException
 	{
 		this.notesToExport = noteToExport;
 
@@ -79,14 +73,7 @@ public class ExportNotesModel implements IExportNotesModel
 		{
 			for (Note note : notesToExport)
 			{
-				try
-				{
-					associatedLinks.addAll(getLinkDao().getAllLinksForNote(note.getNoteId()));
-				}
-				catch (SQLException e)
-				{
-					e.printStackTrace();
-				}
+				associatedLinks.addAll(getLinkDao().getAllLinksForNote(note.getNoteId()));
 			}
 		}
 	}
@@ -257,7 +244,6 @@ public class ExportNotesModel implements IExportNotesModel
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
 					return Status.CANCEL_STATUS;
 				}
 

@@ -2,6 +2,7 @@ package net.todd.biblestudy.rcp.presenters;
 
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.IImportNotesModel;
 import net.todd.biblestudy.rcp.views.IImportNotesView;
@@ -28,23 +29,30 @@ public class ImportNotesPresenter implements IImportNotesListener
 
 	public void handleEvent(ViewEvent event)
 	{
-		String source = (String) event.getSource();
+		try
+		{
+			String source = (String) event.getSource();
 
-		if (ViewEvent.IMPORT_NOTES_JOB_FINISHED.equals(source))
-		{
-			handleJobFinished();
+			if (ViewEvent.IMPORT_NOTES_JOB_FINISHED.equals(source))
+			{
+				handleJobFinished();
+			}
+			else if (ViewEvent.IMPORT_NOTES_DIALOG_HAS_OPENED.equals(source))
+			{
+				handleViewOpened();
+			}
+			else if (ViewEvent.IMPORT_NOTES_DIALOG_CLOSED.equals(source))
+			{
+				handleViewClosed();
+			}
+			else if (ViewEvent.IMPORT_NOTES_IMPORT.equals(source))
+			{
+				handleImport();
+			}
 		}
-		else if (ViewEvent.IMPORT_NOTES_DIALOG_HAS_OPENED.equals(source))
+		catch (BiblestudyException e)
 		{
-			handleViewOpened();
-		}
-		else if (ViewEvent.IMPORT_NOTES_DIALOG_CLOSED.equals(source))
-		{
-			handleViewClosed();
-		}
-		else if (ViewEvent.IMPORT_NOTES_IMPORT.equals(source))
-		{
-			handleImport();
+			e.printStackTrace();
 		}
 	}
 
@@ -53,7 +61,7 @@ public class ImportNotesPresenter implements IImportNotesListener
 		view.openImportDialog();
 	}
 
-	private void handleImport()
+	private void handleImport() throws BiblestudyException
 	{
 		List<Note> selectedNotes = view.getSelectedNotes();
 		model.setSelectedNotes(selectedNotes);

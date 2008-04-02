@@ -1,5 +1,6 @@
 package net.todd.biblestudy.rcp.presenters;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.rcp.models.INewNoteDialogModel;
 import net.todd.biblestudy.rcp.models.NewNoteDialogModel;
 import net.todd.biblestudy.rcp.views.INewNoteDialog;
@@ -23,23 +24,30 @@ public class NewNoteDialogPresenter implements INewNoteDialogListener
 
 	public void handleEvent(ViewEvent event)
 	{
-		String source = (String) event.getSource();
+		try
+		{
+			String source = (String) event.getSource();
 
-		if (ViewEvent.NEW_NOTE_OPENED.equals(source))
-		{
-			handleNewNoteDialogOpened();
+			if (ViewEvent.NEW_NOTE_OPENED.equals(source))
+			{
+				handleNewNoteDialogOpened();
+			}
+			else if (ViewEvent.NEW_NOTE_OK_PRESSED.equals(source))
+			{
+				handleOkPressed();
+			}
+			else if (ViewEvent.NEW_NOTE_CANCEL_PRESSED.equals(source))
+			{
+				handleCancelPressed();
+			}
+			else if (ViewEvent.NEW_NOTE_KEY_PRESSED.equals(source))
+			{
+				handleKeyPressed();
+			}
 		}
-		else if (ViewEvent.NEW_NOTE_OK_PRESSED.equals(source))
+		catch (BiblestudyException e)
 		{
-			handleOkPressed();
-		}
-		else if (ViewEvent.NEW_NOTE_CANCEL_PRESSED.equals(source))
-		{
-			handleCancelPressed();
-		}
-		else if (ViewEvent.NEW_NOTE_KEY_PRESSED.equals(source))
-		{
-			handleKeyPressed();
+			e.printStackTrace();
 		}
 	}
 
@@ -48,7 +56,7 @@ public class NewNoteDialogPresenter implements INewNoteDialogListener
 		view.closeDialog();
 	}
 
-	private void handleKeyPressed()
+	private void handleKeyPressed() throws BiblestudyException
 	{
 		final String newNoteName = view.getNewNoteName();
 
@@ -71,12 +79,12 @@ public class NewNoteDialogPresenter implements INewNoteDialogListener
 		}
 	}
 
-	private boolean noteAlreadyExists(String newNoteName)
+	private boolean noteAlreadyExists(String newNoteName) throws BiblestudyException
 	{
 		return getModel().noteAlreadyExists(newNoteName);
 	}
 
-	private void handleOkPressed()
+	private void handleOkPressed() throws BiblestudyException
 	{
 		String newNoteName = view.getNewNoteName();
 

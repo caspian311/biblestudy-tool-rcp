@@ -78,7 +78,7 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	private Menu rightClickMenu;
 
 	private Point lastRightClickPosition;
-	
+
 	private TableItem[] currentSelection;
 
 	@Override
@@ -226,12 +226,12 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	public BibleVerse getSelectedVerse()
 	{
 		BibleVerse selectedVerse = null;
-		
+
 		if (currentSelection != null && currentSelection.length > 0)
 		{
 			selectedVerse = (BibleVerse) currentSelection[0].getData();
 		}
-		
+
 		return selectedVerse;
 	}
 
@@ -268,13 +268,13 @@ public class ReferenceView extends ViewPart implements IReferenceView
 					List<BibleVerse> verses = new ArrayList<BibleVerse>();
 
 					TableItem[] selectionList = getCurrentSelection();
-					
+
 					if (selectionList != null)
 					{
 						for (TableItem selectedItem : selectionList)
 						{
 							BibleVerse verse = (BibleVerse) selectedItem.getData();
-							
+
 							verses.add(verse);
 						}
 					}
@@ -284,8 +284,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 			}
 		});
 	}
-	
-	private TableItem[] getCurrentSelection() 
+
+	private TableItem[] getCurrentSelection()
 	{
 		return currentSelection;
 	}
@@ -421,11 +421,6 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		return lookupText.getText();
 	}
 
-	public void popupErrorMessage(String error)
-	{
-		ViewHelper.showError(new Exception(error));
-	}
-
 	public void displayLimitResultsMessage(final int totalSize)
 	{
 		ViewHelper.runWithoutBusyIndicator(new Runnable()
@@ -433,6 +428,17 @@ public class ReferenceView extends ViewPart implements IReferenceView
 			public void run()
 			{
 				resultsMessage.setText("Only displaying 100 of " + totalSize + " results.");
+			}
+		});
+	}
+
+	public void displayErrorMessage(final String message)
+	{
+		ViewHelper.runWithoutBusyIndicator(new Runnable()
+		{
+			public void run()
+			{
+				resultsMessage.setText(message);
 			}
 		});
 	}

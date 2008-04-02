@@ -18,7 +18,7 @@ public class NoteModelManageLinksTest
 	private NoteModel noteModel;
 
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		noteModel = new NoteModelHarness()
 		{
@@ -124,7 +124,8 @@ public class NoteModelManageLinksTest
 	}
 
 	@Test
-	public void testLinksAreRemovedWhenUpdateContentWithCompletelyDifferentContent() throws Exception
+	public void testLinksAreRemovedWhenUpdateContentWithCompletelyDifferentContent()
+			throws Exception
 	{
 		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
 		assertEquals(0, noteStyles.size());

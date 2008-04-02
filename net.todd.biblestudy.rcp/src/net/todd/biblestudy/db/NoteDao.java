@@ -4,21 +4,30 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
+
 public class NoteDao extends BaseDao implements INoteDao
 {
-	public Note getNoteByName(String noteName) throws SQLException
+	public Note getNoteByName(String noteName) throws BiblestudyException
 	{
 		Note note = null;
 
 		if (noteName != null)
 		{
-			note = (Note) getSqlMapConfig().queryForObject("getNoteByName", noteName);
+			try
+			{
+				note = (Note) getSqlMapConfig().queryForObject("getNoteByName", noteName);
+			}
+			catch (SQLException e)
+			{
+				throw new BiblestudyException(e.getMessage(), e);
+			}
 		}
 
 		return note;
 	}
 
-	public Note createNote(String newNoteName) throws SQLException
+	public Note createNote(String newNoteName) throws BiblestudyException
 	{
 		Note note = null;
 
@@ -31,7 +40,15 @@ public class NoteDao extends BaseDao implements INoteDao
 			note.setLastModified(currentTime);
 			note.setCreatedTimestamp(currentTime);
 
-			Integer noteId = (Integer) getSqlMapConfig().insert("createNewNote", note);
+			Integer noteId;
+			try
+			{
+				noteId = (Integer) getSqlMapConfig().insert("createNewNote", note);
+			}
+			catch (SQLException e)
+			{
+				throw new BiblestudyException(e.getMessage(), e);
+			}
 
 			note.setNoteId(noteId);
 		}
@@ -39,34 +56,62 @@ public class NoteDao extends BaseDao implements INoteDao
 		return note;
 	}
 
-	public void saveNote(Note note) throws SQLException
+	public void saveNote(Note note) throws BiblestudyException
 	{
 		if (note != null)
 		{
-			getSqlMapConfig().update("updateNote", note);
+			try
+			{
+				getSqlMapConfig().update("updateNote", note);
+			}
+			catch (SQLException e)
+			{
+				throw new BiblestudyException(e.getMessage(), e);
+			}
 		}
 	}
 
-	public void deleteNote(Note note) throws SQLException
+	public void deleteNote(Note note) throws BiblestudyException
 	{
 		if (note != null)
 		{
-			getSqlMapConfig().update("deleteNote", note);
+			try
+			{
+				getSqlMapConfig().update("deleteNote", note);
+			}
+			catch (SQLException e)
+			{
+				throw new BiblestudyException(e.getMessage(), e);
+			}
 		}
 	}
 
-	public void deleteNoteByName(String noteName) throws SQLException
+	public void deleteNoteByName(String noteName) throws BiblestudyException
 	{
 		Note note = getNoteByName(noteName);
 		if (note != null)
 		{
-			getSqlMapConfig().update("deleteNote", note);
+			try
+			{
+				getSqlMapConfig().update("deleteNote", note);
+			}
+			catch (SQLException e)
+			{
+				throw new BiblestudyException(e.getMessage(), e);
+			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Note> getAllNotes() throws SQLException
+	public List<Note> getAllNotes() throws BiblestudyException
 	{
-		return getSqlMapConfig().queryForList("getAllNotes");
+		try
+		{
+			return getSqlMapConfig().queryForList("getAllNotes");
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException(e.getMessage(), e);
+		}
 	}
 }

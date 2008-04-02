@@ -1,34 +1,35 @@
 package net.todd.biblestudy.db;
 
-import java.sql.SQLException;
 import java.util.List;
+
+import net.todd.biblestudy.common.BiblestudyException;
 
 public class NoteDaoAdapter implements INoteDao
 {
-	public Note createNote(String newNoteName) throws SQLException
+	public Note createNote(String newNoteName) throws BiblestudyException
 	{
 		return null;
 	}
 
-	public void deleteNote(Note note) throws SQLException
+	public void deleteNote(Note note) throws BiblestudyException
 	{
 	}
 
-	public List<Note> getAllNotes() throws SQLException
-	{
-		return null;
-	}
-
-	public Note getNoteByName(String name) throws SQLException
+	public List<Note> getAllNotes() throws BiblestudyException
 	{
 		return null;
 	}
 
-	public void saveNote(Note note) throws SQLException
+	public Note getNoteByName(String name) throws BiblestudyException
+	{
+		return null;
+	}
+
+	public void saveNote(Note note) throws BiblestudyException
 	{
 	}
 
-	public void deleteNoteByName(String noteName) throws SQLException
+	public void deleteNoteByName(String noteName) throws BiblestudyException
 	{
 	}
 }

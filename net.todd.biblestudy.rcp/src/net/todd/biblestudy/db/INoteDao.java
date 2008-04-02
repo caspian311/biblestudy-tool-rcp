@@ -3,6 +3,8 @@ package net.todd.biblestudy.db;
 import java.sql.SQLException;
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
+
 public interface INoteDao
 {
 	/**
@@ -13,7 +15,7 @@ public interface INoteDao
 	 * @return Note requested note
 	 * @throws SQLException
 	 */
-	public Note getNoteByName(String name) throws SQLException;
+	public Note getNoteByName(String name) throws BiblestudyException;
 
 	/**
 	 * creates a note with the given name
@@ -23,14 +25,14 @@ public interface INoteDao
 	 * @return Note recently created note
 	 * @throws SQLException
 	 */
-	public Note createNote(String newNoteName) throws SQLException;
+	public Note createNote(String newNoteName) throws BiblestudyException;
 
 	/**
 	 * 
 	 * @param note
 	 * @throws SQLException
 	 */
-	public void saveNote(Note note) throws SQLException;
+	public void saveNote(Note note) throws BiblestudyException;
 
 	/**
 	 * remove a note
@@ -39,7 +41,7 @@ public interface INoteDao
 	 *            the note to be deleted
 	 * @throws SQLException
 	 */
-	public void deleteNote(Note note) throws SQLException;
+	public void deleteNote(Note note) throws BiblestudyException;
 
 	/**
 	 * returns a list of all available notes
@@ -47,7 +49,13 @@ public interface INoteDao
 	 * @return java.util.List<net.todd.biblestudy.db.Note>
 	 * @throws SQLException
 	 */
-	public List<Note> getAllNotes() throws SQLException;
+	public List<Note> getAllNotes() throws BiblestudyException;
 
-	public void deleteNoteByName(String noteName) throws SQLException;
+	/**
+	 * deletes a note given the name of the note to be deleted
+	 * 
+	 * @param noteName
+	 * @throws BiblestudyException
+	 */
+	public void deleteNoteByName(String noteName) throws BiblestudyException;
 }

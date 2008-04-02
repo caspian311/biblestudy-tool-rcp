@@ -2,6 +2,7 @@ package net.todd.biblestudy.rcp.presenters;
 
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.IOpenNoteModel;
@@ -30,35 +31,42 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 	 */
 	public void handleEvent(ViewEvent e)
 	{
-		String source = (String) e.getSource();
+		try
+		{
+			String source = (String) e.getSource();
 
-		if (source.equals(ViewEvent.OPEN_NOTE_OK_PRESSED))
-		{
-			handleOpenNote();
+			if (source.equals(ViewEvent.OPEN_NOTE_OK_PRESSED))
+			{
+				handleOpenNote();
+			}
+			else if (source.equals(ViewEvent.OPEN_NOTE_CANCEL_PRESSED))
+			{
+				handleCancel();
+			}
+			else if (source.equals(ViewEvent.OPEN_NOTE_OPENED))
+			{
+				handlePostOpening();
+			}
+			else if (source.equals(ViewEvent.OPEN_NOTE_DELETE))
+			{
+				handleDeleteButtonPressed();
+			}
+			else if (source.equals(ViewEvent.OPEN_NOTE_RENAME_BUTTON_PRESSED))
+			{
+				handleRenameButtonPressed();
+			}
+			else if (source.equals(ViewEvent.OPEN_NOTE_RENAME))
+			{
+				handleNoteRename();
+			}
 		}
-		else if (source.equals(ViewEvent.OPEN_NOTE_CANCEL_PRESSED))
+		catch (BiblestudyException e1)
 		{
-			handleCancel();
-		}
-		else if (source.equals(ViewEvent.OPEN_NOTE_OPENED))
-		{
-			handlePostOpening();
-		}
-		else if (source.equals(ViewEvent.OPEN_NOTE_DELETE))
-		{
-			handleDeleteButtonPressed();
-		}
-		else if (source.equals(ViewEvent.OPEN_NOTE_RENAME_BUTTON_PRESSED))
-		{
-			handleRenameButtonPressed();
-		}
-		else if (source.equals(ViewEvent.OPEN_NOTE_RENAME))
-		{
-			handleNoteRename();
+			e1.printStackTrace();
 		}
 	}
 
-	private void handleNoteRename()
+	private void handleNoteRename() throws BiblestudyException
 	{
 		Note selectedNote = view.getSelectedNote();
 
@@ -81,7 +89,7 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 		view.makeSelectedNoteNameEditable();
 	}
 
-	private void handleDeleteButtonPressed()
+	private void handleDeleteButtonPressed() throws BiblestudyException
 	{
 		Note selectedNote = view.getSelectedNote();
 
@@ -104,13 +112,13 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 		ViewerFactory.getViewer().closeNoteView(noteName);
 	}
 
-	private void doDeleteNote(String noteName)
+	private void doDeleteNote(String noteName) throws BiblestudyException
 	{
 		noteModel.populateNoteInfo(noteName);
 		noteModel.deleteNoteAndLinks();
 	}
 
-	private void handlePostOpening()
+	private void handlePostOpening() throws BiblestudyException
 	{
 		List<Note> allNotes = model.getAllNotes();
 

@@ -10,11 +10,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -164,7 +164,7 @@ public class ImportNotesModelTest
 				return new INoteDao()
 				{
 
-					public Note createNote(String newNoteName) throws SQLException
+					public Note createNote(String newNoteName) throws BiblestudyException
 					{
 						Note note = new Note();
 						note.setNoteId(noteId);
@@ -173,26 +173,26 @@ public class ImportNotesModelTest
 						return note;
 					}
 
-					public void deleteNote(Note note) throws SQLException
+					public void deleteNote(Note note) throws BiblestudyException
 					{
 					}
 
-					public List<Note> getAllNotes() throws SQLException
-					{
-						return null;
-					}
-
-					public Note getNoteByName(String name) throws SQLException
+					public List<Note> getAllNotes() throws BiblestudyException
 					{
 						return null;
 					}
 
-					public void saveNote(Note note) throws SQLException
+					public Note getNoteByName(String name) throws BiblestudyException
+					{
+						return null;
+					}
+
+					public void saveNote(Note note) throws BiblestudyException
 					{
 						savingNotes.add(note);
 					}
 
-					public void deleteNoteByName(String noteName)
+					public void deleteNoteByName(String noteName) throws BiblestudyException
 					{
 						deletedNotes.add(noteName);
 					}
@@ -204,33 +204,34 @@ public class ImportNotesModelTest
 			{
 				return new ILinkDao()
 				{
-					public Link createLink(Link link) throws SQLException
+					public Link createLink(Link link) throws BiblestudyException
 					{
 						savingLinks.add(link);
 						return null;
 					}
 
 					public List<Link> getAllLinksForNote(Integer containingNoteId)
-							throws SQLException
+							throws BiblestudyException
 					{
 						return null;
 					}
 
-					public List<Link> getAllLinksThatLinkTo(String oldNoteName) throws SQLException
+					public List<Link> getAllLinksThatLinkTo(String oldNoteName)
+							throws BiblestudyException
 					{
 						return null;
 					}
 
-					public void removeAllLinksForNote(Note note) throws SQLException
+					public void removeAllLinksForNote(Note note) throws BiblestudyException
 					{
 					}
 
-					public void removeLink(Link link) throws SQLException
+					public void removeLink(Link link) throws BiblestudyException
 					{
 						deletedLinks.add(link);
 					}
 
-					public void updateLink(Link link) throws SQLException
+					public void updateLink(Link link) throws BiblestudyException
 					{
 					}
 				};

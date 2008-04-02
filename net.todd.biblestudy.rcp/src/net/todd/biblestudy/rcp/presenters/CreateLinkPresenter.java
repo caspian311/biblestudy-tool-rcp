@@ -1,5 +1,7 @@
 package net.todd.biblestudy.rcp.presenters;
 
+import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
 import net.todd.biblestudy.rcp.views.INoteView;
@@ -28,27 +30,34 @@ public class CreateLinkPresenter implements ICreateLinkListener
 
 	public void handleCreateLinkEvent(ViewEvent viewEvent)
 	{
-		String source = (String) viewEvent.getSource();
+		try
+		{
+			String source = (String) viewEvent.getSource();
 
-		if (ViewEvent.CREATE_LINK_DIALOG_OPENED.equals(source))
-		{
-			handleCreateLinkDialogOpened();
+			if (ViewEvent.CREATE_LINK_DIALOG_OPENED.equals(source))
+			{
+				handleCreateLinkDialogOpened();
+			}
+			else if (ViewEvent.CREATE_LINK_DIALOG_CLOSED.equals(source))
+			{
+				handleCreateLinkDialogClosed();
+			}
+			else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_NOTE.equals(source))
+			{
+				handleDoCreateLinkToNote();
+			}
+			else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_REFERENCE.equals(source))
+			{
+				handleDoCreateLinkToReference();
+			}
+			else if (ViewEvent.CREATE_LINK_VALIDATE_REFERENCE.equals(source))
+			{
+				validateReference();
+			}
 		}
-		else if (ViewEvent.CREATE_LINK_DIALOG_CLOSED.equals(source))
+		catch (BiblestudyException e)
 		{
-			handleCreateLinkDialogClosed();
-		}
-		else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_NOTE.equals(source))
-		{
-			handleDoCreateLinkToNote();
-		}
-		else if (ViewEvent.CREATE_LINK_DO_CREATE_LINK_TO_REFERENCE.equals(source))
-		{
-			handleDoCreateLinkToReference();
-		}
-		else if (ViewEvent.CREATE_LINK_VALIDATE_REFERENCE.equals(source))
-		{
-			validateReference();
+			ViewHelper.showError(e);
 		}
 	}
 
@@ -66,7 +75,7 @@ public class CreateLinkPresenter implements ICreateLinkListener
 		}
 	}
 
-	private void handleDoCreateLinkToReference()
+	private void handleDoCreateLinkToReference() throws BiblestudyException
 	{
 		String referenceText = createLinkView.getLinkText();
 		Point selection = noteView.getSelectionPoint();
@@ -86,6 +95,7 @@ public class CreateLinkPresenter implements ICreateLinkListener
 		}
 		catch (InvalidReferenceException e)
 		{
+			throw new BiblestudyException(e.getMessage(), e);
 		}
 	}
 

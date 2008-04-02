@@ -3,39 +3,83 @@ package net.todd.biblestudy.db;
 import java.sql.SQLException;
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
+
 public class LinkDao extends BaseDao implements ILinkDao
 {
-	public Link createLink(Link link) throws SQLException
+	public Link createLink(Link link) throws BiblestudyException
 	{
-		getSqlMapConfig().insert("createLink", link);
+		try
+		{
+			getSqlMapConfig().insert("createLink", link);
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException(e.getMessage(), e);
+		}
 
 		return link;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Link> getAllLinksForNote(Integer containingNoteId) throws SQLException
+	public List<Link> getAllLinksForNote(Integer containingNoteId) throws BiblestudyException
 	{
-		return getSqlMapConfig().queryForList("getAllLinksForNote", containingNoteId);
+		try
+		{
+			return getSqlMapConfig().queryForList("getAllLinksForNote", containingNoteId);
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException(e.getMessage(), e);
+		}
 	}
 
-	public void removeLink(Link link) throws SQLException
+	public void removeLink(Link link) throws BiblestudyException
 	{
-		getSqlMapConfig().delete("deleteLink", link);
+		try
+		{
+			getSqlMapConfig().delete("deleteLink", link);
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException(e.getMessage(), e);
+		}
 	}
 
-	public void updateLink(Link link) throws SQLException
+	public void updateLink(Link link) throws BiblestudyException
 	{
-		getSqlMapConfig().update("updateLink", link);
+		try
+		{
+			getSqlMapConfig().update("updateLink", link);
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException(e.getMessage(), e);
+		}
 	}
 
-	public void removeAllLinksForNote(Note note) throws SQLException
+	public void removeAllLinksForNote(Note note) throws BiblestudyException
 	{
-		getSqlMapConfig().delete("removeAllLinksForNote", note);
+		try
+		{
+			getSqlMapConfig().delete("removeAllLinksForNote", note);
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException(e.getMessage(), e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Link> getAllLinksThatLinkTo(String oldNoteName) throws SQLException
+	public List<Link> getAllLinksThatLinkTo(String oldNoteName) throws BiblestudyException
 	{
-		return getSqlMapConfig().queryForList("getAllLinksThatLinkTo", oldNoteName);
+		try
+		{
+			return getSqlMapConfig().queryForList("getAllLinksThatLinkTo", oldNoteName);
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException(e.getMessage(), e);
+		}
 	}
 }

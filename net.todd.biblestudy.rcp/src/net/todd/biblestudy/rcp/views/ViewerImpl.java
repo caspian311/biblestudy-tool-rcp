@@ -1,5 +1,6 @@
 package net.todd.biblestudy.rcp.views;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.IOpenNoteModel;
@@ -46,7 +47,11 @@ public class ViewerImpl implements IViewer
 				}
 				catch (PartInitException e)
 				{
-					e.printStackTrace();
+					ViewHelper.showError(e);
+				}
+				catch (BiblestudyException e)
+				{
+					ViewHelper.showError(e);
 				}
 			}
 		});

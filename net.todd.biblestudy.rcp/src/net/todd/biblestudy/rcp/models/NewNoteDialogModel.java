@@ -1,26 +1,18 @@
 package net.todd.biblestudy.rcp.models;
 
-import java.sql.SQLException;
-
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteDao;
 
 public class NewNoteDialogModel implements INewNoteDialogModel
 {
-	public boolean noteAlreadyExists(String newNoteName)
+	public boolean noteAlreadyExists(String newNoteName) throws BiblestudyException
 	{
 		Note noteByName = null;
-		
-		try
-		{
-			noteByName = getNoteDao().getNoteByName(newNoteName);
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		
+
+		noteByName = getNoteDao().getNoteByName(newNoteName);
+
 		return noteByName != null;
 	}
 
@@ -29,15 +21,8 @@ public class NewNoteDialogModel implements INewNoteDialogModel
 		return new NoteDao();
 	}
 
-	public void createNewNote(String newNoteName)
+	public void createNewNote(String newNoteName) throws BiblestudyException
 	{
-		try
-		{
-			getNoteDao().createNote(newNoteName);
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		getNoteDao().createNote(newNoteName);
 	}
 }

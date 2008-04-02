@@ -6,11 +6,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -30,16 +30,16 @@ public class ExportNotesModelTest
 			{
 				return new INoteDao()
 				{
-					public Note createNote(String newNoteName) throws SQLException
+					public Note createNote(String newNoteName) throws BiblestudyException
 					{
 						return null;
 					}
 
-					public void deleteNote(Note note) throws SQLException
+					public void deleteNote(Note note) throws BiblestudyException
 					{
 					}
 
-					public List<Note> getAllNotes() throws SQLException
+					public List<Note> getAllNotes() throws BiblestudyException
 					{
 						List<Note> notes = new ArrayList<Note>();
 
@@ -59,16 +59,16 @@ public class ExportNotesModelTest
 						return notes;
 					}
 
-					public Note getNoteByName(String name) throws SQLException
+					public Note getNoteByName(String name) throws BiblestudyException
 					{
 						return null;
 					}
 
-					public void saveNote(Note note) throws SQLException
+					public void saveNote(Note note) throws BiblestudyException
 					{
 					}
 
-					public void deleteNoteByName(String noteName)
+					public void deleteNoteByName(String noteName) throws BiblestudyException
 					{
 					}
 				};
@@ -93,13 +93,13 @@ public class ExportNotesModelTest
 			{
 				return new ILinkDao()
 				{
-					public Link createLink(Link link) throws SQLException
+					public Link createLink(Link link) throws BiblestudyException
 					{
 						return null;
 					}
 
 					public List<Link> getAllLinksForNote(Integer containingNoteId)
-							throws SQLException
+							throws BiblestudyException
 					{
 						ArrayList<Link> links = new ArrayList<Link>();
 
@@ -114,20 +114,21 @@ public class ExportNotesModelTest
 						return links;
 					}
 
-					public List<Link> getAllLinksThatLinkTo(String oldNoteName) throws SQLException
+					public List<Link> getAllLinksThatLinkTo(String oldNoteName)
+							throws BiblestudyException
 					{
 						return null;
 					}
 
-					public void removeAllLinksForNote(Note note) throws SQLException
+					public void removeAllLinksForNote(Note note) throws BiblestudyException
 					{
 					}
 
-					public void removeLink(Link link) throws SQLException
+					public void removeLink(Link link) throws BiblestudyException
 					{
 					}
 
-					public void updateLink(Link link) throws SQLException
+					public void updateLink(Link link) throws BiblestudyException
 					{
 					}
 				};

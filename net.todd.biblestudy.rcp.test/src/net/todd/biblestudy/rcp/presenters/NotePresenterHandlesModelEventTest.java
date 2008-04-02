@@ -3,10 +3,10 @@ package net.todd.biblestudy.rcp.presenters;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.ILinkDao;
 import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
@@ -139,31 +139,32 @@ public class NotePresenterHandlesModelEventTest
 			{
 				return new ILinkDao()
 				{
-					public Link createLink(Link link) throws SQLException
+					public Link createLink(Link link) throws BiblestudyException
 					{
 						return null;
 					}
 
 					public List<Link> getAllLinksForNote(Integer containingNoteId)
-							throws SQLException
+							throws BiblestudyException
 					{
 						return null;
 					}
 
-					public List<Link> getAllLinksThatLinkTo(String oldNoteName) throws SQLException
+					public List<Link> getAllLinksThatLinkTo(String oldNoteName)
+							throws BiblestudyException
 					{
 						return null;
 					}
 
-					public void removeAllLinksForNote(Note note) throws SQLException
+					public void removeAllLinksForNote(Note note) throws BiblestudyException
 					{
 					}
 
-					public void removeLink(Link link) throws SQLException
+					public void removeLink(Link link) throws BiblestudyException
 					{
 					}
 
-					public void updateLink(Link link) throws SQLException
+					public void updateLink(Link link) throws BiblestudyException
 					{
 					}
 				};
@@ -174,21 +175,21 @@ public class NotePresenterHandlesModelEventTest
 			{
 				return new INoteDao()
 				{
-					public Note createNote(String newNoteName) throws SQLException
+					public Note createNote(String newNoteName) throws BiblestudyException
 					{
 						return null;
 					}
 
-					public void deleteNote(Note note) throws SQLException
+					public void deleteNote(Note note) throws BiblestudyException
 					{
 					}
 
-					public List<Note> getAllNotes() throws SQLException
+					public List<Note> getAllNotes() throws BiblestudyException
 					{
 						return null;
 					}
 
-					public Note getNoteByName(String name) throws SQLException
+					public Note getNoteByName(String name) throws BiblestudyException
 					{
 						Note note = new Note();
 						note.setName(name);
@@ -198,11 +199,11 @@ public class NotePresenterHandlesModelEventTest
 						return note;
 					}
 
-					public void saveNote(Note note) throws SQLException
+					public void saveNote(Note note) throws BiblestudyException
 					{
 					}
 
-					public void deleteNoteByName(String noteName)
+					public void deleteNoteByName(String noteName) throws BiblestudyException
 					{
 					}
 				};

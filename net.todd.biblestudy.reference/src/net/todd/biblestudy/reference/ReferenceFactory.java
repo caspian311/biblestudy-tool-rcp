@@ -20,7 +20,7 @@ public class ReferenceFactory
 
 		if (StringUtils.isEmpty(referenceStr))
 		{
-			throw new InvalidReferenceException();
+			throw new InvalidReferenceException("Invalid Reference: empty reference");
 		}
 
 		extractBook(referenceStr);
@@ -57,10 +57,9 @@ public class ReferenceFactory
 				}
 				catch (NumberFormatException e)
 				{
-					throw new InvalidReferenceException();
+					throw new InvalidReferenceException("Invalid Reference: incorrect verse");
 				}
 			}
-
 		}
 	}
 
@@ -98,7 +97,7 @@ public class ReferenceFactory
 				}
 				catch (NumberFormatException e)
 				{
-					throw new InvalidReferenceException();
+					throw new InvalidReferenceException("Invalid Reference: incorrect chapter");
 				}
 
 				lastPoint = reference.getBook().length() + ref.length() + 1;
@@ -114,7 +113,7 @@ public class ReferenceFactory
 				}
 				catch (NumberFormatException e)
 				{
-					throw new InvalidReferenceException();
+					throw new InvalidReferenceException("Invalid Reference: incorrect chapter");
 				}
 
 				lastPoint = reference.getBook().length() + chapterStr.length() + 2;
@@ -128,7 +127,7 @@ public class ReferenceFactory
 			}
 			else
 			{
-				throw new InvalidReferenceException();
+				throw new InvalidReferenceException("Invalid Reference: incorrect chapter");
 			}
 		}
 	}
@@ -164,7 +163,7 @@ public class ReferenceFactory
 		StringTokenizer tokenizer = new StringTokenizer(referenceStr);
 		if (tokenizer.hasMoreTokens() == false)
 		{
-			throw new InvalidReferenceException();
+			throw new InvalidReferenceException("Invalid Reference: incorrect book");
 		}
 
 		String book = "";

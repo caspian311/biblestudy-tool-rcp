@@ -4,13 +4,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.Reference;
 
 public class BibleDao extends BaseDao implements IBibleDao
 {
 	@SuppressWarnings("unchecked")
-	public List<BibleVerse> keywordLookup(String keyword)
+	public List<BibleVerse> keywordLookup(String keyword) throws BiblestudyException
 	{
 		List<BibleVerse> results = null;
 
@@ -20,7 +21,7 @@ public class BibleDao extends BaseDao implements IBibleDao
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			throw new BiblestudyException(e.getMessage(), e);
 		}
 
 		return results;
@@ -29,9 +30,10 @@ public class BibleDao extends BaseDao implements IBibleDao
 	/**
 	 * @param reference
 	 * @return BibleVerse
+	 * @throws BiblestudyException
 	 */
 	@SuppressWarnings("unchecked")
-	public List<BibleVerse> referenceLookup(Reference reference)
+	public List<BibleVerse> referenceLookup(Reference reference) throws BiblestudyException
 	{
 		List<BibleVerse> result = null;
 
@@ -43,7 +45,7 @@ public class BibleDao extends BaseDao implements IBibleDao
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
+				throw new BiblestudyException(e.getMessage(), e);
 			}
 		}
 
@@ -51,7 +53,7 @@ public class BibleDao extends BaseDao implements IBibleDao
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String> listAllVersions()
+	public List<String> listAllVersions() throws BiblestudyException
 	{
 		List<String> result = null;
 
@@ -61,13 +63,13 @@ public class BibleDao extends BaseDao implements IBibleDao
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			throw new BiblestudyException(e.getMessage(), e);
 		}
 
 		return result;
 	}
 
-	public Connection getConnection()
+	public Connection getConnection() throws BiblestudyException
 	{
 		Connection connection = null;
 
@@ -77,7 +79,7 @@ public class BibleDao extends BaseDao implements IBibleDao
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			throw new BiblestudyException(e.getMessage(), e);
 		}
 
 		return connection;

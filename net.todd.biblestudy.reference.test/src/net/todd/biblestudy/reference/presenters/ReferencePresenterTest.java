@@ -11,8 +11,6 @@ import java.util.List;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.models.IReferenceModel;
 import net.todd.biblestudy.reference.models.ReferenceModel;
-import net.todd.biblestudy.reference.presenters.IReferenceViewListener;
-import net.todd.biblestudy.reference.presenters.ReferencePresenter;
 import net.todd.biblestudy.reference.views.ReferenceViewAdapter;
 import net.todd.biblestudy.reference.views.ReferenceViewEvent;
 
@@ -41,13 +39,15 @@ public class ReferencePresenterTest
 				{
 
 					@Override
-					public List<BibleVerse> performSearchOnKeyword(String searchText, String referenceShortName)
+					public List<BibleVerse> performSearchOnKeyword(String searchText,
+							String referenceShortName)
 					{
 						return new ArrayList<BibleVerse>();
 					}
 
 					@Override
-					public List<BibleVerse> performSearchOnReference(String searchText, String referenceShortName)
+					public List<BibleVerse> performSearchOnReference(String searchText,
+							String referenceShortName)
 					{
 						return new ArrayList<BibleVerse>();
 					}
@@ -61,7 +61,8 @@ public class ReferencePresenterTest
 			}
 
 			@Override
-			protected void doSearch(String searchText, String referenceShortName, String keywordOrReference)
+			protected void doSearch(String searchText, String referenceShortName,
+					String keywordOrReference)
 			{
 				searchWasPerformed = true;
 			}
@@ -149,7 +150,7 @@ public class ReferencePresenterTest
 		}
 
 		@Override
-		public void popupErrorMessage(String errorNoSearchInfoGiven)
+		public void displayErrorMessage(String message)
 		{
 			errorMessagePoppedUp = true;
 		}
