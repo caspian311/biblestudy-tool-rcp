@@ -469,4 +469,9 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		rightClickMenu.setLocation(point);
 		rightClickMenu.setVisible(true);
 	}
+
+	public void setViewTitle(String title)
+	{
+		this.setPartName(title);
+	}
 }

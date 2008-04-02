@@ -111,6 +111,10 @@ public class ReferencePresenter implements IReferenceViewListener
 		}
 		else
 		{
+			String typeOfSearch = StringUtils.capitalize(keywordOrReference);
+
+			referenceView.setViewTitle(typeOfSearch + ": " + searchText);
+
 			try
 			{
 				doSearch(searchText, referenceShortName, keywordOrReference);

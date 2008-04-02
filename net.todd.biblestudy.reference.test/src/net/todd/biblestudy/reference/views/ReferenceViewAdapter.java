@@ -66,4 +66,10 @@ public class ReferenceViewAdapter implements IReferenceView
 	public void displayErrorMessage(String message)
 	{
 	}
+
+	public void setViewTitle(String title)
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

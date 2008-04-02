@@ -34,4 +34,6 @@ public interface IReferenceView
 	public BibleVerse getSelectedVerse();
 
 	public void showRightClickMenu();
+
+	public void setViewTitle(String title);
 }
