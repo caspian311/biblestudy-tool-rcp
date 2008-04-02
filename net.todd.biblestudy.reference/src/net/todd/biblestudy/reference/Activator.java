@@ -33,7 +33,7 @@ public class Activator extends AbstractUIPlugin
 		super.start(context);
 		plugin = this;
 
-		new DataInitializer().initializeData();
+		// new DataInitializer().initializeData();
 	}
 
 	/*

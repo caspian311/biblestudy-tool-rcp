@@ -2,6 +2,8 @@ package net.todd.biblestudy.reference.db;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import net.todd.biblestudy.common.BiblestudyException;
 
@@ -27,7 +29,18 @@ public abstract class BaseDao
 			catch (IOException e)
 			{
 				throw new BiblestudyException(
-						"Something bad happened while building the SqlMapClient instance." + e, e);
+						"Something bad happened while building the SqlMapClient instance."
+								+ e.getMessage(), e);
+			}
+
+			try
+			{
+				Connection connection = sqlMapper.getDataSource().getConnection();
+				new DataInitializer(connection).initializeData();
+			}
+			catch (SQLException e)
+			{
+				throw new BiblestudyException(e.getMessage(), e);
 			}
 		}
 

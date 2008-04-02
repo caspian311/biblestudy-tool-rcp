@@ -1,4 +1,4 @@
-package net.todd.biblestudy.reference;
+package net.todd.biblestudy.reference.db;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.reference.db.BibleDao;
-import net.todd.biblestudy.reference.db.IBibleDao;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -28,6 +26,13 @@ public class DataInitializer
 
 	private static final String DB_SCRIPTS_EXTENSION_POINT_TYPE = "net.todd.biblestudy.reference.dbScripts";
 	private static final String DB_SCRIPT_EXTENSION_NAME = "script";
+
+	private Connection connection;
+
+	public DataInitializer(Connection connection)
+	{
+		this.connection = connection;
+	}
 
 	public void initializeData() throws BiblestudyException
 	{
@@ -132,7 +137,7 @@ public class DataInitializer
 
 		try
 		{
-			connection = getBibleDao().getConnection();
+			connection = getConnection();
 
 			if (connection != null)
 			{
@@ -179,9 +184,9 @@ public class DataInitializer
 		}
 	}
 
-	private IBibleDao getBibleDao()
+	private Connection getConnection()
 	{
-		return new BibleDao();
+		return connection;
 	}
 
 	private List<String> createBatchQueries(String sql)

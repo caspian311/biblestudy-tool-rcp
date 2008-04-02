@@ -1,6 +1,5 @@
 package net.todd.biblestudy.reference.db;
 
-import java.sql.Connection;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
@@ -34,12 +33,4 @@ public interface IBibleDao
 	 * @throws BiblestudyException
 	 */
 	public List<String> listAllVersions() throws BiblestudyException;
-
-	/**
-	 * return JDBC connection
-	 * 
-	 * @return
-	 * @throws BiblestudyException
-	 */
-	public Connection getConnection() throws BiblestudyException;
 }

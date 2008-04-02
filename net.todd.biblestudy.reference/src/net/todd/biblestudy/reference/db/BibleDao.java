@@ -1,6 +1,5 @@
 package net.todd.biblestudy.reference.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -11,6 +10,13 @@ import net.todd.biblestudy.reference.Reference;
 public class BibleDao extends BaseDao implements IBibleDao
 {
 	@SuppressWarnings("unchecked")
+	/**
+	 * perform keyword search on database
+	 * 
+	 * @param keyword
+	 *            keyword to search on
+	 * @return List<BibleVerse> search results
+	 */
 	public List<BibleVerse> keywordLookup(String keyword) throws BiblestudyException
 	{
 		List<BibleVerse> results = null;
@@ -28,8 +34,10 @@ public class BibleDao extends BaseDao implements IBibleDao
 	}
 
 	/**
+	 * perform search on database for given reference
+	 * 
 	 * @param reference
-	 * @return BibleVerse
+	 * @return List<BibleVerse>
 	 * @throws BiblestudyException
 	 */
 	@SuppressWarnings("unchecked")
@@ -53,6 +61,11 @@ public class BibleDao extends BaseDao implements IBibleDao
 	}
 
 	@SuppressWarnings("unchecked")
+	/**
+	 * get all Bible versions from the database
+	 * 
+	 * @return List<String> results
+	 */
 	public List<String> listAllVersions() throws BiblestudyException
 	{
 		List<String> result = null;
@@ -67,21 +80,5 @@ public class BibleDao extends BaseDao implements IBibleDao
 		}
 
 		return result;
-	}
-
-	public Connection getConnection() throws BiblestudyException
-	{
-		Connection connection = null;
-
-		try
-		{
-			connection = getSqlMapConfig().getDataSource().getConnection();
-		}
-		catch (SQLException e)
-		{
-			throw new BiblestudyException(e.getMessage(), e);
-		}
-
-		return connection;
 	}
 }
