@@ -10,7 +10,7 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="icons/alt_window_16.gif" i32="icons/alt_window_32.gif"/>
+   <windowImages i16="/net.todd.biblestudy.rcp/icons/biblestudy_16.gif" i32="/net.todd.biblestudy.rcp/icons/biblestudy_32.gif"/>
 
    <splash
       location="net.todd.biblestudy.rcp"
@@ -18,8 +18,10 @@
       startupMessageRect="7,252,445,20"
       startupForegroundColor="000000" />
    <launcher name="biblestudy">
+      <linux icon="/net.todd.biblestudy.rcp/icons/biblestudy.xpm"/>
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
+         <ico path="/net.todd.biblestudy.rcp/icons/docs.ico"/>
          <bmp/>
       </win>
    </launcher>
@@ -30,7 +32,7 @@
 
    <plugins>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.ibm.icu36.data.update"/>
+      <plugin id="com.ibm.icu36.data.update" fragment="true"/>
       <plugin id="net.todd.biblestudy.rcp"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -50,7 +52,7 @@
       <plugin id="org.eclipse.jface.text"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
