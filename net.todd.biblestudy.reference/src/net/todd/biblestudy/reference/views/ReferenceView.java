@@ -213,12 +213,12 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		TableColumn referenceColumn = new TableColumn(resultsTable, SWT.LEFT);
 		referenceColumn.setText(REFERENCE_COLUMN_HEADER);
 		referenceColumn.setWidth(REFERENCE_COLUMN_WIDTH);
-		referenceColumn.setResizable(false);
+		referenceColumn.setResizable(true);
 
 		textColumn = new TableColumn(resultsTable, SWT.LEFT);
 		textColumn.setText(TEXT_COLUMN_HEADER);
 		textColumn.setWidth(200);
-		textColumn.setResizable(false);
+		textColumn.setResizable(true);
 
 		makeDragable();
 	}

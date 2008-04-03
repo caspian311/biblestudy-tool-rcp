@@ -125,7 +125,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		filterText.setFocus();
 
 		notesTableViewer = new TableViewer(composite, SWT.V_SCROLL | SWT.BORDER
-				| SWT.SHADOW_ETCHED_IN);
+				| SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
 		notesTableViewer.setLabelProvider(new NoteLabelProvider());
 
@@ -160,6 +160,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		noteNameColumn = new TableColumn(notesTable, SWT.LEFT);
 		noteNameColumn.setText(NOTE_NAME_COLUMN_HEADER);
 		noteNameColumn.setWidth(NOTE_NAME_COLUMN_WIDTH);
+		noteNameColumn.setResizable(true);
 		noteNameColumn.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -174,6 +175,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		lastModifiedColumn = new TableColumn(notesTable, SWT.LEFT);
 		lastModifiedColumn.setText(LAST_MODIFIED_COLUMN_HEADER);
 		lastModifiedColumn.setWidth(LAST_MODIFIED_COLUMN_WIDTH);
+		lastModifiedColumn.setResizable(true);
 		lastModifiedColumn.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -188,6 +190,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		createdColumn = new TableColumn(notesTable, SWT.LEFT);
 		createdColumn.setText(CREATED_COLUMN_HEADER);
 		createdColumn.setWidth(CREATED_COLUMN_WIDTH);
+		createdColumn.setResizable(true);
 		createdColumn.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
@@ -383,10 +386,11 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 		if (tableItems != null && tableItems.length > 0)
 		{
 			final TableItem selection = tableItems[0];
-
+			
 			String noteName = selection.getText(0);
 
-			final Text text = new Text(notesTable, SWT.BORDER);
+			final Text text = new Text(notesTable, SWT.NONE);
+			
 			Listener textListener = new Listener()
 			{
 				public void handleEvent(Event e)

@@ -84,7 +84,7 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 		composite.setLayoutData(compositeLayoutData);
 
 		notesTableViewer = new TableViewer(composite, SWT.CHECK | SWT.V_SCROLL | SWT.BORDER
-				| SWT.SHADOW_ETCHED_IN);
+				| SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
 		notesTableViewer.setLabelProvider(new ExportNoteLabelProvider());
 
