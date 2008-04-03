@@ -3,7 +3,6 @@
 
 <product name="Bible Study Tool" id="net.todd.biblestudy.rcp.product" application="net.todd.biblestudy.rcp.application" useFeatures="true">
 
-
    <configIni use="default"/>
 
    <launcherArgs>
@@ -19,6 +18,7 @@
       startupForegroundColor="000000" />
    <launcher name="biblestudy">
       <linux icon="/net.todd.biblestudy.rcp/icons/biblestudy.xpm"/>
+      <macosx icon="/net.todd.biblestudy.rcp/icons/biblestudy.icns"/>
       <solaris/>
       <win useIco="true">
          <ico path="/net.todd.biblestudy.rcp/icons/docs.ico"/>
@@ -26,13 +26,12 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
    <plugins>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.ibm.icu36.data.update" fragment="true"/>
+      <plugin id="com.ibm.icu36.data.update"/>
       <plugin id="net.todd.biblestudy.rcp"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -52,7 +51,7 @@
       <plugin id="org.eclipse.jface.text"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
