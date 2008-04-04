@@ -84,17 +84,17 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(gridLayout);
 		composite.setLayoutData(compositeLayoutData);
-		
+
 		Composite otherComposite = new Composite(composite, SWT.NONE);
 		FillLayout layout = new FillLayout(SWT.HORIZONTAL);
 		otherComposite.setLayout(layout);
-		
+
 		Button selectAllButton = new Button(otherComposite, SWT.NORMAL);
 		selectAllButton.setText("All");
 		selectAllButton.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
-			public void widgetSelected(SelectionEvent e) 
+			public void widgetSelected(SelectionEvent e)
 			{
 				selectAllNotes();
 			}
@@ -105,23 +105,23 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 		selectNoNotesButton.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
-			public void widgetSelected(SelectionEvent e) 
+			public void widgetSelected(SelectionEvent e)
 			{
 				selectNoNotes();
 			}
 		});
-		
+
 		Button selectInverseButton = new Button(otherComposite, SWT.NORMAL);
 		selectInverseButton.setText("Inverse");
 		selectInverseButton.addSelectionListener(new SelectionAdapter()
 		{
 			@Override
-			public void widgetSelected(SelectionEvent e) 
+			public void widgetSelected(SelectionEvent e)
 			{
 				selectInverse();
 			}
 		});
-		
+
 		notesTableViewer = new TableViewer(composite, SWT.CHECK | SWT.V_SCROLL | SWT.BORDER
 				| SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
@@ -180,24 +180,47 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 
 		return parent;
 	}
-	
-	private void selectAllNotes() 
+
+	private void selectAllNotes()
 	{
+		selectedNotes = new ArrayList<Note>();
+
 		for (TableItem item : notesTable.getItems())
 		{
 			item.setChecked(true);
 		}
+
+		updateSelectedNotes();
 	}
-	
-	private void selectNoNotes() 
+
+	private void updateSelectedNotes()
+	{
+		for (TableItem item : notesTable.getItems())
+		{
+			Note note = (Note) item.getData();
+
+			if (item.getChecked())
+			{
+				selectedNotes.add(note);
+			}
+			else
+			{
+				selectedNotes.remove(note);
+			}
+		}
+	}
+
+	private void selectNoNotes()
 	{
 		for (TableItem item : notesTable.getItems())
 		{
 			item.setChecked(false);
 		}
+
+		updateSelectedNotes();
 	}
-	
-	private void selectInverse() 
+
+	private void selectInverse()
 	{
 		for (TableItem item : notesTable.getItems())
 		{
@@ -210,6 +233,8 @@ public class ExportNotesView extends Dialog implements IExportNotesView
 				item.setChecked(true);
 			}
 		}
+
+		updateSelectedNotes();
 	}
 
 	private void addCheckListener()

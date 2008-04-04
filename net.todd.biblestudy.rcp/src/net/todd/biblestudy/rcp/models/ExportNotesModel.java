@@ -18,9 +18,6 @@ import net.todd.biblestudy.db.LinkDao;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteDao;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import com.thoughtworks.xstream.XStream;
@@ -86,6 +83,11 @@ public class ExportNotesModel implements IExportNotesModel
 	public List<Link> getAssociatedLinks()
 	{
 		return associatedLinks;
+	}
+
+	public List<Note> getNotesToExport()
+	{
+		return notesToExport;
 	}
 
 	ILinkDao getLinkDao()
@@ -196,60 +198,8 @@ public class ExportNotesModel implements IExportNotesModel
 
 	public Job createExportJob()
 	{
-		Job job = new Job("Exporting All Notes")
-		{
-			@Override
-			protected IStatus run(IProgressMonitor monitor)
-			{
-				try
-				{
-					int totalWork = 3;
-					totalWork += notesToExport.size();
-					totalWork += associatedLinks.size();
-
-					monitor.beginTask("Exporting...", totalWork);
-
-					createTemporaryDirectory();
-					monitor.worked(1);
-
-					for (Note note : notesToExport)
-					{
-						addNoteToXML(note);
-						monitor.worked(1);
-
-						if (monitor.isCanceled())
-						{
-							return Status.CANCEL_STATUS;
-						}
-					}
-
-					for (Link link : associatedLinks)
-					{
-						addLinkToXML(link);
-						monitor.worked(1);
-
-						if (monitor.isCanceled())
-						{
-							return Status.CANCEL_STATUS;
-						}
-					}
-
-					zipFile();
-					monitor.worked(1);
-
-					cleanup();
-					monitor.worked(1);
-
-					monitor.done();
-				}
-				catch (Exception e)
-				{
-					return Status.CANCEL_STATUS;
-				}
-
-				return Status.OK_STATUS;
-			}
-		};
+		ExportJob job = new ExportJob("Exporting All Notes");
+		job.setExportModel(this);
 
 		return job;
 	}
