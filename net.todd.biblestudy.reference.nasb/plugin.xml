@@ -9,11 +9,5 @@
             filename="resources/data.sql">
       </script>
    </extension>
-   <extension
-         point="org.eclipse.ui.startup">
-      <startup
-            class="net.todd.biblestudy.reference.nasb.Startup">
-      </startup>
-   </extension>
 
 </plugin>
