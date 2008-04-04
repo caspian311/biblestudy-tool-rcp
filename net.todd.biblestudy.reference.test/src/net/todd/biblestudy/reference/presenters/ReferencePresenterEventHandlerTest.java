@@ -47,10 +47,37 @@ public class ReferencePresenterEventHandlerTest
 		assertEquals("Reference: john 3:16", referenceView.getTitle());
 	}
 
+	@Test
+	public void testDoingShowEntireChapterSetsViewsTitleToMeaningfulText() throws Exception
+	{
+		BibleVerse bibleVerse = new BibleVerse();
+		bibleVerse.setBook("John");
+		bibleVerse.setChapter(12);
+		referenceView.setSelectedVerse(bibleVerse);
+
+		ReferencePresenter presenter = new ReferencePresenter(referenceView);
+		presenter.handleEvent(new ReferenceViewEvent(
+				ReferenceViewEvent.REFERENCE_VIEW_SHOW_ENTIRE_CHAPTER));
+
+		assertEquals("Reference: John 12", referenceView.getTitle());
+	}
+
 	private class MockReferenceView implements IReferenceView
 	{
 		public void addReferenceViewListener(IReferenceViewListener listener)
 		{
+		}
+
+		private BibleVerse selectedBibleVerse;
+
+		public void setSelectedVerse(BibleVerse bibleVerse)
+		{
+			selectedBibleVerse = bibleVerse;
+		}
+
+		public BibleVerse getSelectedVerse()
+		{
+			return selectedBibleVerse;
 		}
 
 		private String title;
@@ -111,11 +138,6 @@ public class ReferencePresenterEventHandlerTest
 		public String getReferenceSourceId()
 		{
 			return referenceSourceId;
-		}
-
-		public BibleVerse getSelectedVerse()
-		{
-			return null;
 		}
 
 		public void hideLimitResultsMessage()

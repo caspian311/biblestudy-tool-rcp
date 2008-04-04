@@ -111,10 +111,6 @@ public class ReferencePresenter implements IReferenceViewListener
 		}
 		else
 		{
-			String typeOfSearch = StringUtils.capitalize(keywordOrReference);
-
-			referenceView.setViewTitle(typeOfSearch + ": " + searchText);
-
 			try
 			{
 				doSearch(searchText, referenceShortName, keywordOrReference);
@@ -129,6 +125,10 @@ public class ReferencePresenter implements IReferenceViewListener
 	protected void doSearch(String searchText, String referenceShortName, String keywordOrReference)
 			throws BiblestudyException, InvalidReferenceException
 	{
+		String typeOfSearch = StringUtils.capitalize(keywordOrReference);
+
+		referenceView.setViewTitle(typeOfSearch + ": " + searchText);
+
 		List<BibleVerse> results = null;
 
 		if ("reference".equals(keywordOrReference))
