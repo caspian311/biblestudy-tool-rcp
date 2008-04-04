@@ -298,34 +298,56 @@ public class NoteModel implements INoteModel
 	protected int findLengthOfDifferingText(String newContentText)
 	{
 		String oldContentText = getNote().getText();
-
 		String originalNewContentText = newContentText;
 
-		int startDifference = StringUtils.indexOfDifference(oldContentText, newContentText);
+		int lengthOfDifferingText = oldContentText.length() - originalNewContentText.length();
 
-		int lengthOfDifferingText = 0;
-
-		if (startDifference != -1)
+		if (lengthOfDifferingText < 0)
 		{
-			oldContentText = oldContentText.substring(startDifference, oldContentText.length());
-			newContentText = newContentText.substring(startDifference, newContentText.length());
+			lengthOfDifferingText *= -1;
+		}
 
-			String reversedNewContentText = StringUtils.reverse(newContentText);
-			String reversedOldContetText = StringUtils.reverse(oldContentText);
-
-			int reversedStartDifference = StringUtils.indexOfDifference(reversedNewContentText,
-					reversedOldContetText);
-
-			int stopDifference = originalNewContentText.length() - reversedStartDifference;
-
-			lengthOfDifferingText = stopDifference - startDifference;
-
-			if (lengthOfDifferingText == 0)
-			{ // differing length should never be 0 if start difference is >
-				// -1
-				lengthOfDifferingText = 1;
+		if (lengthOfDifferingText == 0)
+		{
+			if (oldContentText.equals(originalNewContentText) == false)
+			{
+				lengthOfDifferingText = oldContentText.length();
 			}
 		}
+		// String oldContentText = getNote().getText();
+		//
+		// String originalNewContentText = newContentText;
+		//
+		// int startDifference = StringUtils.indexOfDifference(oldContentText,
+		// newContentText);
+		//
+		// int lengthOfDifferingText = 0;
+		//
+		// if (startDifference != -1)
+		// {
+		// oldContentText = oldContentText.substring(startDifference,
+		// oldContentText.length());
+		// newContentText = newContentText.substring(startDifference,
+		// newContentText.length());
+		//
+		// String reversedNewContentText = StringUtils.reverse(newContentText);
+		// String reversedOldContetText = StringUtils.reverse(oldContentText);
+		//
+		// int reversedStartDifference =
+		// StringUtils.indexOfDifference(reversedNewContentText,
+		// reversedOldContetText);
+		//
+		// int stopDifference = originalNewContentText.length() -
+		// reversedStartDifference;
+		//
+		// lengthOfDifferingText = stopDifference - startDifference;
+		//
+		// if (lengthOfDifferingText == 0)
+		// { // differing length should never be 0 if start difference is >
+		// // -1
+		// lengthOfDifferingText = 1;
+		// }
+		// }
 
 		return lengthOfDifferingText;
 	}

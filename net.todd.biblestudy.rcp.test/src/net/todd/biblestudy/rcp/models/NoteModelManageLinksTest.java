@@ -255,4 +255,31 @@ public class NoteModelManageLinksTest
 		assertEquals(4, noteStyle.getStart().intValue());
 		assertEquals(4, noteStyle.getLength().intValue());
 	}
+
+	@Test
+	public void testLinksShiftsLeftWhenMultipleCharactersAreRemovedBeforeLink() throws Exception
+	{
+		noteModel.updateContent("blah blah blah");
+
+		List<NoteStyle> noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(0, noteStyles.size());
+
+		noteModel.addLinkToNote("blah", 5, 9);
+
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(1, noteStyles.size());
+		NoteStyle noteStyle = noteStyles.get(0);
+
+		assertEquals(5, noteStyle.getStart().intValue());
+		assertEquals(4, noteStyle.getLength().intValue());
+
+		noteModel.updateContent("bl blah blah");
+
+		noteStyles = noteModel.getNoteStylesForRange(0, 100);
+		assertEquals(1, noteStyles.size());
+		noteStyle = noteStyles.get(0);
+
+		assertEquals(3, noteStyle.getStart().intValue());
+		assertEquals(4, noteStyle.getLength().intValue());
+	}
 }

@@ -81,17 +81,31 @@ public class UpdatingLinksInNoteModelTest
 	}
 
 	@Test
-	public void testLocationAndLengthOfNewTextWhenAddingTwoWhiteSpaces() throws Exception
+	public void testLocationAndLengthOfNewTextWhenRemovingTwoCharactersAtOnce() throws Exception
 	{
-		noteModel.getNote().setText(" test");
+		noteModel.getNote().setText("test");
 
-		String newContent = "  test";
+		String newContent = " test";
 
 		int location = noteModel.findLocationOfNewText(newContent);
 		int differenceLength = noteModel.findLengthOfDifferingText(newContent);
 
-		assertEquals(1, location);
+		assertEquals(0, location);
 		assertEquals(1, differenceLength);
+	}
+
+	@Test
+	public void testLocationAndLengthOfNewTextWhenAddingTwoWhiteSpaces() throws Exception
+	{
+		noteModel.getNote().setText("test test");
+
+		String newContent = "te test";
+
+		int location = noteModel.findLocationOfNewText(newContent);
+		int differenceLength = noteModel.findLengthOfDifferingText(newContent);
+
+		assertEquals(2, location);
+		assertEquals(2, differenceLength);
 	}
 
 	@Test
