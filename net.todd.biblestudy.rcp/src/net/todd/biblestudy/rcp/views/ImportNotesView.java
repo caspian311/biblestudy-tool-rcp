@@ -24,8 +24,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -86,6 +88,43 @@ public class ImportNotesView extends Dialog implements IImportNotesView
 		composite.setLayout(gridLayout);
 		composite.setLayoutData(compositeLayoutData);
 
+		Composite otherComposite = new Composite(composite, SWT.NONE);
+		FillLayout layout = new FillLayout(SWT.HORIZONTAL);
+		otherComposite.setLayout(layout);
+		
+		Button selectAllButton = new Button(otherComposite, SWT.NORMAL);
+		selectAllButton.setText("All");
+		selectAllButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				selectAllNotes();
+			}
+		});
+
+		Button selectNoNotesButton = new Button(otherComposite, SWT.NORMAL);
+		selectNoNotesButton.setText("None");
+		selectNoNotesButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				selectNoNotes();
+			}
+		});
+		
+		Button selectInverseButton = new Button(otherComposite, SWT.NORMAL);
+		selectInverseButton.setText("Inverse");
+		selectInverseButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e) 
+			{
+				selectInverse();
+			}
+		});
+		
 		notesTableViewer = new TableViewer(composite, SWT.CHECK | SWT.V_SCROLL | SWT.BORDER
 				| SWT.SHADOW_ETCHED_IN);
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
@@ -145,6 +184,37 @@ public class ImportNotesView extends Dialog implements IImportNotesView
 		return parent;
 	}
 
+	private void selectAllNotes() 
+	{
+		for (TableItem item : notesTable.getItems())
+		{
+			item.setChecked(true);
+		}
+	}
+	
+	private void selectNoNotes() 
+	{
+		for (TableItem item : notesTable.getItems())
+		{
+			item.setChecked(false);
+		}
+	}
+	
+	private void selectInverse() 
+	{
+		for (TableItem item : notesTable.getItems())
+		{
+			if (item.getChecked())
+			{
+				item.setChecked(false);
+			}
+			else
+			{
+				item.setChecked(true);
+			}
+		}
+	}
+	
 	private void addCheckListener()
 	{
 		notesTable.addListener(SWT.Selection, new Listener()
