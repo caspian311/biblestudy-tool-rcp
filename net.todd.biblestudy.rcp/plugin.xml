@@ -125,5 +125,56 @@
          </action>
       </viewContribution>
    </extension>
+   
+   <extension
+		point="org.eclipse.ui.contexts">
+		<context
+			name="%context.editingText.name"
+			description="%context.editingText.description"
+			id="net.todd.biblestudy.rcp.context"
+			parentId="org.eclipse.ui.contexts.window">
+		</context>
+	</extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            defaultHandler="net.todd.biblestudy.rcp.actions.NewNoteHandler"
+            id="net.todd.biblestudy.rcp.newNoteCommand"
+            name="New Note">
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            defaultHandler="net.todd.biblestudy.rcp.actions.OpenNoteHandler"
+            id="net.todd.biblestudy.rcp.openNoteCommand"
+            name="Open Note">
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            defaultHandler="net.todd.biblestudy.rcp.actions.CloseNoteHandler"
+            id="net.todd.biblestudy.rcp.closeNoteCommand"
+            name="Close Note">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="net.todd.biblestudy.rcp.newNoteCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="net.todd.biblestudy.rcp.context"
+            sequence="M1+N" />
+      <key
+            commandId="net.todd.biblestudy.rcp.openNoteCommand"
+            contextId="net.todd.biblestudy.rcp.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+O">
+      </key>
+      <key
+            commandId="net.todd.biblestudy.rcp.closeNoteCommand"
+            contextId="net.todd.biblestudy.rcp.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+W">
+      </key>
+   </extension>
 
 </plugin>

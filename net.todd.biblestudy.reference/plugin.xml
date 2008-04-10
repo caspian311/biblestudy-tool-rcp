@@ -34,5 +34,21 @@
             class="net.todd.biblestudy.reference.Startup">
       </startup>
    </extension>
-
+<extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            defaultHandler="net.todd.biblestudy.reference.actions.OpenReferenceHandler"
+            id="net.todd.biblestudy.reference.openReferenceCommand"
+            name="Open Reference">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="net.todd.biblestudy.reference.openReferenceCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="net.todd.biblestudy.rcp.context"
+            sequence="M1+R" />
+   </extension>
 </plugin>
