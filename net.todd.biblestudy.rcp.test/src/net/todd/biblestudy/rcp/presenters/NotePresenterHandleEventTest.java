@@ -401,9 +401,203 @@ public class NotePresenterHandleEventTest
 		verses.add(verse1);
 		view.setDroppedVerse(verses);
 
-		assertFalse(model.isLinkToRefAdded());
+		assertEquals(0, model.getNumberOfLinkToReferencesAdded());
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
-		assertTrue(model.isLinkToRefAdded());
+		assertEquals(1, model.getNumberOfLinkToReferencesAdded());
+
+		assertEquals("ref 1:2", model.getReferenceLinkedTo().get(0).toString());
+		assertEquals(4, model.getReferenceLinkedToStart().get(0));
+		assertEquals(11, model.getReferenceLinkedToStop().get(0));
+
+		assertEquals("abcdref 1:2\nefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertLinkToListOfReferencesAddsLinks() throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(4);
+
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+
+		BibleVerse verse1 = new BibleVerse();
+		verse1.setBook("ref1");
+		verse1.setChapter(1);
+		verse1.setVerse(1);
+		verse1.setText("test");
+
+		BibleVerse verse2 = new BibleVerse();
+		verse2.setBook("ref2");
+		verse2.setChapter(2);
+		verse2.setVerse(2);
+		verse2.setText("test2");
+
+		verses.add(verse1);
+		verses.add(verse2);
+
+		view.setDroppedVerse(verses);
+
+		assertEquals(0, model.getNumberOfLinkToReferencesAdded());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
+
+		assertEquals(2, model.getNumberOfLinkToReferencesAdded());
+
+		assertEquals("ref1 1:1", model.getReferenceLinkedTo().get(0).toString());
+		assertEquals(4, model.getReferenceLinkedToStart().get(0));
+		assertEquals(12, model.getReferenceLinkedToStop().get(0));
+
+		assertEquals("ref2 2:2", model.getReferenceLinkedTo().get(1).toString());
+		assertEquals(13, model.getReferenceLinkedToStart().get(1));
+		assertEquals(21, model.getReferenceLinkedToStop().get(1));
+
+		assertEquals("abcdref1 1:1\nref2 2:2\nefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertLinkToCreateAListOfReferencesWithLinksInCombinedForm()
+			throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(4);
+
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+
+		BibleVerse verse1 = new BibleVerse();
+		verse1.setBook("ref");
+		verse1.setChapter(1);
+		verse1.setVerse(1);
+		verse1.setText("test");
+
+		BibleVerse verse2 = new BibleVerse();
+		verse2.setBook("ref");
+		verse2.setChapter(1);
+		verse2.setVerse(2);
+		verse2.setText("test2");
+
+		verses.add(verse1);
+		verses.add(verse2);
+
+		view.setDroppedVerse(verses);
+
+		assertEquals(0, model.getNumberOfLinkToReferencesAdded());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
+		assertEquals(1, model.getNumberOfLinkToReferencesAdded());
+
+		assertEquals("ref 1:1-2", model.getReferenceLinkedTo().get(0).toString());
+		assertEquals(4, model.getReferenceLinkedToStart().get(0));
+		assertEquals(13, model.getReferenceLinkedToStop().get(0));
+
+		assertEquals("abcdref 1:1-2\nefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertLinkToCreateAListOfReferencesWithLinksInCombinedForm2()
+			throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(4);
+
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+
+		BibleVerse verse1 = new BibleVerse();
+		verse1.setBook("ref");
+		verse1.setChapter(1);
+		verse1.setVerse(1);
+
+		BibleVerse verse2 = new BibleVerse();
+		verse2.setBook("ref");
+		verse2.setChapter(1);
+		verse2.setVerse(2);
+
+		BibleVerse verse3 = new BibleVerse();
+		verse3.setBook("ref");
+		verse3.setChapter(1);
+		verse3.setVerse(3);
+
+		verses.add(verse1);
+		verses.add(verse2);
+		verses.add(verse3);
+
+		view.setDroppedVerse(verses);
+
+		assertEquals(0, model.getNumberOfLinkToReferencesAdded());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
+		assertEquals(1, model.getNumberOfLinkToReferencesAdded());
+
+		assertEquals("ref 1:1-3", model.getReferenceLinkedTo().get(0).toString());
+		assertEquals(4, model.getReferenceLinkedToStart().get(0));
+		assertEquals(13, model.getReferenceLinkedToStop().get(0));
+
+		assertEquals("abcdref 1:1-3\nefg", view.getContentText());
+	}
+
+	@Test
+	public void testHandleInsertLinkToCreateAListOfMixedReferencesWithLinksInCombinedForm()
+			throws Exception
+	{
+		Note note = new Note();
+		note.setName("test");
+		note.setText("abcdefg");
+		model.setNote(note);
+
+		NotePresenter presenter = new NotePresenter(view, model);
+
+		view.setCurrentCarretPosition(4);
+
+		List<BibleVerse> verses = new ArrayList<BibleVerse>();
+
+		BibleVerse verse1 = new BibleVerse();
+		verse1.setBook("ref");
+		verse1.setChapter(1);
+		verse1.setVerse(1);
+
+		BibleVerse verse2 = new BibleVerse();
+		verse2.setBook("ref");
+		verse2.setChapter(1);
+		verse2.setVerse(2);
+
+		BibleVerse verse3 = new BibleVerse();
+		verse3.setBook("ref");
+		verse3.setChapter(2);
+		verse3.setVerse(3);
+
+		verses.add(verse1);
+		verses.add(verse2);
+		verses.add(verse3);
+
+		view.setDroppedVerse(verses);
+
+		assertEquals(0, model.getNumberOfLinkToReferencesAdded());
+		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
+		assertEquals(2, model.getNumberOfLinkToReferencesAdded());
+
+		assertEquals("ref 1:1-2", model.getReferenceLinkedTo().get(0).toString());
+		assertEquals(4, model.getReferenceLinkedToStart().get(0));
+		assertEquals(13, model.getReferenceLinkedToStop().get(0));
+
+		assertEquals("ref 2:3", model.getReferenceLinkedTo().get(1).toString());
+		assertEquals(14, model.getReferenceLinkedToStart().get(1));
+		assertEquals(21, model.getReferenceLinkedToStop().get(1));
+
+		assertEquals("abcdref 1:1-2\nref 2:3\nefg", view.getContentText());
 	}
 
 	private class MockNoteModel implements INoteModel
@@ -412,16 +606,37 @@ public class NotePresenterHandleEventTest
 		{
 		}
 
-		private boolean linkToRefAdded = false;
+		private List<Reference> referenceLinkedTo = new ArrayList<Reference>();
+		private List<Integer> referenceLinkedToStart = new ArrayList<Integer>();
+		private List<Integer> referenceLinkedToStop = new ArrayList<Integer>();
+		private int numberOfLinkToReferencesAdded;
 
 		public void addLinkToReference(Reference reference, int start, int stop)
 		{
-			linkToRefAdded = true;
+			numberOfLinkToReferencesAdded++;
+			referenceLinkedTo.add(reference);
+			referenceLinkedToStart.add(start);
+			referenceLinkedToStop.add(stop);
 		}
 
-		public boolean isLinkToRefAdded()
+		public int getNumberOfLinkToReferencesAdded()
 		{
-			return linkToRefAdded;
+			return numberOfLinkToReferencesAdded;
+		}
+
+		public List<Reference> getReferenceLinkedTo()
+		{
+			return referenceLinkedTo;
+		}
+
+		public List<Integer> getReferenceLinkedToStart()
+		{
+			return referenceLinkedToStart;
+		}
+
+		public List<Integer> getReferenceLinkedToStop()
+		{
+			return referenceLinkedToStop;
 		}
 
 		public void createNewNoteInfo(String noteName)
@@ -569,18 +784,6 @@ public class NotePresenterHandleEventTest
 		{
 		}
 
-		private String contentText;
-
-		public void setContentText(String s)
-		{
-			this.contentText = s;
-		}
-
-		public String getContentText()
-		{
-			return contentText;
-		}
-
 		private int currentCarretPosition;
 
 		public void setCurrentCarretPosition(int i)
@@ -712,6 +915,18 @@ public class NotePresenterHandleEventTest
 		public Point getRightClickPopupLocation()
 		{
 			return rightClickPopupLocation;
+		}
+
+		private String contentText;
+
+		public void setContentText(String s)
+		{
+			this.contentText = s;
+		}
+
+		public String getContentText()
+		{
+			return contentText;
 		}
 	}
 

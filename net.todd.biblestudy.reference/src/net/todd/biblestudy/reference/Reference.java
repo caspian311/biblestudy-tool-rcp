@@ -63,7 +63,46 @@ public class Reference
 		}
 		else
 		{
-			s = verses[0] + "-" + verses[verses.length - 1];
+			StringBuffer sb = new StringBuffer();
+
+			boolean inSequence = false;
+			Integer previousVerse = null;
+			for (int i = 0; i < verses.length; i++)
+			{
+				Integer verse = verses[i];
+
+				if (previousVerse == null)
+				{
+					sb.append(verse);
+				}
+				else
+				{
+					if (verse.equals(new Integer(previousVerse.intValue() + 1)))
+					{
+						if (inSequence == false)
+						{
+							sb.append("-");
+						}
+						if (i == verses.length - 1)
+						{
+							sb.append(verses[verses.length - 1]);
+						}
+						inSequence = true;
+					}
+					else
+					{
+						if (inSequence)
+						{
+							sb.append(previousVerse);
+						}
+
+						sb.append(",").append(verse);
+					}
+				}
+
+				previousVerse = verse;
+			}
+			s = sb.toString();
 		}
 		return s;
 	}

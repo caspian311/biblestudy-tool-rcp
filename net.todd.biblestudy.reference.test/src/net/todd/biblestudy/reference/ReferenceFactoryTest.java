@@ -6,10 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import net.todd.biblestudy.reference.InvalidReferenceException;
-import net.todd.biblestudy.reference.Reference;
-import net.todd.biblestudy.reference.ReferenceFactory;
-
 import org.junit.Test;
 
 public class ReferenceFactoryTest
@@ -150,7 +146,7 @@ public class ReferenceFactoryTest
 	}
 
 	@Test
-	public void testParseComplexReference() throws Exception
+	public void testParseChapterSequenceReference() throws Exception
 	{
 		Reference reference = new ReferenceFactory().getReference("John 1-2");
 		assertNotNull(reference);
@@ -160,27 +156,70 @@ public class ReferenceFactoryTest
 		assertEquals(1, chapters[0]);
 		assertEquals(2, chapters[1]);
 		assertNull(reference.getVerses());
+	}
 
-		reference = new ReferenceFactory().getReference("John 1:1-2");
+	@Test
+	public void testParseVerseSequenceReference() throws Exception
+	{
+		Reference reference = new ReferenceFactory().getReference("John 1:1-2");
 		assertNotNull(reference);
 		assertEquals("John", reference.getBook());
-		chapters = reference.getChapters();
+		Integer[] chapters = reference.getChapters();
 		assertEquals(1, chapters.length);
 		assertEquals(1, chapters[0]);
 		Integer[] verses = reference.getVerses();
 		assertEquals(2, verses.length);
 		assertEquals(1, verses[0]);
 		assertEquals(2, verses[1]);
+	}
 
-		reference = new ReferenceFactory().getReference("John 1:1,2");
+	@Test
+	public void testParseVerseNonSequenceReference() throws Exception
+	{
+		Reference reference = new ReferenceFactory().getReference("John 1:1,3");
 		assertNotNull(reference);
 		assertEquals("John", reference.getBook());
-		chapters = reference.getChapters();
+		Integer[] chapters = reference.getChapters();
 		assertEquals(1, chapters.length);
 		assertEquals(1, chapters[0]);
-		verses = reference.getVerses();
+		Integer[] verses = reference.getVerses();
 		assertEquals(2, verses.length);
 		assertEquals(1, verses[0]);
+		assertEquals(3, verses[1]);
+	}
+
+	@Test
+	public void testParseMixedNonSequenceAndSequentialVerseReference() throws Exception
+	{
+		Reference reference = new ReferenceFactory().getReference("John 1:1-3,5");
+		assertNotNull(reference);
+		assertEquals("John", reference.getBook());
+		Integer[] chapters = reference.getChapters();
+		assertEquals(1, chapters.length);
+		assertEquals(1, chapters[0]);
+		Integer[] verses = reference.getVerses();
+		assertEquals(4, verses.length);
+		assertEquals(1, verses[0]);
 		assertEquals(2, verses[1]);
+		assertEquals(3, verses[2]);
+		assertEquals(5, verses[3]);
+	}
+
+	@Test
+	public void testParseComplicatedMixedNonSequenceAndSequentialVerseReference() throws Exception
+	{
+		Reference reference = new ReferenceFactory().getReference("John 1:1,3-5,7");
+		assertNotNull(reference);
+		assertEquals("John", reference.getBook());
+		Integer[] chapters = reference.getChapters();
+		assertEquals(1, chapters.length);
+		assertEquals(1, chapters[0]);
+		Integer[] verses = reference.getVerses();
+		assertEquals(5, verses.length);
+		assertEquals(1, verses[0]);
+		assertEquals(3, verses[1]);
+		assertEquals(4, verses[2]);
+		assertEquals(5, verses[3]);
+		assertEquals(7, verses[4]);
 	}
 }

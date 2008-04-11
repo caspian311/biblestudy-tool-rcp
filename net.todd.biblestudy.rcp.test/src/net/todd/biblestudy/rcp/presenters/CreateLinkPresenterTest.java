@@ -353,6 +353,10 @@ public class CreateLinkPresenterTest
 		public void showRightClickPopup(int x, int y)
 		{
 		}
+
+		public void changesToNoteTextFiresEvent(boolean makeChangesToNoteText)
+		{
+		}
 	}
 
 	private class MockCreateLinkDialog implements ICreateLinkDialog

@@ -1,5 +1,6 @@
 package net.todd.biblestudy.rcp.presenters;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
@@ -137,17 +138,18 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 	private void handleInsertReferenceLink()
 	{
 		List<BibleVerse> bibleVerses = noteView.getDroppedVerse();
-		int currentCarretPosition = noteView.getCurrentCarretPosition();
 
-		StringBuffer newContent = new StringBuffer();
+		StringBuffer sb = new StringBuffer();
 
-		for (BibleVerse bibleVerse : bibleVerses)
+		List<Reference> references = combineReferences(bibleVerses);
+
+		int origCarretPosition = noteView.getCurrentCarretPosition();
+
+		int currentCarretPosition = origCarretPosition;
+
+		for (Reference reference : references)
 		{
-			Reference reference = bibleVerse.getReference();
-
-			String referenceText = reference.toString();
-			newContent.append(referenceText).append("\n");
-
+			sb.append(reference.toString()).append("\n");
 		}
 
 		String noteText = noteModel.getNote().getText();
@@ -155,23 +157,100 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 		{
 			noteText = "";
 		}
-		String beginning = noteText.substring(0, currentCarretPosition);
-		String ending = noteText.substring(currentCarretPosition);
 
-		String newNoteText = beginning + newContent.toString() + ending;
+		String beginning = noteText.substring(0, origCarretPosition);
+		String ending = noteText.substring(origCarretPosition);
+
+		String newNoteText = beginning + sb.toString() + ending;
 
 		noteView.setContentText(newNoteText);
 
-		for (BibleVerse bibleVerse : bibleVerses)
+		for (Reference reference : references)
 		{
-			Reference reference = bibleVerse.getReference();
-
 			noteModel.addLinkToReference(reference, currentCarretPosition, currentCarretPosition
 					+ reference.toString().length());
 			currentCarretPosition = currentCarretPosition + reference.toString().length() + 1;
 		}
 
 		handleModelAddedLink();
+	}
+
+	List<Reference> combineReferences(List<BibleVerse> bibleVerses)
+	{
+		List<Reference> references = new ArrayList<Reference>();
+
+		for (BibleVerse bibleVerse : bibleVerses)
+		{
+			references.add(bibleVerse.getReference());
+		}
+
+		Reference previousReference = null;
+
+		List<Reference> finalReferences = new ArrayList<Reference>();
+
+		for (Reference reference : references)
+		{
+			if (previousReference != null)
+			{
+				if (previousReference.getBook().equals(reference.getBook()))
+				{
+					Integer[] previousRefChapters = previousReference.getChapters();
+					Integer[] refChapters = reference.getChapters();
+
+					if (previousRefChapters.length == 1)
+					{
+						if (reference.getChapters().length == 1)
+						{
+							Integer previousRefChapter = previousRefChapters[0];
+							Integer refChapter = refChapters[0];
+
+							if (previousRefChapter.equals(refChapter))
+							{
+								Integer[] verses = previousReference.getVerses();
+								Integer[] versesToAdd = reference.getVerses();
+
+								Integer[] newVerses = new Integer[verses.length
+										+ versesToAdd.length];
+
+								int count = 0;
+								for (int i = 0; i < verses.length; i++)
+								{
+									newVerses[count] = verses[i];
+									count++;
+								}
+								for (int i = 0; i < versesToAdd.length; i++)
+								{
+									newVerses[count] = versesToAdd[i];
+									count++;
+								}
+
+								previousReference.setVerses(newVerses);
+							}
+							else
+							{
+								finalReferences.add(reference);
+							}
+						}
+					}
+					else
+					{
+						finalReferences.add(reference);
+					}
+				}
+				else
+				{
+					finalReferences.add(reference);
+				}
+			}
+			else
+			{
+				finalReferences.add(reference);
+				previousReference = reference;
+			}
+
+		}
+
+		return finalReferences;
 	}
 
 	private void handleInsertReferenceText()

@@ -210,5 +210,9 @@ public class NotePresenterTest
 			didPopupDeleteConfirmation = true;
 			return 0;
 		}
+
+		public void changesToNoteTextFiresEvent(boolean makeChangesToNoteText)
+		{
+		}
 	}
 }

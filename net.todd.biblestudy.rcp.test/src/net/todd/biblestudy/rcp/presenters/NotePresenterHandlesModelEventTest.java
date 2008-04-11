@@ -125,6 +125,9 @@ public class NotePresenterHandlesModelEventTest
 		{
 		}
 
+		public void changesToNoteTextFiresEvent(boolean makeChangesToNoteText)
+		{
+		}
 	}
 
 	private boolean handledModelAddedLink = false;

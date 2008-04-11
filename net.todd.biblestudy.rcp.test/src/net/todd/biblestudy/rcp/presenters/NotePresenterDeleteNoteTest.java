@@ -170,6 +170,10 @@ public class NotePresenterDeleteNoteTest
 			didPopupDeleteConfirmation = true;
 			return 0;
 		}
+
+		public void changesToNoteTextFiresEvent(boolean makeChangesToNoteText)
+		{
+		}
 	}
 
 	private class MockNoteModel implements INoteModel
