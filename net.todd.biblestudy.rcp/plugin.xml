@@ -60,6 +60,20 @@
             label="Global Actions"
             visible="true">
          <action
+               class="net.todd.biblestudy.rcp.actions.ImportNotesAction"
+               icon="icons/import.png"
+               id="net.todd.biblestudy.rcp.ImportNotes"
+               label="Import Notes"
+               toolbarPath="main/global">
+         </action>
+         <action
+               class="net.todd.biblestudy.rcp.actions.ExportNotesAction"
+               icon="icons/export.png"
+               id="net.todd.biblestudy.rcp.ExportNotes"
+               label="Export All Notes"
+               toolbarPath="main/global">
+         </action>
+         <action
                class="net.todd.biblestudy.rcp.actions.SaveNoteAction"
                definitionId="org.eclipse.ui.file.save"
                icon="icons/floppy.png"
@@ -69,6 +83,7 @@
          </action>
          <action
                class="net.todd.biblestudy.rcp.actions.OpenNoteAction"
+               definitionId="net.todd.biblestudy.rcp.openNoteCommand"
                icon="icons/folder_open.png"
                id="net.todd.biblestudy.rcp.OpenNoteAction"
                label="Open Note"
@@ -78,24 +93,13 @@
          </action>
          <action
                class="net.todd.biblestudy.rcp.actions.NewNoteAction"
+               definitionId="net.todd.biblestudy.rcp.newNoteCommand"
                icon="icons/text_file.png"
                id="net.todd.biblestudy.rcp.NewNoteAction"
                label="Create New Note"
                style="push"
                toolbarPath="main/global"
                tooltip="Create Note New Note">
-         </action>
-         <action
-               class="net.todd.biblestudy.rcp.actions.ExportNotesAction"
-               id="net.todd.biblestudy.rcp.ExportNotes"
-               label="Export All Notes"
-               toolbarPath="main/global">
-         </action>
-         <action
-               class="net.todd.biblestudy.rcp.actions.ImportNotesAction"
-               id="net.todd.biblestudy.rcp.ImportNotes"
-               label="Import Notes"
-               toolbarPath="main/global">
          </action>
       </actionSet>
    </extension>
@@ -139,13 +143,11 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="net.todd.biblestudy.rcp.actions.NewNoteHandler"
             id="net.todd.biblestudy.rcp.newNoteCommand"
             name="New Note">
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="net.todd.biblestudy.rcp.actions.OpenNoteHandler"
             id="net.todd.biblestudy.rcp.openNoteCommand"
             name="Open Note">
       </command>
