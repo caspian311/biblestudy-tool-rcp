@@ -11,9 +11,11 @@ import net.todd.biblestudy.rcp.presenters.ViewEvent;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -110,7 +112,7 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 	@Override
 	protected Control createDialogArea(Composite parent)
 	{
-		GridLayout gridLayout = new GridLayout(2, false);
+		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginBottom = 2;
 		gridLayout.marginTop = 2;
 		gridLayout.marginRight = 2;
@@ -120,12 +122,9 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 		composite.setLayout(gridLayout);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		Label newNoteNameLabel = new Label(composite, SWT.NORMAL);
-		newNoteNameLabel.setLayoutData(new GridData(SWT.CENTER, SWT.RIGHT, false, false));
-		newNoteNameLabel.setText("New Note Name:");
-		
 		newNoteNameField = new Text(composite, SWT.BORDER);
-		newNoteNameField.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, true));
+		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, true).hint(
+				new Point(200, 16)).applyTo(newNoteNameField);
 		newNoteNameField.addKeyListener(new KeyListener() 
 		{
 			public void keyPressed(KeyEvent e)
@@ -140,7 +139,7 @@ public class NewNoteDialog extends TrayDialog implements INewNoteDialog
 		
 		errorMessageLabel = new Label(composite, SWT.NORMAL);
 		errorMessageLabel.setText("A note by that name already exists");
-		errorMessageLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		errorMessageLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		errorMessageLabel.setVisible(false);
 		
 		return parent;

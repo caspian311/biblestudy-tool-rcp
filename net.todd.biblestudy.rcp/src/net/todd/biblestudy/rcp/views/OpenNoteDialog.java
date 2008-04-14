@@ -13,7 +13,6 @@ import net.todd.biblestudy.rcp.presenters.ViewEvent;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -27,7 +26,6 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -391,9 +389,7 @@ public class OpenNoteDialog extends TrayDialog implements IOpenNoteDialog
 
 			String noteName = selection.getText(0);
 
-			final Text text = new Text(notesTable, SWT.BORDER);
-			GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, true).hint(
-					new Point(200, 20)).applyTo(text);
+			final Text text = new Text(notesTable, SWT.NONE);
 
 			Listener textListener = new Listener()
 			{

@@ -80,7 +80,7 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 
 		linkTextField = new Text(composite, SWT.NORMAL | SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, true).hint(
-				new Point(200, 20)).applyTo(linkTextField);
+				new Point(200, 16)).applyTo(linkTextField);
 		linkTextField.addKeyListener(new KeyAdapter()
 		{
 			@Override

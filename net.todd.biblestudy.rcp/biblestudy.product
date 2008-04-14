@@ -16,7 +16,7 @@
       startupProgressRect="5,275,445,15"
       startupMessageRect="7,252,445,20"
       startupForegroundColor="000000" />
-   <launcher name="biblestudy">
+   <launcher name="Biblestudy">
       <linux icon="/net.todd.biblestudy.rcp/icons/biblestudy.xpm"/>
       <macosx icon="/net.todd.biblestudy.rcp/icons/biblestudy.icns"/>
       <solaris/>
