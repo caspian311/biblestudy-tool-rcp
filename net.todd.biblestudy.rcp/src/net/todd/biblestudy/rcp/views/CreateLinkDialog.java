@@ -7,7 +7,6 @@ import net.todd.biblestudy.rcp.presenters.ViewEvent;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -18,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
@@ -26,10 +26,20 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 	private Text linkTextField;
 	private Label errorLabel;
 	private boolean isLinkToReference;
+	private String title;
 
-	public CreateLinkDialog(IShellProvider parentShell)
+	public CreateLinkDialog(Shell shell, String title)
 	{
-		super(parentShell);
+		super(shell);
+		this.title = title;
+		setShellStyle(getShellStyle() | SWT.RESIZE);
+	}
+
+	@Override
+	protected void configureShell(Shell newShell)
+	{
+		super.configureShell(newShell);
+		newShell.setText(title);
 	}
 
 	private void fireEvent(ViewEvent viewEvent)
@@ -58,7 +68,7 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 
 		parent.setLayout(layout);
 
-		layout = new GridLayout(2, false);
+		layout = new GridLayout(1, false);
 		layout.marginTop = 2;
 		layout.marginBottom = 2;
 		layout.marginLeft = 2;
@@ -68,12 +78,9 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		Label label = new Label(composite, SWT.NORMAL);
-		label.setText("Link:");
-		GridDataFactory.swtDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
-
 		linkTextField = new Text(composite, SWT.NORMAL | SWT.BORDER);
-		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(false, false).hint(new Point(200, 10)).applyTo(linkTextField);
+		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, true).hint(
+				new Point(200, 20)).applyTo(linkTextField);
 		linkTextField.addKeyListener(new KeyAdapter()
 		{
 			@Override
@@ -88,10 +95,13 @@ public class CreateLinkDialog extends Dialog implements ICreateLinkDialog
 
 		errorLabel = new Label(composite, SWT.NORMAL);
 		errorLabel.setText("Invalid Reference");
-		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, false).span(2, 1).applyTo(errorLabel);
+		GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, false).applyTo(
+				errorLabel);
 		errorLabel.setVisible(false);
 
 		fireEvent(new ViewEvent(ViewEvent.CREATE_LINK_DIALOG_OPENED));
+
+		parent.pack();
 
 		return parent;
 	}

@@ -159,7 +159,7 @@ public class NoteView extends ViewPart implements INoteView
 			@Override
 			public void mouseUp(MouseEvent e)
 			{
-				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.CTRL))
+				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.MOD1))
 				{ // right-click and ctrl+mouse1 for macs
 					lastClickedCoordinates = new Point(e.x, e.y);
 					fireEvent(new ViewEvent(ViewEvent.NOTE_SHOW_RIGHT_CLICK_MENU));

@@ -18,14 +18,14 @@ public class CreateLinkPresenter implements ICreateLinkListener
 	private INoteView noteView;
 
 	public CreateLinkPresenter(ICreateLinkDialog createLinkDialog, INoteView noteView,
-			INoteModel noteModel)
+			INoteModel noteModel, boolean isLinkToRef)
 	{
 		this.createLinkView = createLinkDialog;
 		this.noteModel = noteModel;
 		this.noteView = noteView;
 
 		createLinkDialog.addCreateLinkListener(this);
-		createLinkDialog.openDialog(false);
+		createLinkDialog.openDialog(isLinkToRef);
 	}
 
 	public void handleCreateLinkEvent(ViewEvent viewEvent)

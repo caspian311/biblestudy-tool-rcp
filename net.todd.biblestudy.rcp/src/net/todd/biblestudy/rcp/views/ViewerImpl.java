@@ -11,8 +11,8 @@ import net.todd.biblestudy.rcp.presenters.NewNoteDialogPresenter;
 import net.todd.biblestudy.rcp.presenters.NotePresenter;
 import net.todd.biblestudy.rcp.presenters.OpenNoteDialogPresenter;
 
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -30,31 +30,24 @@ public class ViewerImpl implements IViewer
 
 	public void openNoteView(final String noteName)
 	{
-		ViewHelper.runWithBusyIndicator(new Runnable()
+		try
 		{
-			public void run()
-			{
-				try
-				{
-					INoteModel noteModel = new NoteModel();
-					noteModel.populateNoteInfo(noteName);
+			INoteModel noteModel = new NoteModel();
+			noteModel.populateNoteInfo(noteName);
 
-					INoteView noteView = (INoteView) PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getActivePage().showView(NoteView.ID,
-									noteName, IWorkbenchPage.VIEW_ACTIVATE);
+			INoteView noteView = (INoteView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage().showView(NoteView.ID, noteName, IWorkbenchPage.VIEW_ACTIVATE);
 
-					new NotePresenter(noteView, noteModel);
-				}
-				catch (PartInitException e)
-				{
-					ViewHelper.showError(e);
-				}
-				catch (BiblestudyException e)
-				{
-					ViewHelper.showError(e);
-				}
-			}
-		});
+			new NotePresenter(noteView, noteModel);
+		}
+		catch (PartInitException e)
+		{
+			ViewHelper.showError(e);
+		}
+		catch (BiblestudyException e)
+		{
+			ViewHelper.showError(e);
+		}
 	}
 
 	public void openNewNoteDialog()
@@ -86,17 +79,17 @@ public class ViewerImpl implements IViewer
 
 	public void openCreateLinkDialog(INoteView noteView, INoteModel noteModel)
 	{
-		IShellProvider shellProvider = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		ICreateLinkDialog createLinkDialog = new CreateLinkDialog(shellProvider);
+		Shell shell = Display.getDefault().getActiveShell();
+		ICreateLinkDialog createLinkDialog = new CreateLinkDialog(shell, "Note to Link to");
 
-		new CreateLinkPresenter(createLinkDialog, noteView, noteModel).openLinkDialog();
+		new CreateLinkPresenter(createLinkDialog, noteView, noteModel, false);
 	}
 
 	public void openCreateLinkToReferenceDialog(INoteView noteView, INoteModel noteModel)
 	{
-		IShellProvider shellProvider = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		ICreateLinkDialog createLinkDialog = new CreateLinkDialog(shellProvider);
+		Shell shell = Display.getDefault().getActiveShell();
+		ICreateLinkDialog createLinkDialog = new CreateLinkDialog(shell, "Reference to Link to");
 
-		new CreateLinkPresenter(createLinkDialog, noteView, noteModel).openReferenceDialog();
+		new CreateLinkPresenter(createLinkDialog, noteView, noteModel, true);
 	}
 }

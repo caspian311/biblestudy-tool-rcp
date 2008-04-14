@@ -38,7 +38,7 @@ public class CreateLinkPresenterTest
 	@Test
 	public void testCreateThePresenter() throws Exception
 	{
-		new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView, mockNoteModel);
+		new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView, mockNoteModel, false);
 		assertTrue(mockCreateLinkDialog.wasListenerAdded());
 		assertTrue(mockCreateLinkDialog.wasDialogOpened());
 	}
@@ -47,7 +47,7 @@ public class CreateLinkPresenterTest
 	public void testHandleDialogOpened() throws Exception
 	{
 		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
-				mockNoteModel);
+				mockNoteModel, false);
 
 		mockNoteView.setSelectedText("woot");
 		presenter.handleCreateLinkEvent(new ViewEvent(ViewEvent.CREATE_LINK_DIALOG_OPENED));
@@ -62,7 +62,7 @@ public class CreateLinkPresenterTest
 	public void testHandleDialogClosed() throws Exception
 	{
 		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
-				mockNoteModel);
+				mockNoteModel, false);
 		assertTrue(mockCreateLinkDialog.wasListenerAdded());
 		presenter.handleCreateLinkEvent(new ViewEvent(ViewEvent.CREATE_LINK_DIALOG_CLOSED));
 		assertFalse(mockCreateLinkDialog.wasListenerAdded());
@@ -72,7 +72,7 @@ public class CreateLinkPresenterTest
 	public void testHandleDoCreateLinkToNote() throws Exception
 	{
 		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
-				mockNoteModel);
+				mockNoteModel, false);
 
 		assertTrue(mockCreateLinkDialog.wasDialogOpened());
 
@@ -103,7 +103,7 @@ public class CreateLinkPresenterTest
 	public void testHandleDoCreateLinkToReference() throws Exception
 	{
 		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
-				mockNoteModel);
+				mockNoteModel, false);
 
 		assertTrue(mockCreateLinkDialog.wasDialogOpened());
 
@@ -136,7 +136,7 @@ public class CreateLinkPresenterTest
 	public void testValidateReference() throws Exception
 	{
 		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
-				mockNoteModel);
+				mockNoteModel, false);
 
 		mockCreateLinkDialog.setLinkText(null);
 		presenter.handleCreateLinkEvent(new ViewEvent(ViewEvent.CREATE_LINK_VALIDATE_REFERENCE));

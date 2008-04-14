@@ -135,7 +135,7 @@ public class ReferenceView extends ViewPart implements IReferenceView
 			@Override
 			public void mouseUp(MouseEvent e)
 			{
-				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.CTRL))
+				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.MOD1))
 				{ // right-click and ctrl+mouse1 for macs
 					lastRightClickPosition = new Point(e.x, e.y);
 
