@@ -1,6 +1,7 @@
 package net.todd.biblestudy.rcp;
 
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -26,7 +27,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
 	public void preWindowOpen()
 	{
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setInitialSize(new Point(800, 600));
+		int width = Display.getDefault().getClientArea().width;
+		int height = Display.getDefault().getClientArea().height;
+		configurer.setInitialSize(new Point(width - 100, height - 100));
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
 		configurer.setTitle("Bible Study Tool");
