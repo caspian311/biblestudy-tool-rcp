@@ -4,7 +4,4 @@ Bundle-Name: Biblestudy RCP Test Plug-in
 Bundle-SymbolicName: net.todd.biblestudy.rcp.test
 Bundle-Version: 1.0.0
 Fragment-Host: net.todd.biblestudy.rcp;bundle-version="1.0.0"
-Require-Bundle: org.junit4,
- org.eclipse.ui,
- net.todd.biblestudy.reference,
- org.eclipse.core.runtime
+Require-Bundle: org.junit4
