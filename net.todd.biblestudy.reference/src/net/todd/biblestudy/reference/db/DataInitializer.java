@@ -20,19 +20,12 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-public class DataInitializer
+public class DataInitializer extends BaseDao
 {
 	private static final String FILENAME_ATTRIBUTE = "filename";
 
 	private static final String DB_SCRIPTS_EXTENSION_POINT_TYPE = "net.todd.biblestudy.reference.dbScripts";
 	private static final String DB_SCRIPT_EXTENSION_NAME = "script";
-
-	private Connection connection;
-
-	public DataInitializer(Connection connection)
-	{
-		this.connection = connection;
-	}
 
 	public void initializeData() throws BiblestudyException
 	{
@@ -57,16 +50,19 @@ public class DataInitializer
 
 							Bundle bundle = Platform.getBundle(contributorName);
 							InputStream resource = null;
+
 							try
 							{
 								resource = bundle.getEntry(filename).openStream();
-
-								processSQLFile(resource);
 							}
-							catch (Exception e)
+							catch (IOException e)
 							{
-								throw new BiblestudyException(e.getMessage(), e);
+								throw new BiblestudyException(
+										"An error occurred while trying to open the file: "
+												+ filename, e);
 							}
+
+							processSQLFile(resource);
 						}
 					}
 				}
@@ -184,9 +180,17 @@ public class DataInitializer
 		}
 	}
 
-	private Connection getConnection()
+	private Connection getConnection() throws BiblestudyException
 	{
-		return connection;
+		try
+		{
+			return getSqlMapConfig().getDataSource().getConnection();
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException("An error occurred while "
+					+ "trying to get a connection to the database: " + e.getMessage(), e);
+		}
 	}
 
 	private List<String> createBatchQueries(String sql)
