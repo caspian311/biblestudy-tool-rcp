@@ -102,12 +102,13 @@ public class NoteDao extends BaseDao implements INoteDao
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Note> getAllNotes() throws BiblestudyException
 	{
 		try
 		{
-			return getSqlMapConfig().queryForList("getAllNotes");
+			@SuppressWarnings("unchecked")
+			List<Note> results = getSqlMapConfig().queryForList("getAllNotes");
+			return results;
 		}
 		catch (SQLException e)
 		{

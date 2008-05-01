@@ -21,12 +21,14 @@ public class LinkDao extends BaseDao implements ILinkDao
 		return link;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Link> getAllLinksForNote(Integer containingNoteId) throws BiblestudyException
 	{
 		try
 		{
-			return getSqlMapConfig().queryForList("getAllLinksForNote", containingNoteId);
+			@SuppressWarnings("unchecked")
+			List<Link> results = getSqlMapConfig().queryForList("getAllLinksForNote",
+					containingNoteId);
+			return results;
 		}
 		catch (SQLException e)
 		{
@@ -70,12 +72,14 @@ public class LinkDao extends BaseDao implements ILinkDao
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Link> getAllLinksThatLinkTo(String oldNoteName) throws BiblestudyException
 	{
 		try
 		{
-			return getSqlMapConfig().queryForList("getAllLinksThatLinkTo", oldNoteName);
+			@SuppressWarnings("unchecked")
+			List<Link> results = getSqlMapConfig().queryForList("getAllLinksThatLinkTo",
+					oldNoteName);
+			return results;
 		}
 		catch (SQLException e)
 		{
