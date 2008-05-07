@@ -43,8 +43,11 @@ public class SetupDatabasePresenter
 
 					if (model.validateDatabaseCredentials(username, password, url))
 					{
-						model.initializeDatabase();
-						retVal = true;
+						if (!model.isVersionCurrent())
+						{
+							model.initializeDatabase();
+							retVal = true;
+						}
 					}
 				}
 			}

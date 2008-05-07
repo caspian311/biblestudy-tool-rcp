@@ -140,6 +140,38 @@ public class SetupDatabasePresenterTest
 		assertFalse(model.hasDatabaseBeenInitialized());
 	}
 
+	@Test
+	public void testPresenterDoesNotInitializesDatabaseIfVersionIsCurrent() throws Exception
+	{
+		model.setValidCredentials(true);
+		model.setIsVersionCurrent(true);
+		view.setUserCreds(new UserCredentials());
+
+		SetupDatabasePresenter presenter = new SetupDatabasePresenter(view, model);
+
+		assertFalse(model.hasDatabaseBeenInitialized());
+
+		presenter.setup();
+
+		assertFalse(model.hasDatabaseBeenInitialized());
+	}
+
+	@Test
+	public void testPresenterDoesInitializesDatabaseIfVersionIsNotCurrent() throws Exception
+	{
+		model.setValidCredentials(true);
+		model.setIsVersionCurrent(false);
+		view.setUserCreds(new UserCredentials());
+
+		SetupDatabasePresenter presenter = new SetupDatabasePresenter(view, model);
+
+		assertFalse(model.hasDatabaseBeenInitialized());
+
+		presenter.setup();
+
+		assertTrue(model.hasDatabaseBeenInitialized());
+	}
+
 	private class MockSetupDatabaseView implements ISetupDatabaseView
 	{
 		private boolean promptedUserForDatabaseCredentials;
