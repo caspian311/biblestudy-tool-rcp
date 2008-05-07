@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.LinkStatusLineUtil;
@@ -95,7 +97,8 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 		}
 		catch (BiblestudyException e)
 		{
-			e.printStackTrace();
+			ExceptionHandlerFactory.getHandler().handle(e.getMessage(), this, e,
+					SeverityLevel.ERROR);
 		}
 	}
 

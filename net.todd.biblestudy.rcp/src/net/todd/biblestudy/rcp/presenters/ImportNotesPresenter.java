@@ -3,6 +3,8 @@ package net.todd.biblestudy.rcp.presenters;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.IImportNotesModel;
 import net.todd.biblestudy.rcp.views.IImportNotesView;
@@ -29,10 +31,10 @@ public class ImportNotesPresenter implements IImportNotesListener
 
 	public void handleEvent(ViewEvent event)
 	{
+		String source = (String) event.getSource();
+
 		try
 		{
-			String source = (String) event.getSource();
-
 			if (ViewEvent.IMPORT_NOTES_JOB_FINISHED.equals(source))
 			{
 				handleJobFinished();
@@ -52,7 +54,9 @@ public class ImportNotesPresenter implements IImportNotesListener
 		}
 		catch (BiblestudyException e)
 		{
-			e.printStackTrace();
+			ExceptionHandlerFactory.getHandler().handle(
+					"An error occurred while process your request: " + source, this, e,
+					SeverityLevel.ERROR);
 		}
 	}
 

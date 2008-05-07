@@ -1,7 +1,8 @@
 package net.todd.biblestudy.rcp.presenters;
 
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.common.ViewHelper;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
 import net.todd.biblestudy.rcp.views.INoteView;
@@ -30,10 +31,9 @@ public class CreateLinkPresenter implements ICreateLinkListener
 
 	public void handleCreateLinkEvent(ViewEvent viewEvent)
 	{
+		String source = (String) viewEvent.getSource();
 		try
 		{
-			String source = (String) viewEvent.getSource();
-
 			if (ViewEvent.CREATE_LINK_DIALOG_OPENED.equals(source))
 			{
 				handleCreateLinkDialogOpened();
@@ -57,7 +57,9 @@ public class CreateLinkPresenter implements ICreateLinkListener
 		}
 		catch (BiblestudyException e)
 		{
-			ViewHelper.showError(e);
+			ExceptionHandlerFactory.getHandler().handle(
+					"An error occurred while trying to handle event: " + source, this, e,
+					SeverityLevel.ERROR);
 		}
 	}
 

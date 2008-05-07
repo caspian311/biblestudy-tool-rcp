@@ -3,6 +3,8 @@ package net.todd.biblestudy.rcp.presenters;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.IOpenNoteModel;
@@ -29,12 +31,12 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 	 * 
 	 * @see net.todd.biblestudy.rcp.presenters.EventListener#handleEvent(net.todd.biblestudy.rcp.presenters.ViewEvent)
 	 */
-	public void handleEvent(ViewEvent e)
+	public void handleEvent(ViewEvent event)
 	{
+		String source = (String) event.getSource();
+
 		try
 		{
-			String source = (String) e.getSource();
-
 			if (source.equals(ViewEvent.OPEN_NOTE_OK_PRESSED))
 			{
 				handleOpenNote();
@@ -60,9 +62,11 @@ public class OpenNoteDialogPresenter implements IOpenNoteEventListener
 				handleNoteRename();
 			}
 		}
-		catch (BiblestudyException e1)
+		catch (BiblestudyException e)
 		{
-			e1.printStackTrace();
+			ExceptionHandlerFactory.getHandler().handle(
+					"An error occurred while trying to handle your request: " + source, this, e,
+					SeverityLevel.ERROR);
 		}
 	}
 

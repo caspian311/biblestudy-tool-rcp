@@ -1,5 +1,7 @@
 package net.todd.biblestudy.reference.views;
 
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.reference.Reference;
 import net.todd.biblestudy.reference.presenters.ReferencePresenter;
@@ -49,7 +51,9 @@ public class ReferenceViewerImpl implements IReferenceViewer
 				}
 				catch (PartInitException e)
 				{
-					ViewHelper.showError(e);
+					ExceptionHandlerFactory.getHandler().handle(
+							"An error occurred while trying to open the reference view.", this, e,
+							SeverityLevel.ERROR);
 				}
 			}
 		});

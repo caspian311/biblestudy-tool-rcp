@@ -1,6 +1,8 @@
 package net.todd.biblestudy.rcp.views;
 
 import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.common.ViewHelper;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.IOpenNoteModel;
@@ -42,11 +44,15 @@ public class ViewerImpl implements IViewer
 		}
 		catch (PartInitException e)
 		{
-			ViewHelper.showError(e);
+			ExceptionHandlerFactory.getHandler().handle(
+					"A fatal error occurred while trying to open the note: " + noteName, this, e,
+					SeverityLevel.FATAL);
 		}
 		catch (BiblestudyException e)
 		{
-			ViewHelper.showError(e);
+			ExceptionHandlerFactory.getHandler().handle(
+					"An error occurred while trying to open the note: " + noteName, this, e,
+					SeverityLevel.ERROR);
 		}
 	}
 

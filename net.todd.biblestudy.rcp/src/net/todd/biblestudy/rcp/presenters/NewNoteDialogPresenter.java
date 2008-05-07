@@ -1,6 +1,8 @@
 package net.todd.biblestudy.rcp.presenters;
 
 import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.rcp.models.INewNoteDialogModel;
 import net.todd.biblestudy.rcp.models.NewNoteDialogModel;
 import net.todd.biblestudy.rcp.views.INewNoteDialog;
@@ -24,10 +26,10 @@ public class NewNoteDialogPresenter implements INewNoteDialogListener
 
 	public void handleEvent(ViewEvent event)
 	{
+		String source = (String) event.getSource();
+
 		try
 		{
-			String source = (String) event.getSource();
-
 			if (ViewEvent.NEW_NOTE_OPENED.equals(source))
 			{
 				handleNewNoteDialogOpened();
@@ -47,7 +49,9 @@ public class NewNoteDialogPresenter implements INewNoteDialogListener
 		}
 		catch (BiblestudyException e)
 		{
-			e.printStackTrace();
+			ExceptionHandlerFactory.getHandler().handle(
+					"An error occurred while processing your request: " + source, this, e,
+					SeverityLevel.ERROR);
 		}
 	}
 

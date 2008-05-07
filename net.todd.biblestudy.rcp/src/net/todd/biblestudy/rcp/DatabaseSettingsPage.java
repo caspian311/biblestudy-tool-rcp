@@ -2,6 +2,8 @@ package net.todd.biblestudy.rcp;
 
 import java.io.IOException;
 
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.db.BaseDao;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
@@ -50,8 +52,9 @@ public class DatabaseSettingsPage extends FieldEditorPreferencePage implements
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ExceptionHandlerFactory.getHandler().handle(
+					"An error occurred while trying to save your settings.", this, e,
+					SeverityLevel.ERROR);
 		}
 
 		return super.performOk();

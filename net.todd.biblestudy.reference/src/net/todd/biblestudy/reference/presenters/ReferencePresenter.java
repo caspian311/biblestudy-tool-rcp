@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.common.ViewHelper;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.InvalidReferenceException;
 import net.todd.biblestudy.reference.Reference;
@@ -36,10 +37,10 @@ public class ReferencePresenter implements IReferenceViewListener
 
 	public void handleEvent(ReferenceViewEvent event)
 	{
+		String source = (String) event.getSource();
+
 		try
 		{
-			String source = (String) event.getSource();
-
 			if (ReferenceViewEvent.REFERENCE_VIEW_OPENED.equals(source))
 			{
 				handleViewOpened();
@@ -68,7 +69,9 @@ public class ReferencePresenter implements IReferenceViewListener
 		}
 		catch (BiblestudyException e)
 		{
-			ViewHelper.showError(e);
+			ExceptionHandlerFactory.getHandler().handle(
+					"An error occurred while processing your request: " + source, this, e,
+					SeverityLevel.ERROR);
 		}
 	}
 

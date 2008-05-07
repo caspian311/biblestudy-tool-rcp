@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.models.IExportNotesModel;
 import net.todd.biblestudy.rcp.views.IExportNotesView;
@@ -24,10 +26,9 @@ public class ExportNotesPresenter implements IExportNotesListener
 
 	public void handleEvent(ViewEvent viewEvent)
 	{
+		String source = (String) viewEvent.getSource();
 		try
 		{
-			String source = (String) viewEvent.getSource();
-
 			if (ViewEvent.EXPORT_NOTES_DIALOG_OPENED.equals(source))
 			{
 				handleDialogOpened();
@@ -43,7 +44,9 @@ public class ExportNotesPresenter implements IExportNotesListener
 		}
 		catch (BiblestudyException e)
 		{
-			e.printStackTrace();
+			ExceptionHandlerFactory.getHandler().handle(
+					"An error occurred while trying to process your request: " + source, this, e,
+					SeverityLevel.ERROR);
 		}
 	}
 

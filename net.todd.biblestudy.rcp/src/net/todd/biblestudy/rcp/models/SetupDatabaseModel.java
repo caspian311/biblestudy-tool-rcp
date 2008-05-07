@@ -109,11 +109,15 @@ public class SetupDatabaseModel implements ISetupDatabaseModel
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				ExceptionHandlerFactory.getHandler().handle(
+						"Could not find the version configuration file.", this, e,
+						SeverityLevel.ERROR);
 			}
 			catch (NumberFormatException e)
 			{
-				e.printStackTrace();
+				ExceptionHandlerFactory.getHandler().handle(
+						"No version number found in the version configuration file.", this, e,
+						SeverityLevel.ERROR);
 			}
 			finally
 			{
