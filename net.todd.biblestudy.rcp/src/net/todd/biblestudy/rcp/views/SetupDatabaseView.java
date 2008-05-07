@@ -1,5 +1,8 @@
 package net.todd.biblestudy.rcp.views;
 
+import net.todd.biblestudy.rcp.Activator;
+
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -9,6 +12,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class SetupDatabaseView extends Dialog implements ISetupDatabaseView
 {
@@ -16,10 +20,20 @@ public class SetupDatabaseView extends Dialog implements ISetupDatabaseView
 	private Text passText;
 	private UserCredentials creds;
 	private Text urlText;
+	private ScopedPreferenceStore preferences;
 
 	public SetupDatabaseView(Shell shell)
 	{
 		super(shell);
+
+		preferences = new ScopedPreferenceStore(new ConfigurationScope(), Activator.PLUGIN_ID);
+	}
+
+	@Override
+	protected void configureShell(Shell newShell)
+	{
+		super.configureShell(newShell);
+		newShell.setText("Database admin credentials");
 	}
 
 	public UserCredentials promptUserForDatabaseCredentials()
@@ -70,7 +84,10 @@ public class SetupDatabaseView extends Dialog implements ISetupDatabaseView
 		urlLabel.setText("URL: ");
 
 		urlText = new Text(composite, SWT.BORDER);
-		urlText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		gridData.widthHint = 200;
+		urlText.setLayoutData(gridData);
+		urlText.setText("jdbc:mysql://localhost/biblestudy");
 
 		return parent;
 	}
