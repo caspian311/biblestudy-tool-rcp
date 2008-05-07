@@ -1,5 +1,6 @@
 package net.todd.biblestudy.rcp;
 
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
 import net.todd.biblestudy.db.SetupDBDao;
 import net.todd.biblestudy.rcp.models.ISetupDatabaseModel;
 import net.todd.biblestudy.rcp.models.SetupDatabaseModel;
@@ -18,6 +19,8 @@ public class Application implements IApplication
 {
 	public Object start(IApplicationContext context) throws Exception
 	{
+		Thread.setDefaultUncaughtExceptionHandler(ExceptionHandlerFactory.getHandler());
+
 		Display display = PlatformUI.createDisplay();
 
 		if (setupDatabase(display.getActiveShell()))

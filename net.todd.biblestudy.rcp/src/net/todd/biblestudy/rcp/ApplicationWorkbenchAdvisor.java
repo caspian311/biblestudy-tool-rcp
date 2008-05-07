@@ -1,5 +1,8 @@
 package net.todd.biblestudy.rcp;
 
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
+
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -23,5 +26,12 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 	public void initialize(IWorkbenchConfigurer configurer)
 	{
 		// configurer.setSaveAndRestore(true);
+	}
+
+	@Override
+	public void eventLoopException(Throwable exception)
+	{
+		ExceptionHandlerFactory.getHandler().handle("An error occurred in the application", this,
+				exception, SeverityLevel.FATAL);
 	}
 }
