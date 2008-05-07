@@ -59,7 +59,17 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 
 	public int getDatabaseVersion() throws BiblestudyException
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		DBInfo info = null;
+
+		try
+		{
+			info = (DBInfo) getSqlMapConfig().queryForObject("getDBInfo");
+		}
+		catch (SQLException e)
+		{
+			throw new BiblestudyException(e);
+		}
+
+		return info.getVersion();
 	}
 }

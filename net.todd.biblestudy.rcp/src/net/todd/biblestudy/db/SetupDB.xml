@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Verse">
+
+	<typeAlias alias="DBInfo" type="net.todd.biblestudy.db.DBInfo" />
+
+	<resultMap id="dbInfo" class="DBInfo">
+		<result property="version" column="DB_VERSION" />
+	</resultMap>
+
+	<select id="getDBInfo" parameterClass="string" resultMap="dbInfo">
+		SELECT		*
+		FROM		DB_INFO
+	</select>
+
+</sqlMap>
