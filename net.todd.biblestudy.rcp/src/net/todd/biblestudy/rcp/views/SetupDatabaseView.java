@@ -1,8 +1,5 @@
 package net.todd.biblestudy.rcp.views;
 
-import net.todd.biblestudy.rcp.Activator;
-
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -12,7 +9,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class SetupDatabaseView extends Dialog implements ISetupDatabaseView
 {
@@ -20,13 +16,10 @@ public class SetupDatabaseView extends Dialog implements ISetupDatabaseView
 	private Text passText;
 	private UserCredentials creds;
 	private Text urlText;
-	private ScopedPreferenceStore preferences;
 
 	public SetupDatabaseView(Shell shell)
 	{
 		super(shell);
-
-		preferences = new ScopedPreferenceStore(new ConfigurationScope(), Activator.PLUGIN_ID);
 	}
 
 	@Override
