@@ -5,8 +5,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.rcp.Activator;
+import net.todd.biblestudy.rcp.PreferenceInitializer;
 
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,18 +20,30 @@ public class NoteModelDocumentDirtyTest
 	private String noteName;
 
 	@Before
-	public void setup() throws BiblestudyException
+	public void setUp() throws Exception
 	{
 		noteName = "test" + new Date().getTime();
 
 		noteModel = new NoteModel();
 		noteModel.createNewNoteInfo(noteName);
+
+		ScopedPreferenceStore preference = new ScopedPreferenceStore(new ConfigurationScope(),
+				Activator.PLUGIN_ID);
+		preference.setValue(PreferenceInitializer.DB_USER, "root");
+		preference.setValue(PreferenceInitializer.DB_PASS, "root");
 	}
 
 	@After
 	public void tearDown() throws Exception
 	{
 		noteModel.deleteNoteAndLinks();
+
+		ScopedPreferenceStore preference = new ScopedPreferenceStore(new ConfigurationScope(),
+				Activator.PLUGIN_ID);
+		preference.setValue(PreferenceInitializer.DB_USER, preference
+				.getDefaultString(PreferenceInitializer.DB_USER));
+		preference.setValue(PreferenceInitializer.DB_PASS, preference
+				.getDefaultString(PreferenceInitializer.DB_PASS));
 	}
 
 	@Test

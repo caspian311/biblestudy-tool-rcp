@@ -22,8 +22,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
 	public void initializeDefaultPreferences()
 	{
 		preferenceStore = new ScopedPreferenceStore(new ConfigurationScope(), Activator.PLUGIN_ID);
-		preferenceStore.setDefault(DB_USER, "root");
-		preferenceStore.setDefault(DB_PASS, "root");
+		// preferenceStore.setDefault(DB_USER, "root");
+		// preferenceStore.setDefault(DB_PASS, "root");
 		preferenceStore.setDefault(DB_URL, "jdbc:mysql://localhost/biblestudy");
 	}
 
