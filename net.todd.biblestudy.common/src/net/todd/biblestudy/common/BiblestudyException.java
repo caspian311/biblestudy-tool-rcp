@@ -1,5 +1,6 @@
 package net.todd.biblestudy.common;
 
+
 public class BiblestudyException extends Exception
 {
 	/**
@@ -12,4 +13,13 @@ public class BiblestudyException extends Exception
 		super(s, e);
 	}
 
+	public BiblestudyException(String s)
+	{
+		super(s);
+	}
+
+	public BiblestudyException(Throwable e)
+	{
+		super(e);
+	}
 }

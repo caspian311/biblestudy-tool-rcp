@@ -7,14 +7,12 @@ import net.todd.biblestudy.rcp.presenters.SetupDatabasePresenter;
 import net.todd.biblestudy.rcp.views.ISetupDatabaseView;
 import net.todd.biblestudy.rcp.views.SetupDatabaseView;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class Application implements IApplication
 {
@@ -24,13 +22,6 @@ public class Application implements IApplication
 
 		if (setupDatabase(display.getActiveShell()))
 		{
-			ScopedPreferenceStore preferences = new ScopedPreferenceStore(new ConfigurationScope(),
-					Activator.PLUGIN_ID);
-
-			preferences.setValue(PreferenceInitializer.FIRST_TIME_STARTUP, false);
-
-			preferences.save();
-
 			try
 			{
 				int returnCode = PlatformUI.createAndRunWorkbench(display,

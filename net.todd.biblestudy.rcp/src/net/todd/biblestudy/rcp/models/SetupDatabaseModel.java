@@ -1,16 +1,25 @@
 package net.todd.biblestudy.rcp.models;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.net.URL;
 
+import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.SeverityLevel;
 import net.todd.biblestudy.db.ISetupDBDao;
 import net.todd.biblestudy.rcp.Activator;
 import net.todd.biblestudy.rcp.PreferenceInitializer;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.osgi.framework.Bundle;
 
 public class SetupDatabaseModel implements ISetupDatabaseModel
 {
@@ -28,33 +37,33 @@ public class SetupDatabaseModel implements ISetupDatabaseModel
 
 		String username = preferences.getString(PreferenceInitializer.DB_USER);
 		String password = preferences.getString(PreferenceInitializer.DB_PASS);
+		String url = preferences.getString(PreferenceInitializer.DB_URL);
 
-		return !(StringUtils.isEmpty(username) || StringUtils.isEmpty(password));
+		return !(StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils
+				.isEmpty(url));
 	}
 
-	public void initializeDatabase()
+	public void initializeDatabase() throws BiblestudyException
 	{
+		// TODO: read from create.sql file and populate database...
+		ExceptionHandlerFactory.getHandler().handle("Initializing database", this, null,
+				SeverityLevel.DEBUG);
 	}
 
 	public boolean validateDatabaseCredentials(String user, String pass, String url)
+			throws BiblestudyException
 	{
 		boolean valid = false;
 		if (user != null && pass != null && url != null)
 		{
 			store(user, pass, url);
-			try
-			{
-				setupDBDao.connectWithCredentials(user, pass);
-				valid = true;
-			}
-			catch (SQLException e)
-			{
-			}
+			setupDBDao.connectWithCredentials(user, pass, url);
+			valid = true;
 		}
 		return valid;
 	}
 
-	private void store(String user, String pass, String url)
+	private void store(String user, String pass, String url) throws BiblestudyException
 	{
 		ScopedPreferenceStore preferences = new ScopedPreferenceStore(new ConfigurationScope(),
 				Activator.PLUGIN_ID);
@@ -69,16 +78,58 @@ public class SetupDatabaseModel implements ISetupDatabaseModel
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BiblestudyException(e);
 		}
 	}
 
-	public boolean isFirstTimeStartup()
+	public boolean isVersionCurrent() throws BiblestudyException
 	{
-		IPreferenceStore preferences = new ScopedPreferenceStore(new ConfigurationScope(),
-				Activator.PLUGIN_ID);
+		boolean current = setupDBDao.getDatabaseVersion() == getCurrentDatabaseVersion();
 
-		return preferences.getBoolean(PreferenceInitializer.FIRST_TIME_STARTUP);
+		return current;
+	}
+
+	int getCurrentDatabaseVersion()
+	{
+		int version = -1;
+		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+		if (bundle != null)
+		{
+			URL resource = bundle.getResource("resources/db/currentDatabaseVersion.txt");
+			BufferedReader reader = null;
+
+			try
+			{
+				URL resolvedResource = FileLocator.resolve(resource);
+				File file = new File(resolvedResource.getFile());
+				reader = new BufferedReader(new FileReader(file));
+				String versionString = reader.readLine().trim();
+
+				version = Integer.parseInt(versionString);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			catch (NumberFormatException e)
+			{
+				e.printStackTrace();
+			}
+			finally
+			{
+				if (reader != null)
+				{
+					try
+					{
+						reader.close();
+					}
+					catch (IOException e)
+					{
+					}
+				}
+			}
+		}
+
+		return version;
 	}
 }

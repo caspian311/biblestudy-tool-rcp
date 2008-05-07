@@ -1,8 +1,11 @@
 package net.todd.biblestudy.db;
 
-import java.sql.SQLException;
+import net.todd.biblestudy.common.BiblestudyException;
 
 public interface ISetupDBDao
 {
-	public void connectWithCredentials(String user, String pass) throws SQLException;
+	public void connectWithCredentials(String user, String pass, String url)
+			throws BiblestudyException;
+
+	public int getDatabaseVersion() throws BiblestudyException;
 }

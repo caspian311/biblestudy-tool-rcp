@@ -12,7 +12,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
 	public static final String DB_USER = "db.user";
 	public static final String DB_PASS = "db.pass";
 	public static final String DB_URL = "db.url";
-	public static final String FIRST_TIME_STARTUP = "first.time.startup";
 
 	public PreferenceInitializer()
 	{
@@ -26,7 +25,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
 		preferenceStore.setDefault(DB_USER, "root");
 		preferenceStore.setDefault(DB_PASS, "root");
 		preferenceStore.setDefault(DB_URL, "jdbc:mysql://localhost/biblestudy");
-		preferenceStore.setDefault(FIRST_TIME_STARTUP, true);
 	}
 
 }

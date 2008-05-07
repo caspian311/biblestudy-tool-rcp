@@ -23,19 +23,33 @@ public class SetupDatabasePresenterTest
 	}
 
 	@Test
-	public void testIfModelHasDatabaseCredentialsInitializeDatabase() throws Exception
+	public void testIfModelHasDatabaseCredentialsButNotValidDatabaseVersion() throws Exception
 	{
+		model.setIsVersionCurrent(false);
 		model.setDatabaseCredentialsPresent(true);
 
 		assertFalse(model.hasCalledDatabaseCredentialsPresent());
-		assertFalse(view.hasPromptedUserForDatabaseCredentials());
 		assertFalse(model.hasDatabaseBeenInitialized());
 
 		new SetupDatabasePresenter(view, model).setup();
 
 		assertTrue(model.hasCalledDatabaseCredentialsPresent());
-		assertFalse(view.hasPromptedUserForDatabaseCredentials());
 		assertTrue(model.hasDatabaseBeenInitialized());
+	}
+
+	@Test
+	public void testIfModelHasDatabaseCredentialsAndHasValidDatabaseVersion() throws Exception
+	{
+		model.setIsVersionCurrent(true);
+		model.setDatabaseCredentialsPresent(true);
+
+		assertFalse(model.hasCalledDatabaseCredentialsPresent());
+		assertFalse(model.hasDatabaseBeenInitialized());
+
+		new SetupDatabasePresenter(view, model).setup();
+
+		assertTrue(model.hasCalledDatabaseCredentialsPresent());
+		assertFalse(model.hasDatabaseBeenInitialized());
 	}
 
 	@Test
@@ -223,10 +237,16 @@ public class SetupDatabasePresenterTest
 			return user;
 		}
 
-		public boolean isFirstTimeStartup()
+		private boolean versionIsCurrent;
+
+		public void setIsVersionCurrent(boolean versionIsCurrent)
 		{
-			// TODO Auto-generated method stub
-			return false;
+			this.versionIsCurrent = versionIsCurrent;
+		}
+
+		public boolean isVersionCurrent()
+		{
+			return versionIsCurrent;
 		}
 	}
 }
