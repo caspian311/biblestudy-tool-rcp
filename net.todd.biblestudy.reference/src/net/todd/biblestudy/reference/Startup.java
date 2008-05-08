@@ -3,7 +3,7 @@ package net.todd.biblestudy.reference;
 import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.common.ExceptionHandlerFactory;
 import net.todd.biblestudy.common.SeverityLevel;
-import net.todd.biblestudy.reference.db.DataInitializer;
+import net.todd.biblestudy.reference.db.ResourceInitializer;
 
 import org.eclipse.ui.IStartup;
 
@@ -13,7 +13,7 @@ public class Startup implements IStartup
 	{
 		try
 		{
-			new DataInitializer().initializeData();
+			new ResourceInitializer().initializeData();
 		}
 		catch (BiblestudyException e)
 		{

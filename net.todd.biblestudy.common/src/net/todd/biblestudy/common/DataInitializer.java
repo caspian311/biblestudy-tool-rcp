@@ -1,6 +1,9 @@
-package net.todd.biblestudy.reference.db;
+package net.todd.biblestudy.common;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,66 +14,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.todd.biblestudy.common.BiblestudyException;
-
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
-
-public class DataInitializer extends BaseDao
+public class DataInitializer
 {
-	private static final String FILENAME_ATTRIBUTE = "filename";
+	private final Connection connection;
 
-	private static final String DB_SCRIPTS_EXTENSION_POINT_TYPE = "net.todd.biblestudy.reference.dbScripts";
-	private static final String DB_SCRIPT_EXTENSION_NAME = "script";
-
-	public void initializeData() throws BiblestudyException
+	public DataInitializer(Connection connection)
 	{
-		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-		if (extensionRegistry != null)
-		{
-			IExtensionPoint dbScripts = extensionRegistry
-					.getExtensionPoint(DB_SCRIPTS_EXTENSION_POINT_TYPE);
-			if (dbScripts != null)
-			{
-				IExtension[] extensions = dbScripts.getExtensions();
-				for (IExtension extension : extensions)
-				{
-					IConfigurationElement[] elements = extension.getConfigurationElements();
-					for (IConfigurationElement element : elements)
-					{
-						if (element.getName().equals(DB_SCRIPT_EXTENSION_NAME))
-						{
-							String filename = element.getAttribute(FILENAME_ATTRIBUTE);
-
-							String contributorName = extension.getContributor().getName();
-
-							Bundle bundle = Platform.getBundle(contributorName);
-							InputStream resource = null;
-
-							try
-							{
-								resource = bundle.getEntry(filename).openStream();
-							}
-							catch (IOException e)
-							{
-								throw new BiblestudyException(
-										"An error occurred while trying to open the file: "
-												+ filename, e);
-							}
-
-							processSQLFile(resource);
-						}
-					}
-				}
-			}
-		}
+		this.connection = connection;
 	}
 
-	private void processSQLFile(InputStream resource) throws BiblestudyException
+	public void processSQLFile(File file) throws BiblestudyException
+	{
+		InputStream resource = null;
+
+		try
+		{
+			resource = new FileInputStream(file);
+		}
+		catch (FileNotFoundException e)
+		{
+			throw new BiblestudyException(e);
+		}
+
+		processSQLFile(resource);
+	}
+
+	public void processSQLFile(InputStream resource) throws BiblestudyException
 	{
 		String sql = getSQLFromFile(resource);
 
@@ -129,12 +98,8 @@ public class DataInitializer extends BaseDao
 
 	private void doSQL(List<String> batchQueries) throws BiblestudyException
 	{
-		Connection connection = null;
-
 		try
 		{
-			connection = getConnection();
-
 			if (connection != null)
 			{
 				connection.setAutoCommit(false);
@@ -180,19 +145,6 @@ public class DataInitializer extends BaseDao
 		}
 	}
 
-	private Connection getConnection() throws BiblestudyException
-	{
-		try
-		{
-			return getSqlMapConfig().getDataSource().getConnection();
-		}
-		catch (SQLException e)
-		{
-			throw new BiblestudyException("An error occurred while "
-					+ "trying to get a connection to the database: " + e.getMessage(), e);
-		}
-	}
-
 	private List<String> createBatchQueries(String sql)
 	{
 		List<String> batchQueries = new ArrayList<String>();
@@ -214,4 +166,5 @@ public class DataInitializer extends BaseDao
 
 		return batchQueries;
 	}
+
 }
