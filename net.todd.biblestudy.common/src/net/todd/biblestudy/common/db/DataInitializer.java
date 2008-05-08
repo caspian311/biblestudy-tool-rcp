@@ -1,4 +1,4 @@
-package net.todd.biblestudy.common;
+package net.todd.biblestudy.common.db;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import net.todd.biblestudy.common.BiblestudyException;
 
 public class DataInitializer
 {

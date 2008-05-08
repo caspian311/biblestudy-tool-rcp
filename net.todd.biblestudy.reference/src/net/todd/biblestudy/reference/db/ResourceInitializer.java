@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.common.DataInitializer;
+import net.todd.biblestudy.common.db.DataInitializer;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
