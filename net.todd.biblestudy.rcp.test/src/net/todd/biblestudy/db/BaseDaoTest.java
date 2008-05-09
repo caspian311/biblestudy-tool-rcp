@@ -1,7 +1,6 @@
 package net.todd.biblestudy.db;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 
@@ -42,7 +41,7 @@ public class BaseDaoTest
 		Connection connection = new BaseDao()
 		{
 		}.getSqlMapConfig().getDataSource().getConnection();
-		assertTrue(connection.isValid(100));
+		assertFalse(connection.isClosed());
 		assertFalse(connection.isClosed());
 		assertFalse(connection.isReadOnly());
 	}

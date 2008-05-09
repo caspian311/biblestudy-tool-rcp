@@ -37,12 +37,12 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 					"Something bad happened while building the SqlMapClient instance." + e, e);
 		}
 
-		boolean isValidConnection = false;
+		boolean isConnectionClosed = true;
 
 		try
 		{
 			Connection connection = sqlMapper.getDataSource().getConnection();
-			isValidConnection = connection.isValid(0);
+			isConnectionClosed = connection.isClosed();
 		}
 		catch (SQLException e)
 		{
@@ -51,7 +51,7 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 							+ e.getMessage(), e);
 		}
 
-		if (!isValidConnection)
+		if (isConnectionClosed)
 		{
 			throw new BiblestudyException("Bad database credentials");
 		}
