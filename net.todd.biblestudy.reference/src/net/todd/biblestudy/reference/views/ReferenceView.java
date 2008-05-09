@@ -252,6 +252,8 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 			item.setText(1, newColumnText);
 		}
+
+		resultsTable.layout();
 	}
 
 	private void makeDragable()
