@@ -53,6 +53,22 @@ public class SetupDatabasePresenterTest
 	}
 
 	@Test
+	public void testSetupReturnTrueIfModelHasDatabaseCredentialsAndHasValidDatabaseVersion()
+			throws Exception
+	{
+		model.setIsVersionCurrent(true);
+		model.setDatabaseCredentialsPresent(true);
+
+		assertFalse(model.hasCalledDatabaseCredentialsPresent());
+		assertFalse(model.hasDatabaseBeenInitialized());
+
+		assertTrue(new SetupDatabasePresenter(view, model).setup());
+
+		assertTrue(model.hasCalledDatabaseCredentialsPresent());
+		assertFalse(model.hasDatabaseBeenInitialized());
+	}
+
+	@Test
 	public void testIfModelDoesntHaveCredentialsPresenterPromptsUser() throws Exception
 	{
 		model.setDatabaseCredentialsPresent(false);
