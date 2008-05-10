@@ -31,6 +31,10 @@ public class SetupDatabasePresenter
 					model.initializeDatabase();
 					retVal = true;
 				}
+				else
+				{
+					retVal = true;
+				}
 			}
 			else
 			{
