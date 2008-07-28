@@ -1,5 +1,6 @@
 package net.todd.biblestudy.db;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Connection;
@@ -71,5 +72,10 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 		}
 
 		return info.getVersion();
+	}
+
+	public void processSqlFromFile(File sqlFile)
+	{
+		// TODO Auto-generated method stub
 	}
 }

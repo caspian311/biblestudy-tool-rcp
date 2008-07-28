@@ -45,9 +45,21 @@ public class SetupDatabaseModel implements ISetupDatabaseModel
 
 	public void initializeDatabase() throws BiblestudyException
 	{
-		// TODO: read from create.sql file and populate database...
-		ExceptionHandlerFactory.getHandler().handle("Initializing database", this, null,
-				SeverityLevel.DEBUG);
+		for (int i = getCurrentApplicationVersion() + 1; i <= getCurrentDatabaseVersion(); i++)
+		{
+			try
+			{
+				String sqlFileName = "resources/db/sql_files/" + i + ".biblestudy.sql";
+				URL resource = Platform.getBundle(Activator.PLUGIN_ID).getResource(sqlFileName);
+				String filename = FileLocator.resolve(resource).getFile();
+				File file = new File(filename);
+				setupDBDao.processSqlFromFile(file);
+			}
+			catch (Exception e)
+			{
+				throw new BiblestudyException(e);
+			}
+		}
 	}
 
 	public boolean validateDatabaseCredentials(String user, String pass, String url)
@@ -84,18 +96,23 @@ public class SetupDatabaseModel implements ISetupDatabaseModel
 
 	public boolean isVersionCurrent() throws BiblestudyException
 	{
-		boolean current = setupDBDao.getDatabaseVersion() == getCurrentDatabaseVersion();
+		boolean current = getCurrentDatabaseVersion() == getCurrentApplicationVersion();
 
 		return current;
 	}
 
-	int getCurrentDatabaseVersion()
+	int getCurrentDatabaseVersion() throws BiblestudyException
+	{
+		return setupDBDao.getDatabaseVersion();
+	}
+
+	int getCurrentApplicationVersion()
 	{
 		int version = -1;
 		Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
 		if (bundle != null)
 		{
-			URL resource = bundle.getResource("resources/db/currentDatabaseVersion.txt");
+			URL resource = bundle.getResource("resources/db/currentApplicationVersion.txt");
 			BufferedReader reader = null;
 
 			try

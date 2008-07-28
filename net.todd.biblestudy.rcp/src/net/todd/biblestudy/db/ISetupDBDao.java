@@ -1,5 +1,7 @@
 package net.todd.biblestudy.db;
 
+import java.io.File;
+
 import net.todd.biblestudy.common.BiblestudyException;
 
 public interface ISetupDBDao
@@ -26,4 +28,12 @@ public interface ISetupDBDao
 	 * @throws BiblestudyException
 	 */
 	public int getDatabaseVersion() throws BiblestudyException;
+
+	/**
+	 * Execute the contents of the given sql file against the currect database
+	 * that is connected
+	 * 
+	 * @param sqlFile
+	 */
+	public void processSqlFromFile(File sqlFile);
 }

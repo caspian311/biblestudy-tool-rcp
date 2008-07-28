@@ -4,6 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.common.ExceptionHandler;
 import net.todd.biblestudy.common.ExceptionHandlerFactory;
@@ -32,24 +37,26 @@ public class SetupDatabaseModelTest
 	}
 
 	@Test
-	public void testModelValidatesCredentials() throws Exception
+	public void testModelValidatesCredentials()
 	{
 		dao.setValid(true);
 		SetupDatabaseModel model = new SetupDatabaseModel(dao);
 
-		assertFalse(model.validateDatabaseCredentials(null, null, null));
-
-		assertFalse(model.validateDatabaseCredentials("user", null, null));
-
-		assertFalse(model.validateDatabaseCredentials(null, "pass", null));
-
-		assertFalse(model.validateDatabaseCredentials(null, "pass", "url"));
-
-		assertFalse(model.validateDatabaseCredentials(null, null, "url"));
-
-		assertFalse(model.validateDatabaseCredentials("user", null, "url"));
-
-		assertFalse(model.validateDatabaseCredentials(null, "pass", "url"));
+		try
+		{
+			assertFalse(model.validateDatabaseCredentials(null, null, null));
+			assertFalse(model.validateDatabaseCredentials("user", null, null));
+			assertFalse(model.validateDatabaseCredentials(null, "pass", null));
+			assertFalse(model.validateDatabaseCredentials(null, "pass", "url"));
+			assertFalse(model.validateDatabaseCredentials(null, null, "url"));
+			assertFalse(model.validateDatabaseCredentials("user", null, "url"));
+			assertFalse(model.validateDatabaseCredentials(null, "pass", "url"));
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 
 		dao.setValid(false);
 
@@ -64,86 +71,160 @@ public class SetupDatabaseModelTest
 		}
 
 		dao.setValid(true);
-		assertTrue(model.validateDatabaseCredentials("user", "pass", "url"));
+		try
+		{
+			assertTrue(model.validateDatabaseCredentials("user", "pass", "url"));
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
-	public void testNotCurrentVersion() throws Exception
+	public void testNotCurrentVersion()
 	{
 		dao.setDatabaseVersion(5);
 
 		SetupDatabaseModel model = new SetupDatabaseModel(dao)
 		{
 			@Override
-			int getCurrentDatabaseVersion()
+			int getCurrentApplicationVersion()
 			{
 				return 4;
 			}
 		};
 
-		assertFalse(model.isVersionCurrent());
+		try
+		{
+			assertFalse(model.isVersionCurrent());
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 
 		dao.setDatabaseVersion(2);
 
 		model = new SetupDatabaseModel(dao)
 		{
 			@Override
-			int getCurrentDatabaseVersion()
+			int getCurrentApplicationVersion()
 			{
 				return 3;
 			}
 		};
 
-		assertFalse(model.isVersionCurrent());
+		try
+		{
+			assertFalse(model.isVersionCurrent());
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
-	public void testIsCurrentVersion() throws Exception
+	public void testIsCurrentVersion()
 	{
 		dao.setDatabaseVersion(1);
 
 		SetupDatabaseModel model = new SetupDatabaseModel(dao)
 		{
 			@Override
-			int getCurrentDatabaseVersion()
+			int getCurrentApplicationVersion()
 			{
 				return 1;
 			}
 		};
 
-		assertTrue(model.isVersionCurrent());
+		try
+		{
+			assertTrue(model.isVersionCurrent());
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 
 		dao.setDatabaseVersion(2);
 
 		model = new SetupDatabaseModel(dao)
 		{
 			@Override
-			int getCurrentDatabaseVersion()
+			int getCurrentApplicationVersion()
 			{
 				return 2;
 			}
 		};
 
-		assertTrue(model.isVersionCurrent());
+		try
+		{
+			assertTrue(model.isVersionCurrent());
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
-	public void testGetDatabaseVersionFromFile() throws Exception
+	public void testGetDatabaseVersionFromFile()
 	{
 		SetupDatabaseModel model = new SetupDatabaseModel(dao);
 
-		int currentDatabaseVersion = model.getCurrentDatabaseVersion();
+		int currentDatabaseVersion = model.getCurrentApplicationVersion();
 
 		assertTrue(currentDatabaseVersion != -1);
+	}
+
+	@Test
+	public void testInitializeDb()
+	{
+		SetupDatabaseModel model = new SetupDatabaseModel(dao)
+		{
+			@Override
+			int getCurrentDatabaseVersion() throws BiblestudyException
+			{
+				return 2;
+			}
+
+			@Override
+			int getCurrentApplicationVersion()
+			{
+				return 1;
+			}
+		};
+
+		assertEquals(0, dao.filesToProcess.size());
+
+		try
+		{
+			model.initializeDatabase();
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
+		assertEquals(1, dao.filesToProcess.size());
+		assertTrue(dao.filesToProcess.get(0).endsWith("2.biblestudy.sql"));
 	}
 
 	// TODO: test that areDatabaseCredentialsPresent checks preferences
 	// TODO: test that validateDatabaseCredentials saves given creds to
 	// preferences
-	// TODO: test that initializeDatabase loads sql from bundle resources
 
 	private static class MockSetupDBDao implements ISetupDBDao
 	{
+		private List<String> filesToProcess = new ArrayList<String>();
 		private boolean valid;
 
 		public void setValid(boolean valid)
@@ -170,6 +251,11 @@ public class SetupDatabaseModelTest
 		public int getDatabaseVersion() throws BiblestudyException
 		{
 			return databaseVersion;
+		}
+
+		public void processSqlFromFile(File sqlFile)
+		{
+			filesToProcess.add(sqlFile.getAbsolutePath());
 		}
 	}
 }
