@@ -45,7 +45,7 @@ public class SetupDatabaseModel implements ISetupDatabaseModel
 
 	public void initializeDatabase() throws BiblestudyException
 	{
-		for (int i = getCurrentApplicationVersion() + 1; i <= getCurrentDatabaseVersion(); i++)
+		for (int i = getCurrentDatabaseVersion(); i < getCurrentApplicationVersion(); i++)
 		{
 			try
 			{

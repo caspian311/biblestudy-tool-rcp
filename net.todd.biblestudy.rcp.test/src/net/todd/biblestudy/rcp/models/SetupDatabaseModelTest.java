@@ -192,13 +192,13 @@ public class SetupDatabaseModelTest
 			@Override
 			int getCurrentDatabaseVersion() throws BiblestudyException
 			{
-				return 2;
+				return 0;
 			}
 
 			@Override
 			int getCurrentApplicationVersion()
 			{
-				return 1;
+				return 2;
 			}
 		};
 
@@ -214,8 +214,9 @@ public class SetupDatabaseModelTest
 			fail(e.getMessage());
 		}
 
-		assertEquals(1, dao.filesToProcess.size());
-		assertTrue(dao.filesToProcess.get(0).endsWith("2.biblestudy.sql"));
+		assertEquals(2, dao.filesToProcess.size());
+		assertTrue(dao.filesToProcess.get(0).endsWith("0.biblestudy.sql"));
+		assertTrue(dao.filesToProcess.get(1).endsWith("1.biblestudy.sql"));
 	}
 
 	// TODO: test that areDatabaseCredentialsPresent checks preferences

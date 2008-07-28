@@ -71,7 +71,14 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 			throw new BiblestudyException(e);
 		}
 
-		return info.getVersion();
+		Integer version = 0;
+
+		if (info != null)
+		{
+			version = info.getVersion();
+		}
+
+		return version;
 	}
 
 	public void processSqlFromFile(File sqlFile)
