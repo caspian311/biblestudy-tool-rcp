@@ -43,9 +43,8 @@ public class SetupDatabasePresenter
 				{
 					String username = creds.getUser();
 					String password = creds.getPass();
-					String url = creds.getUrl();
 
-					if (model.validateDatabaseCredentials(username, password, url))
+					if (model.validateDatabaseCredentials(username, password))
 					{
 						if (!model.isVersionCurrent())
 						{

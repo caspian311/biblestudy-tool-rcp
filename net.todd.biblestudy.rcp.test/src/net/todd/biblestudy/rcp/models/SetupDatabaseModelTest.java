@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,13 +43,9 @@ public class SetupDatabaseModelTest
 
 		try
 		{
-			assertFalse(model.validateDatabaseCredentials(null, null, null));
-			assertFalse(model.validateDatabaseCredentials("user", null, null));
-			assertFalse(model.validateDatabaseCredentials(null, "pass", null));
-			assertFalse(model.validateDatabaseCredentials(null, "pass", "url"));
-			assertFalse(model.validateDatabaseCredentials(null, null, "url"));
-			assertFalse(model.validateDatabaseCredentials("user", null, "url"));
-			assertFalse(model.validateDatabaseCredentials(null, "pass", "url"));
+			assertFalse(model.validateDatabaseCredentials(null, null));
+			assertFalse(model.validateDatabaseCredentials("user", null));
+			assertFalse(model.validateDatabaseCredentials(null, "pass"));
 		}
 		catch (BiblestudyException e)
 		{
@@ -62,7 +57,7 @@ public class SetupDatabaseModelTest
 
 		try
 		{
-			assertFalse(model.validateDatabaseCredentials("user", "pass", "url"));
+			assertFalse(model.validateDatabaseCredentials("user", "pass"));
 			fail();
 		}
 		catch (BiblestudyException e)
@@ -73,7 +68,7 @@ public class SetupDatabaseModelTest
 		dao.setValid(true);
 		try
 		{
-			assertTrue(model.validateDatabaseCredentials("user", "pass", "url"));
+			assertTrue(model.validateDatabaseCredentials("user", "pass"));
 		}
 		catch (BiblestudyException e)
 		{
@@ -198,11 +193,11 @@ public class SetupDatabaseModelTest
 			@Override
 			int getCurrentApplicationVersion()
 			{
-				return 2;
+				return 1;
 			}
 		};
 
-		assertEquals(0, dao.filesToProcess.size());
+		assertEquals(0, dao.statementsToProcess.size());
 
 		try
 		{
@@ -214,9 +209,72 @@ public class SetupDatabaseModelTest
 			fail(e.getMessage());
 		}
 
-		assertEquals(2, dao.filesToProcess.size());
-		assertTrue(dao.filesToProcess.get(0).endsWith("0.biblestudy.sql"));
-		assertTrue(dao.filesToProcess.get(1).endsWith("1.biblestudy.sql"));
+		assertEquals(7, dao.statementsToProcess.size());
+		assertEquals("DROP DATABASE IF EXISTS biblestudy;", dao.statementsToProcess.get(0));
+	}
+
+	@Test
+	public void testInitializeDbDoesNothingIfVersionsAreSame()
+	{
+		SetupDatabaseModel model = new SetupDatabaseModel(dao)
+		{
+			@Override
+			int getCurrentDatabaseVersion() throws BiblestudyException
+			{
+				return 2;
+			}
+
+			@Override
+			int getCurrentApplicationVersion()
+			{
+				return 2;
+			}
+		};
+
+		assertEquals(0, dao.statementsToProcess.size());
+
+		try
+		{
+			model.initializeDatabase();
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
+		assertEquals(0, dao.statementsToProcess.size());
+	}
+
+	@Test
+	public void testInitializeDbUpdateDBInfo()
+	{
+		SetupDatabaseModel model = new SetupDatabaseModel(dao)
+		{
+			@Override
+			int getCurrentDatabaseVersion() throws BiblestudyException
+			{
+				return 0;
+			}
+
+			@Override
+			int getCurrentApplicationVersion()
+			{
+				return 1;
+			}
+		};
+
+		try
+		{
+			model.initializeDatabase();
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
+		assertEquals(1, dao.newVersion);
 	}
 
 	// TODO: test that areDatabaseCredentialsPresent checks preferences
@@ -225,7 +283,7 @@ public class SetupDatabaseModelTest
 
 	private static class MockSetupDBDao implements ISetupDBDao
 	{
-		private List<String> filesToProcess = new ArrayList<String>();
+		private List<String> statementsToProcess = new ArrayList<String>();
 		private boolean valid;
 
 		public void setValid(boolean valid)
@@ -243,6 +301,7 @@ public class SetupDatabaseModelTest
 		}
 
 		private int databaseVersion;
+		private Integer newVersion;
 
 		public void setDatabaseVersion(int databaseVersion)
 		{
@@ -254,9 +313,14 @@ public class SetupDatabaseModelTest
 			return databaseVersion;
 		}
 
-		public void processSqlFromFile(File sqlFile)
+		public void processSqlFromFile(List<String> sqlStatements)
 		{
-			filesToProcess.add(sqlFile.getAbsolutePath());
+			statementsToProcess = sqlStatements;
+		}
+
+		public void updateDatabaseVersion(Integer version)
+		{
+			newVersion = version;
 		}
 	}
 }

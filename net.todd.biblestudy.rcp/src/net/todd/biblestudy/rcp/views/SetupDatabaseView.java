@@ -15,7 +15,6 @@ public class SetupDatabaseView extends Dialog implements ISetupDatabaseView
 	private Text userText;
 	private Text passText;
 	private UserCredentials creds;
-	private Text urlText;
 
 	public SetupDatabaseView(Shell shell)
 	{
@@ -46,7 +45,6 @@ public class SetupDatabaseView extends Dialog implements ISetupDatabaseView
 	{
 		creds.setUser(userText.getText());
 		creds.setPass(passText.getText());
-		creds.setUrl(urlText.getText());
 		super.okPressed();
 	}
 
@@ -71,16 +69,6 @@ public class SetupDatabaseView extends Dialog implements ISetupDatabaseView
 
 		passText = new Text(composite, SWT.BORDER);
 		passText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-
-		Label urlLabel = new Label(composite, SWT.NONE);
-		urlLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-		urlLabel.setText("URL: ");
-
-		urlText = new Text(composite, SWT.BORDER);
-		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		gridData.widthHint = 200;
-		urlText.setLayoutData(gridData);
-		urlText.setText("jdbc:mysql://localhost/biblestudy");
 
 		return parent;
 	}

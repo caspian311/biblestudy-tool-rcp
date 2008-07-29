@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.common.ExceptionHandlerFactory;
@@ -37,39 +40,71 @@ public class SetupDatabaseModel implements ISetupDatabaseModel
 
 		String username = preferences.getString(PreferenceInitializer.DB_USER);
 		String password = preferences.getString(PreferenceInitializer.DB_PASS);
-		String url = preferences.getString(PreferenceInitializer.DB_URL);
 
-		return !(StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils
-				.isEmpty(url));
+		return !(StringUtils.isEmpty(username) || StringUtils.isEmpty(password));
 	}
 
 	public void initializeDatabase() throws BiblestudyException
 	{
-		for (int i = getCurrentDatabaseVersion(); i < getCurrentApplicationVersion(); i++)
+		if (getCurrentDatabaseVersion() != getCurrentApplicationVersion())
 		{
-			try
+			List<String> sqlLines = new ArrayList<String>();
+			for (int i = getCurrentDatabaseVersion(); i <= getCurrentApplicationVersion(); i++)
 			{
-				String sqlFileName = "resources/db/sql_files/" + i + ".biblestudy.sql";
-				URL resource = Platform.getBundle(Activator.PLUGIN_ID).getResource(sqlFileName);
-				String filename = FileLocator.resolve(resource).getFile();
-				File file = new File(filename);
-				setupDBDao.processSqlFromFile(file);
+				try
+				{
+					String sqlFileName = "resources/db/sql_files/" + i + ".biblestudy.sql";
+					URL resource = Platform.getBundle(Activator.PLUGIN_ID).getResource(sqlFileName);
+					String filename = FileLocator.resolve(resource).getFile();
+					File sqlFile = new File(filename);
+					String fileContents = getFileContents(sqlFile);
+					sqlLines.addAll(getLinesFromFileContents(fileContents));
+				}
+				catch (IOException e)
+				{
+					throw new BiblestudyException(e);
+				}
 			}
-			catch (Exception e)
-			{
-				throw new BiblestudyException(e);
-			}
+			setupDBDao.processSqlFromFile(sqlLines);
+
+			setupDBDao.updateDatabaseVersion(getCurrentApplicationVersion());
 		}
 	}
 
-	public boolean validateDatabaseCredentials(String user, String pass, String url)
-			throws BiblestudyException
+	private String getFileContents(File sqlFile) throws IOException
+	{
+		StringBuffer contents = new StringBuffer();
+		BufferedReader reader = new BufferedReader(new FileReader(sqlFile));
+		String line;
+		while ((line = reader.readLine()) != null)
+		{
+			contents.append(line);
+		}
+		return contents.toString();
+	}
+
+	List<String> getLinesFromFileContents(String sqlFileContents)
+	{
+		List<String> statements = new ArrayList<String>();
+
+		StringTokenizer tokenizer = new StringTokenizer(sqlFileContents, ";");
+		while (tokenizer.hasMoreTokens())
+		{
+			String statement = tokenizer.nextToken();
+			statement = statement.trim();
+			statements.add(statement + ";");
+		}
+
+		return statements;
+	}
+
+	public boolean validateDatabaseCredentials(String user, String pass) throws BiblestudyException
 	{
 		boolean valid = false;
-		if (user != null && pass != null && url != null)
+		if (user != null && pass != null)
 		{
-			store(user, pass, url);
-			setupDBDao.connectWithCredentials(user, pass, url);
+			store(user, pass, "jdbc:mysql://localhost/biblestudy");
+			setupDBDao.connectWithCredentials(user, pass, "jdbc:mysql://localhost/mysql");
 			valid = true;
 		}
 		return valid;
@@ -82,7 +117,6 @@ public class SetupDatabaseModel implements ISetupDatabaseModel
 
 		preferences.setValue(PreferenceInitializer.DB_USER, user);
 		preferences.setValue(PreferenceInitializer.DB_PASS, pass);
-		preferences.setValue(PreferenceInitializer.DB_URL, url);
 
 		try
 		{

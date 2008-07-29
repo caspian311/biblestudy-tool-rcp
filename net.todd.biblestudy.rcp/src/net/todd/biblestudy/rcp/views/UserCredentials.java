@@ -4,7 +4,6 @@ public class UserCredentials
 {
 	private String user;
 	private String pass;
-	private String url;
 
 	public void setUser(String user)
 	{
@@ -24,15 +23,5 @@ public class UserCredentials
 	public String getPass()
 	{
 		return pass;
-	}
-
-	public void setUrl(String url)
-	{
-		this.url = url;
-	}
-
-	public String getUrl()
-	{
-		return url;
 	}
 }

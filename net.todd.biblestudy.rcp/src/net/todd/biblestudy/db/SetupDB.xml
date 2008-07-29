@@ -13,4 +13,9 @@
 		FROM		DB_INFO
 	</select>
 
+	<update id="updateDbInfo" parameterClass="DBInfo">
+		UPDATE		DB_INFO
+		SET			DB_VERSION=#version#
+	</update>
+
 </sqlMap>

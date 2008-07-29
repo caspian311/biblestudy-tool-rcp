@@ -1,6 +1,6 @@
 package net.todd.biblestudy.db;
 
-import java.io.File;
+import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
 
@@ -18,8 +18,7 @@ public interface ISetupDBDao
 	 *             SqlMapConfig.xml or if it could not establish a valid
 	 *             connection (ie. jdbcConnection.isValid(0))
 	 */
-	public void connectWithCredentials(String user, String pass, String url)
-			throws BiblestudyException;
+	void connectWithCredentials(String user, String pass, String url) throws BiblestudyException;
 
 	/**
 	 * Checks the database for a version number and returns it
@@ -27,13 +26,20 @@ public interface ISetupDBDao
 	 * @return
 	 * @throws BiblestudyException
 	 */
-	public int getDatabaseVersion() throws BiblestudyException;
+	int getDatabaseVersion() throws BiblestudyException;
 
 	/**
 	 * Execute the contents of the given sql file against the currect database
 	 * that is connected
 	 * 
-	 * @param sqlFile
+	 * @param sqlLines
 	 */
-	public void processSqlFromFile(File sqlFile);
+	void processSqlFromFile(List<String> sqlLines);
+
+	/**
+	 * Update the current database to show that it is at a given version
+	 * 
+	 * @param version
+	 */
+	void updateDatabaseVersion(Integer version);
 }

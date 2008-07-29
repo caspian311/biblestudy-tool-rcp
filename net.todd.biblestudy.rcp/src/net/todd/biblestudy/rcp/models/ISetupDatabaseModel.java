@@ -8,8 +8,7 @@ public interface ISetupDatabaseModel
 
 	public void initializeDatabase() throws BiblestudyException;
 
-	public boolean validateDatabaseCredentials(String user, String pass, String url)
-			throws BiblestudyException;
+	public boolean validateDatabaseCredentials(String user, String pass) throws BiblestudyException;
 
 	public boolean isVersionCurrent() throws BiblestudyException;
 }

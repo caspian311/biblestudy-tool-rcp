@@ -261,7 +261,7 @@ public class SetupDatabasePresenterTest
 			this.validCredentials = validCredentials;
 		}
 
-		public boolean validateDatabaseCredentials(String user, String pass, String url)
+		public boolean validateDatabaseCredentials(String user, String pass)
 		{
 			if (validCredentials)
 			{

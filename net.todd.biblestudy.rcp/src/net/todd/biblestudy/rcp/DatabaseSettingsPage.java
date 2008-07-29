@@ -36,10 +36,6 @@ public class DatabaseSettingsPage extends FieldEditorPreferencePage implements
 		StringFieldEditor passFieldEditor = new StringFieldEditor(PreferenceInitializer.DB_PASS,
 				"Password used to connect to database", getFieldEditorParent());
 		addField(passFieldEditor);
-
-		StringFieldEditor urlFieldEditor = new StringFieldEditor(PreferenceInitializer.DB_URL,
-				"URL of datasbase server", getFieldEditorParent());
-		addField(urlFieldEditor);
 	}
 
 	@Override

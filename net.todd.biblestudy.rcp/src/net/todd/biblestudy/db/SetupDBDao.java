@@ -1,17 +1,19 @@
 package net.todd.biblestudy.db;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.rcp.Activator;
+import net.todd.biblestudy.rcp.PreferenceInitializer;
 
-import com.ibatis.common.resources.Resources;
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class SetupDBDao extends BaseDao implements ISetupDBDao
 {
@@ -23,29 +25,14 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 		properties.setProperty("password", pass);
 		properties.setProperty("url", url);
 
-		SqlMapClient sqlMapper = null;
-
-		try
-		{
-			Reader reader = Resources
-					.getResourceAsReader("net/todd/biblestudy/db/SqlMapConfig.xml");
-			sqlMapper = SqlMapClientBuilder.buildSqlMapClient(reader, properties);
-			reader.close();
-		}
-		catch (IOException e)
-		{
-			throw new BiblestudyException(
-					"Something bad happened while building the SqlMapClient instance." + e, e);
-		}
-
 		boolean isConnectionClosed = true;
 
 		try
 		{
-			Connection connection = sqlMapper.getDataSource().getConnection();
+			Connection connection = getConnectionWithOutIbatis();
 			isConnectionClosed = connection.isClosed();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			throw new BiblestudyException(
 					"Something bad happened while trying to connect to the database"
@@ -58,7 +45,7 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 		}
 	}
 
-	public int getDatabaseVersion() throws BiblestudyException
+	public int getDatabaseVersion()
 	{
 		DBInfo info = null;
 
@@ -68,7 +55,11 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 		}
 		catch (SQLException e)
 		{
-			throw new BiblestudyException(e);
+			// TODO: this shouldn't ever happen...
+			e.printStackTrace();
+		}
+		catch (BiblestudyException e)
+		{
 		}
 
 		Integer version = 0;
@@ -81,8 +72,68 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 		return version;
 	}
 
-	public void processSqlFromFile(File sqlFile)
+	public void processSqlFromFile(List<String> sqlLines)
 	{
-		// TODO Auto-generated method stub
+		Connection connection = null;
+		try
+		{
+			connection = getConnectionWithOutIbatis();
+
+			for (String sqlLine : sqlLines)
+			{
+				PreparedStatement statement = connection.prepareStatement(sqlLine);
+				statement.execute();
+				statement.close();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (connection != null)
+			{
+				try
+				{
+					connection.close();
+				}
+				catch (SQLException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private Connection getConnectionWithOutIbatis() throws SQLException, ClassNotFoundException
+	{
+		IPreferenceStore preferences = new ScopedPreferenceStore(new ConfigurationScope(),
+				Activator.PLUGIN_ID);
+
+		String username = preferences.getString(PreferenceInitializer.DB_USER);
+		String password = preferences.getString(PreferenceInitializer.DB_PASS);
+
+		Class.forName("com.mysql.jdbc.Driver");
+
+		return DriverManager.getConnection("jdbc:mysql://localhost/mysql", username, password);
+	}
+
+	public void updateDatabaseVersion(Integer version)
+	{
+		DBInfo dbInfo = new DBInfo();
+		dbInfo.setVersion(version);
+		try
+		{
+			getSqlMapConfig().update("updateDbInfo", dbInfo);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		catch (BiblestudyException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

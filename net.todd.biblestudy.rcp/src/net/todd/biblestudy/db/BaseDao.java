@@ -34,12 +34,10 @@ public abstract class BaseDao
 
 			String username = preferences.getString(PreferenceInitializer.DB_USER);
 			String password = preferences.getString(PreferenceInitializer.DB_PASS);
-			String url = preferences.getString(PreferenceInitializer.DB_URL);
 
 			Properties properties = new Properties();
 			properties.setProperty("user", username);
 			properties.setProperty("password", password);
-			properties.setProperty("url", url);
 
 			try
 			{
@@ -50,6 +48,8 @@ public abstract class BaseDao
 			}
 			catch (IOException e)
 			{
+				// set to null so when it's next called, it will connect again
+				sqlMapper = null;
 				throw new BiblestudyException(
 						"Something bad happened while building the SqlMapClient instance." + e, e);
 			}

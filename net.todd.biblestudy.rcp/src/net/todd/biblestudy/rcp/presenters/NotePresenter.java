@@ -353,6 +353,7 @@ public class NotePresenter implements INoteViewListener, INoteModelListener
 		updateDocumentTitle();
 	}
 
+	// TODO: doesn't need to do this...
 	private void handleCloseNote()
 	{
 		noteView.removeNoteViewListener(this);

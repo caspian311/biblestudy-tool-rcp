@@ -1,6 +1,8 @@
 package net.todd.biblestudy.db;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import net.todd.biblestudy.rcp.Activator;
 import net.todd.biblestudy.rcp.PreferenceInitializer;
 
@@ -36,5 +38,26 @@ public class SetupDBDaoTest
 	public void testGetDatabaseVersion() throws Exception
 	{
 		assertTrue(new SetupDBDao().getDatabaseVersion() > 0);
+	}
+
+	@Test
+	public void testUpdateDBInfo()
+	{
+		SetupDBDao dao = new SetupDBDao();
+		try
+		{
+			Integer origDbVersion = dao.getDatabaseVersion();
+			dao.updateDatabaseVersion(9999);
+			Integer currentDbVersion = dao.getDatabaseVersion();
+			assertEquals(9999, currentDbVersion);
+			dao.updateDatabaseVersion(origDbVersion);
+			currentDbVersion = dao.getDatabaseVersion();
+			assertEquals(origDbVersion, currentDbVersion);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 }
