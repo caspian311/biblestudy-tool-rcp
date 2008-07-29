@@ -26,10 +26,10 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 		properties.setProperty("url", url);
 
 		boolean isConnectionClosed = true;
-
+		Connection connection = null;
 		try
 		{
-			Connection connection = getConnectionWithOutIbatis();
+			connection = getConnectionWithOutIbatis();
 			isConnectionClosed = connection.isClosed();
 		}
 		catch (Exception e)
@@ -37,6 +37,14 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 			throw new BiblestudyException(
 					"Something bad happened while trying to connect to the database"
 							+ e.getMessage(), e);
+		}
+		finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+				}
+			}
 		}
 
 		if (isConnectionClosed)
@@ -55,8 +63,6 @@ public class SetupDBDao extends BaseDao implements ISetupDBDao
 		}
 		catch (SQLException e)
 		{
-			// TODO: this shouldn't ever happen...
-			e.printStackTrace();
 		}
 		catch (BiblestudyException e)
 		{
