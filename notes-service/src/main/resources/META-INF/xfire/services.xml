@@ -1,0 +1,15 @@
+<beans xmlns="http://xfire.codehaus.org/config/1.0">
+	<service>
+		<serviceClass>net.todd.biblestudy.BibleStudyServiceImpl</serviceClass>
+		<!-- serviceFactory>jsr181</serviceFactory -->
+		<serviceFactory>#jsr181ServiceFactory</serviceFactory>
+	</service>
+	<bean id="config" class="org.codehaus.xfire.aegis.type.Configuration">
+		<property name="defaultNillable" value="true" />
+		<property name="defaultMinOccurs" value="1" />
+	</bean>
+	<bean name="jsr181ServiceFactory" class="org.codehaus.xfire.annotations.AnnotationServiceFactory">
+		<constructor-arg ref="xfire.transportManager" type="org.codehaus.xfire.transport.TransportManager" index="0" />
+		<constructor-arg ref="config" index="1" type="org.codehaus.xfire.aegis.type.Configuration" />
+	</bean>
+</beans>
