@@ -9,7 +9,7 @@ public class SearchableData {
 	public SearchableData() {
 		data = new HashMap<Type, String>();
 	}
-	
+
 	public void addDatum(Type dataType, String value) {
 		data.put(dataType, value);
 	}
@@ -17,7 +17,7 @@ public class SearchableData {
 	public String getValue(Type dataType) {
 		return data.get(dataType);
 	}
-	
+
 	enum Type {
 		ID, TITLE, CONTENT;
 

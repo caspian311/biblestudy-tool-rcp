@@ -17,7 +17,7 @@ public class BibleStudyServiceImpl implements BibleStudyService {
 		search = injector.getInstance(SearchEngine.class);
 		search.index();
 	}
-	
+
 	@WebMethod
 	public Verse[] searchForReference(String query) {
 		Verse[] results = null;

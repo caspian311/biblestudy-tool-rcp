@@ -12,14 +12,14 @@ import org.codehaus.xfire.service.binding.ObjectServiceFactory;
 
 public class BibleStudyClient implements BibleStudyService {
 	private BibleStudyService service = null;
-	public BibleStudyClient() {
+
+	public BibleStudyClient(String endpoint) {
 		Service serviceModel = new ObjectServiceFactory()
 				.create(BibleStudyService.class);
 
 		try {
-			service = (BibleStudyService) new XFireProxyFactory()
-					.create(serviceModel,
-							"http://localhost:8080/notes-service/services/BibleStudyServiceImpl");
+			service = (BibleStudyService) new XFireProxyFactory().create(
+					serviceModel, endpoint);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

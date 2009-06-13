@@ -66,7 +66,7 @@ public class SeachEngineTest {
 		search.index(INDEX_LOCATION);
 		assertTrue(contentProvider.isGetDataCalled);
 	}
-	
+
 	@Test
 	public void testSearchEngineGivesGoodErrorWhenNoIndexAvailable() {
 		SearchEngine search = new SearchEngine(contentProvider);
@@ -93,7 +93,7 @@ public class SeachEngineTest {
 		assertNotNull(results);
 		assertEquals(0, results.length);
 	}
-	
+
 	@Test
 	public void testSearchEngineReturnsEmptyArrayWhenBadDataPresented()
 			throws SearchException {
@@ -112,10 +112,12 @@ public class SeachEngineTest {
 		contentProvider.data = new ArrayList<SearchableData>();
 
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(0).addDatum(SearchableData.Type.TITLE, "thing one");
+		contentProvider.data.get(0).addDatum(SearchableData.Type.TITLE,
+				"thing one");
 
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(1).addDatum(SearchableData.Type.TITLE, "thing two");
+		contentProvider.data.get(1).addDatum(SearchableData.Type.TITLE,
+				"thing two");
 
 		SearchEngine search = new SearchEngine(contentProvider);
 		search.index(INDEX_LOCATION);
@@ -124,23 +126,25 @@ public class SeachEngineTest {
 
 		results = search.search("one");
 		assertEquals(1, results.length);
-		
+
 		results = search.search("two");
 		assertEquals(1, results.length);
 
 		results = search.search("thing");
 		assertEquals(2, results.length);
 	}
-	
+
 	@Test
 	public void testSearchEngineCanSearchOnContent() throws SearchException {
 		contentProvider.data = new ArrayList<SearchableData>();
 
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(0).addDatum(SearchableData.Type.CONTENT, "thing one");
+		contentProvider.data.get(0).addDatum(SearchableData.Type.CONTENT,
+				"thing one");
 
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(1).addDatum(SearchableData.Type.CONTENT, "thing two");
+		contentProvider.data.get(1).addDatum(SearchableData.Type.CONTENT,
+				"thing two");
 
 		SearchEngine search = new SearchEngine(contentProvider);
 		search.index(INDEX_LOCATION);
@@ -162,10 +166,12 @@ public class SeachEngineTest {
 		contentProvider.data = new ArrayList<SearchableData>();
 
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(0).addDatum(SearchableData.Type.ID, "thing one");
+		contentProvider.data.get(0).addDatum(SearchableData.Type.ID,
+				"thing one");
 
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(1).addDatum(SearchableData.Type.ID, "thing two");
+		contentProvider.data.get(1).addDatum(SearchableData.Type.ID,
+				"thing two");
 
 		SearchEngine search = new SearchEngine(contentProvider);
 		search.index(INDEX_LOCATION);
@@ -181,14 +187,15 @@ public class SeachEngineTest {
 		results = search.search("thing");
 		assertEquals(0, results.length);
 	}
-	
+
 	@Test
 	public void testAddingAdditionalDataAfterOriginalIndexing()
 			throws SearchException {
 		contentProvider.data = new ArrayList<SearchableData>();
 
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(0).addDatum(SearchableData.Type.CONTENT, "thing one");
+		contentProvider.data.get(0).addDatum(SearchableData.Type.CONTENT,
+				"thing one");
 
 		SearchEngine search = new SearchEngine(contentProvider);
 		search.index(INDEX_LOCATION);
@@ -197,22 +204,24 @@ public class SeachEngineTest {
 
 		results = search.search("thing");
 		assertEquals(1, results.length);
-		
+
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(1).addDatum(SearchableData.Type.CONTENT, "thing two");
+		contentProvider.data.get(1).addDatum(SearchableData.Type.CONTENT,
+				"thing two");
 
 		search.index(INDEX_LOCATION);
-		
+
 		results = search.search("thing");
 		assertEquals(2, results.length);
 	}
-	
+
 	@Test
 	public void testBadSearch() {
 		contentProvider.data = new ArrayList<SearchableData>();
 
 		contentProvider.data.add(new SearchableData());
-		contentProvider.data.get(0).addDatum(SearchableData.Type.CONTENT, "thing one");
+		contentProvider.data.get(0).addDatum(SearchableData.Type.CONTENT,
+				"thing one");
 
 		SearchEngine search = new SearchEngine(contentProvider);
 		search.index(INDEX_LOCATION);
@@ -223,7 +232,7 @@ public class SeachEngineTest {
 		} catch (SearchException e) {
 			assertEquals("Bad search string", e.getMessage());
 		}
-		
+
 		try {
 			search.search("");
 			fail();
@@ -238,7 +247,7 @@ public class SeachEngineTest {
 			assertEquals("Bad search string", e.getMessage());
 		}
 	}
-	
+
 	private static class ContentProviderStub implements IContentProvider {
 		private List<SearchableData> data;
 		private boolean isGetDataCalled;

@@ -19,7 +19,7 @@ public class BibleSearchTest {
 	public void setUp() {
 		service = new BibleStudyServiceStub();
 	}
-	
+
 	@Test
 	public void testUsageDisplaysWhenNullIsGiven() {
 		ByteArrayOutputStream testOut = new ByteArrayOutputStream();
@@ -81,7 +81,7 @@ public class BibleSearchTest {
 		String output = new String(testOut.toByteArray());
 		assertEquals("", output);
 	}
-	
+
 	@Test
 	public void testSendQueryToRefServiceCall() {
 		ByteArrayOutputStream testOut = new ByteArrayOutputStream();
@@ -99,13 +99,13 @@ public class BibleSearchTest {
 		ByteArrayOutputStream testOut = new ByteArrayOutputStream();
 		PrintStream out = new PrintStream(testOut);
 		String[] args = new String[] { "-note", "something", "else" };
-		
+
 		BibleSearch search = new BibleSearch(service);
 		assertNull(service.noteQuery);
 		search.execute(args, out);
 		assertEquals("something else", service.noteQuery);
 	}
-	
+
 	private static class BibleStudyServiceStub implements BibleStudyService {
 		private String refQuery;
 		private String noteQuery;

@@ -15,7 +15,7 @@ public class BibleVerseProviderTest {
 	public void setUp() {
 		bibleDao = new BibleDaoStub();
 	}
-	
+
 	@Test
 	public void testGetData() {
 		IContentProvider provider = new BibleVerseProvider(bibleDao);

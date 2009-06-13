@@ -23,7 +23,7 @@ public class BibleDao implements IBibleDao {
 		allVerses.add(verse2);
 		allVerses.add(verse3);
 	}
-	
+
 	public List<Verse> getAllVerses() {
 		return allVerses;
 	}

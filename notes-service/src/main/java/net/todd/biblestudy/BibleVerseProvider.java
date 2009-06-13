@@ -12,7 +12,7 @@ public class BibleVerseProvider implements IContentProvider {
 	public BibleVerseProvider(IBibleDao bibleDao) {
 		this.bibleDao = bibleDao;
 	}
-	
+
 	public List<SearchableData> getData() {
 		List<SearchableData> data = new ArrayList<SearchableData>();
 
@@ -20,7 +20,9 @@ public class BibleVerseProvider implements IContentProvider {
 		if (allVerses != null) {
 			for (Verse verse : allVerses) {
 				SearchableData datum = new SearchableData();
-				datum.addDatum(SearchableData.Type.ID, verse.getId().toString());
+				datum
+						.addDatum(SearchableData.Type.ID, verse.getId()
+								.toString());
 				datum.addDatum(SearchableData.Type.CONTENT, verse.getContent());
 				data.add(datum);
 			}
