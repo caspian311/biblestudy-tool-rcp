@@ -3,7 +3,7 @@ package net.todd.biblestudy.client;
 import java.net.MalformedURLException;
 
 import net.todd.biblestudy.BibleStudyService;
-import net.todd.biblestudy.Verse;
+import net.todd.biblestudy.BibleVerse;
 import net.todd.biblestudy.cli.Note;
 
 import org.codehaus.xfire.client.XFireProxyFactory;
@@ -25,7 +25,7 @@ public class BibleStudyClient implements BibleStudyService {
 		}
 	}
 
-	public Verse[] searchForReference(String query) {
+	public BibleVerse[] searchForReference(String query) {
 		return service.searchForReference(query);
 	}
 

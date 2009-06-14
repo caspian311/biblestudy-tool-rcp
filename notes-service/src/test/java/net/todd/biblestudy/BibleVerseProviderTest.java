@@ -3,6 +3,7 @@ package net.todd.biblestudy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -27,9 +28,9 @@ public class BibleVerseProviderTest {
 	private static class BibleDaoStub implements IBibleDao {
 		private boolean allVersesCalled;
 
-		public List<Verse> getAllVerses() {
+		public List<BibleVerse> getAllVerses() {
 			allVersesCalled = true;
-			return null;
+			return new ArrayList<BibleVerse>();
 		}
 	}
 }

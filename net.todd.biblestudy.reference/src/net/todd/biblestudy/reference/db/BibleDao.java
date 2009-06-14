@@ -7,9 +7,7 @@ import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.Reference;
 
-public class BibleDao extends BaseDao implements IBibleDao
-{
-	@SuppressWarnings("unchecked")
+public class BibleDao extends BaseDao implements IBibleDao {
 	/**
 	 * perform keyword search on database
 	 * 
@@ -17,16 +15,14 @@ public class BibleDao extends BaseDao implements IBibleDao
 	 *            keyword to search on
 	 * @return List<BibleVerse> search results
 	 */
-	public List<BibleVerse> keywordLookup(String keyword) throws BiblestudyException
-	{
+	@SuppressWarnings("unchecked")
+	public List<BibleVerse> keywordLookup(String keyword)
+			throws BiblestudyException {
 		List<BibleVerse> results = null;
 
-		try
-		{
+		try {
 			results = getSqlMapConfig().queryForList("keywordLookup", keyword);
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new BiblestudyException(e.getMessage(), e);
 		}
 
@@ -41,18 +37,15 @@ public class BibleDao extends BaseDao implements IBibleDao
 	 * @throws BiblestudyException
 	 */
 	@SuppressWarnings("unchecked")
-	public List<BibleVerse> referenceLookup(Reference reference) throws BiblestudyException
-	{
+	public List<BibleVerse> referenceLookup(Reference reference)
+			throws BiblestudyException {
 		List<BibleVerse> result = null;
 
-		if (reference != null)
-		{
-			try
-			{
-				result = getSqlMapConfig().queryForList("referenceLookup", reference);
-			}
-			catch (SQLException e)
-			{
+		if (reference != null) {
+			try {
+				result = getSqlMapConfig().queryForList("referenceLookup",
+						reference);
+			} catch (SQLException e) {
 				throw new BiblestudyException(e.getMessage(), e);
 			}
 		}
@@ -60,22 +53,18 @@ public class BibleDao extends BaseDao implements IBibleDao
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	/**
 	 * get all Bible versions from the database
 	 * 
 	 * @return List<String> results
 	 */
-	public List<String> listAllVersions() throws BiblestudyException
-	{
+	@SuppressWarnings("unchecked")
+	public List<String> listAllVersions() throws BiblestudyException {
 		List<String> result = null;
 
-		try
-		{
+		try {
 			result = getSqlMapConfig().queryForList("listAllVersions");
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new BiblestudyException(e.getMessage(), e);
 		}
 

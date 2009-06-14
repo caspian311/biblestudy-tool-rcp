@@ -1,30 +1,47 @@
 package net.todd.biblestudy;
 
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BibleDao implements IBibleDao {
-	private final List<Verse> allVerses = new ArrayList<Verse>();
+public class BibleDao extends BaseDao implements IBibleDao {
+	private static boolean isInitialized;
 
-	public BibleDao() {
-		Verse verse1 = new Verse();
-		verse1.setId(1);
-		verse1.setContent("For God so loved the world...");
+	private void load() throws Exception {
+		if (!isInitialized) {
+			Connection connection = getSqlMapConfig().getDataSource()
+					.getConnection();
+			SqlImporter sqlImporter = new SqlImporter(connection,
+					new SqlBatchCreator());
 
-		Verse verse2 = new Verse();
-		verse2.setId(2);
-		verse2.setContent("I can do all things through Christ...");
+			InputStream ddl = getClass().getResourceAsStream("/bible.script");
+			sqlImporter.processSQLFile(ddl);
 
-		Verse verse3 = new Verse();
-		verse3.setId(3);
-		verse3.setContent("Greater is He that is within me...");
+			InputStream content = getClass()
+					.getResourceAsStream("/content.sql");
+			sqlImporter.processSQLFile(content);
 
-		allVerses.add(verse1);
-		allVerses.add(verse2);
-		allVerses.add(verse3);
+			isInitialized = true;
+		}
 	}
 
-	public List<Verse> getAllVerses() {
+	@SuppressWarnings("unchecked")
+	public List<BibleVerse> getAllVerses() throws DataException {
+		try {
+			load();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		List<BibleVerse> allVerses = new ArrayList<BibleVerse>();
+
+		try {
+			allVerses.addAll(getSqlMapConfig().queryForList("allVerses"));
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
 		return allVerses;
 	}
 }

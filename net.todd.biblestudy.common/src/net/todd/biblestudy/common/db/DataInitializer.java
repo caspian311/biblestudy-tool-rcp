@@ -16,33 +16,26 @@ import java.util.StringTokenizer;
 
 import net.todd.biblestudy.common.BiblestudyException;
 
-public class DataInitializer
-{
+public class DataInitializer {
 	private final Connection connection;
 
-	public DataInitializer(Connection connection)
-	{
+	public DataInitializer(Connection connection) {
 		this.connection = connection;
 	}
 
-	public void processSQLFile(File file) throws BiblestudyException
-	{
+	public void processSQLFile(File file) throws BiblestudyException {
 		InputStream resource = null;
 
-		try
-		{
+		try {
 			resource = new FileInputStream(file);
-		}
-		catch (FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw new BiblestudyException(e);
 		}
 
 		processSQLFile(resource);
 	}
 
-	public void processSQLFile(InputStream resource) throws BiblestudyException
-	{
+	public void processSQLFile(InputStream resource) throws BiblestudyException {
 		String sql = getSQLFromFile(resource);
 
 		List<String> batchQueries = createBatchQueries(sql);
@@ -50,36 +43,31 @@ public class DataInitializer
 		doSQL(batchQueries);
 	}
 
-	private String getSQLFromFile(InputStream resource) throws BiblestudyException
-	{
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource));
+	private String getSQLFromFile(InputStream resource)
+			throws BiblestudyException {
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(resource));
 
 		String line = null;
 
 		StringBuffer textBuffer = new StringBuffer();
 
-		try
-		{
-			while ((line = bufferedReader.readLine()) != null)
-			{
-				if (line.startsWith("--") == false)
-				{
+		try {
+			while ((line = bufferedReader.readLine()) != null) {
+				if (line.startsWith("--") == false) {
 					String newLine = fixTicks(line);
 
 					textBuffer.append(newLine).append("\n");
 				}
 			}
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new BiblestudyException(e.getMessage(), e);
 		}
 
 		return textBuffer.toString();
 	}
 
-	private String fixTicks(String line)
-	{
+	private String fixTicks(String line) {
 		int first = line.indexOf("'");
 		int second = line.indexOf("'", first + 1);
 		int third = line.indexOf("'", second + 1);
@@ -98,18 +86,14 @@ public class DataInitializer
 		return newLine;
 	}
 
-	private void doSQL(List<String> batchQueries) throws BiblestudyException
-	{
-		try
-		{
-			if (connection != null)
-			{
+	private void doSQL(List<String> batchQueries) throws BiblestudyException {
+		try {
+			if (connection != null) {
 				connection.setAutoCommit(false);
 
 				Statement statement = null;
 
-				for (String queryToExecute : batchQueries)
-				{
+				for (String queryToExecute : batchQueries) {
 					statement = connection.createStatement();
 					statement.execute(queryToExecute);
 					statement.close();
@@ -117,48 +101,35 @@ public class DataInitializer
 
 				connection.commit();
 			}
-		}
-		catch (SQLException e)
-		{
-			try
-			{
+		} catch (SQLException e) {
+			try {
 				connection.rollback();
-			}
-			catch (SQLException e1)
-			{
+			} catch (SQLException e1) {
 				throw new BiblestudyException(e.getMessage(), e);
 			}
 
 			throw new BiblestudyException(e.getMessage(), e);
-		}
-		finally
-		{
-			if (connection != null)
-			{
-				try
-				{
+		} finally {
+			if (connection != null) {
+				try {
 					connection.close();
-				}
-				catch (SQLException e)
-				{
+				} catch (SQLException e) {
 					throw new BiblestudyException(e.getMessage(), e);
 				}
 			}
 		}
 	}
 
-	private List<String> createBatchQueries(String sql)
-	{
+	private List<String> createBatchQueries(String sql) {
 		List<String> batchQueries = new ArrayList<String>();
 
 		StringTokenizer tokenizer = new StringTokenizer(sql, "\n");
 		StringBuffer query = new StringBuffer();
-		while (tokenizer.hasMoreTokens())
-		{
+		while (tokenizer.hasMoreTokens()) {
 			query = query.append(tokenizer.nextToken());
-			if (query.charAt(query.length() - 1) == ';')
-			{
-				String queryToExecute = query.toString().substring(0, query.length() - 1);
+			if (query.charAt(query.length() - 1) == ';') {
+				String queryToExecute = query.toString().substring(0,
+						query.length() - 1);
 
 				batchQueries.add(queryToExecute);
 

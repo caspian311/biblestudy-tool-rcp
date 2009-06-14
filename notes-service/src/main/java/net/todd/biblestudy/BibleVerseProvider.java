@@ -16,16 +16,17 @@ public class BibleVerseProvider implements IContentProvider {
 	public List<SearchableData> getData() {
 		List<SearchableData> data = new ArrayList<SearchableData>();
 
-		List<Verse> allVerses = bibleDao.getAllVerses();
-		if (allVerses != null) {
-			for (Verse verse : allVerses) {
-				SearchableData datum = new SearchableData();
-				datum
-						.addDatum(SearchableData.Type.ID, verse.getId()
-								.toString());
-				datum.addDatum(SearchableData.Type.CONTENT, verse.getContent());
-				data.add(datum);
-			}
+		List<BibleVerse> allVerses;
+		try {
+			allVerses = bibleDao.getAllVerses();
+		} catch (DataException e) {
+			throw new RuntimeException(e);
+		}
+		for (BibleVerse verse : allVerses) {
+			SearchableData datum = new SearchableData();
+			datum.addDatum(SearchableData.Type.ID, verse.getVerse().toString());
+			datum.addDatum(SearchableData.Type.CONTENT, verse.getText());
+			data.add(datum);
 		}
 
 		return data;

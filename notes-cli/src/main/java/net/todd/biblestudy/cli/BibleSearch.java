@@ -3,7 +3,7 @@ package net.todd.biblestudy.cli;
 import java.io.PrintStream;
 
 import net.todd.biblestudy.BibleStudyService;
-import net.todd.biblestudy.Verse;
+import net.todd.biblestudy.BibleVerse;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -34,7 +34,7 @@ public class BibleSearch {
 			printUsage(out);
 		} else if ("-ref".equals(args[0])) {
 			if (service != null) {
-				Verse[] references = service
+				BibleVerse[] references = service
 						.searchForReference(mergeToQueryStr(args));
 				printVerses(references, out);
 			}
@@ -47,9 +47,9 @@ public class BibleSearch {
 		}
 	}
 
-	private void printVerses(Verse[] verses, PrintStream out) {
-		for (Verse verse : verses) {
-			out.println(verse.getId() + " : " + verse.getContent());
+	private void printVerses(BibleVerse[] verses, PrintStream out) {
+		for (BibleVerse verse : verses) {
+			out.println(verse.getVerse() + " : " + verse.getText());
 		}
 	}
 

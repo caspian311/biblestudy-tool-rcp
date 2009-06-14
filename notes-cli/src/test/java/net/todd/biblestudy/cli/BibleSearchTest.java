@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import net.todd.biblestudy.BibleStudyService;
-import net.todd.biblestudy.Verse;
+import net.todd.biblestudy.BibleVerse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -110,9 +110,9 @@ public class BibleSearchTest {
 		private String refQuery;
 		private String noteQuery;
 
-		public Verse[] searchForReference(String query) {
+		public BibleVerse[] searchForReference(String query) {
 			this.refQuery = query;
-			return null;
+			return new BibleVerse[] {};
 		}
 
 		public Note[] searchForNote(String query) {

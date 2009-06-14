@@ -19,8 +19,8 @@ public class BibleStudyServiceImpl implements BibleStudyService {
 	}
 
 	@WebMethod
-	public Verse[] searchForReference(String query) {
-		Verse[] results = null;
+	public BibleVerse[] searchForReference(String query) {
+		BibleVerse[] results = null;
 		try {
 			results = convertToVerses(search.search(query));
 		} catch (SearchException e) {
@@ -29,12 +29,12 @@ public class BibleStudyServiceImpl implements BibleStudyService {
 		return results;
 	}
 
-	private Verse[] convertToVerses(SearchResult[] search) {
-		Verse[] verses = new Verse[search.length];
+	private BibleVerse[] convertToVerses(SearchResult[] search) {
+		BibleVerse[] verses = new BibleVerse[search.length];
 		for (int i = 0; i < search.length; i++) {
 			SearchResult result = search[i];
-			Verse verse = new Verse();
-			verse.setContent(result.getTitle());
+			BibleVerse verse = new BibleVerse();
+			verse.setText(result.getTitle());
 			verses[i] = verse;
 		}
 		return verses;
