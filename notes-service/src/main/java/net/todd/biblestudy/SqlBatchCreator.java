@@ -20,6 +20,8 @@ public class SqlBatchCreator implements ISqlBatchCreator {
 				batchQueries.add(queryToExecute);
 
 				query = new StringBuffer();
+			} else {
+				query.append(" ");
 			}
 		}
 

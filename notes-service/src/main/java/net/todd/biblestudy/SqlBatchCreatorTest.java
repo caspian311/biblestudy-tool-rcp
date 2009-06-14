@@ -11,7 +11,7 @@ public class SqlBatchCreatorTest {
 	@Test
 	public void testCreationOfBatchSqlScripts() throws Exception {
 		String content = IOUtils.toString(getClass().getResourceAsStream(
-				"/bible.script"));
+				"/db.script"));
 		SqlBatchCreator sqlBatchCreator = new SqlBatchCreator();
 		List<String> createBatchQueries = sqlBatchCreator
 				.createBatchQueries(content);
