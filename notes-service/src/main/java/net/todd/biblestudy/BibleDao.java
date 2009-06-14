@@ -16,9 +16,6 @@ public class BibleDao extends BaseDao implements IBibleDao {
 			SqlImporter sqlImporter = new SqlImporter(connection,
 					new SqlBatchCreator());
 
-			InputStream ddl = getClass().getResourceAsStream("/bible.script");
-			sqlImporter.processSQLFile(ddl);
-
 			InputStream content = getClass()
 					.getResourceAsStream("/content.sql");
 			sqlImporter.processSQLFile(content);
