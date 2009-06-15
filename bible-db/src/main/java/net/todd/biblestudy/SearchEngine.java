@@ -20,7 +20,7 @@ import org.apache.lucene.store.LockObtainFailedException;
 
 import com.google.inject.Inject;
 
-public class SearchEngine {
+public class SearchEngine implements ISearchEngine {
 	private static final String DEFAULT_INDEX_LOCATION = "/opt/lucene/index";
 	private final IContentProvider contentProvider;
 	private String indexLocation;
