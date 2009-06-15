@@ -27,6 +27,11 @@ public class BibleLookup implements IBibleLookup {
 
 	private BibleVerse[] convertToVerses(SearchResult[] results) {
 		BibleVerse[] verses = new BibleVerse[results.length];
+		for (int i = 0; i < results.length; i++) {
+			BibleVerse verse = new BibleVerse();
+			verse.setText(results[i].getTitle());
+			verses[i] = verse;
+		}
 		return verses;
 	}
 }
