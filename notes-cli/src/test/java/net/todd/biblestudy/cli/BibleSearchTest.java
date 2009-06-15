@@ -6,25 +6,26 @@ import static org.junit.Assert.assertNull;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import net.todd.biblestudy.BibleStudyService;
 import net.todd.biblestudy.BibleVerse;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class BibleSearchTest {
-	private BibleStudyServiceStub service;
+	private BibleLookupStub bibleLookup;
+	private NoteLookupStub noteLookup;
 
 	@Before
 	public void setUp() {
-		service = new BibleStudyServiceStub();
+		bibleLookup = new BibleLookupStub();
+		noteLookup = new NoteLookupStub();
 	}
 
 	@Test
 	public void testUsageDisplaysWhenNullIsGiven() {
 		ByteArrayOutputStream testOut = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(testOut);
-		new BibleSearch(null).execute(null, ps);
+		new BibleSearch(null, null).execute(null, ps);
 
 		String output = new String(testOut.toByteArray());
 
@@ -38,7 +39,7 @@ public class BibleSearchTest {
 		ByteArrayOutputStream testOut = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(testOut);
 		String[] args = new String[0];
-		new BibleSearch(null).execute(args, ps);
+		new BibleSearch(null, null).execute(args, ps);
 
 		String output = new String(testOut.toByteArray());
 
@@ -52,7 +53,7 @@ public class BibleSearchTest {
 		ByteArrayOutputStream testOut = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(testOut);
 		String[] args = new String[] { "blah blah" };
-		new BibleSearch(null).execute(args, ps);
+		new BibleSearch(null, null).execute(args, ps);
 		String output = new String(testOut.toByteArray());
 
 		assertEquals(
@@ -65,7 +66,7 @@ public class BibleSearchTest {
 		ByteArrayOutputStream testOut = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(testOut);
 		String[] args = new String[] { "-ref", "something" };
-		new BibleSearch(null).execute(args, ps);
+		new BibleSearch(null, null).execute(args, ps);
 
 		String output = new String(testOut.toByteArray());
 		assertEquals("", output);
@@ -76,7 +77,7 @@ public class BibleSearchTest {
 		ByteArrayOutputStream testOut = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(testOut);
 		String[] args = new String[] { "-note", "something", "else" };
-		new BibleSearch(null).execute(args, ps);
+		new BibleSearch(null, null).execute(args, ps);
 
 		String output = new String(testOut.toByteArray());
 		assertEquals("", output);
@@ -88,10 +89,10 @@ public class BibleSearchTest {
 		PrintStream out = new PrintStream(testOut);
 		String[] args = new String[] { "-ref", "something", "else" };
 
-		BibleSearch search = new BibleSearch(service);
-		assertNull(service.refQuery);
+		BibleSearch search = new BibleSearch(bibleLookup, noteLookup);
+		assertNull(bibleLookup.refQuery);
 		search.execute(args, out);
-		assertEquals("something else", service.refQuery);
+		assertEquals("something else", bibleLookup.refQuery);
 	}
 
 	@Test
@@ -100,20 +101,24 @@ public class BibleSearchTest {
 		PrintStream out = new PrintStream(testOut);
 		String[] args = new String[] { "-note", "something", "else" };
 
-		BibleSearch search = new BibleSearch(service);
-		assertNull(service.noteQuery);
+		BibleSearch search = new BibleSearch(null, noteLookup);
+		assertNull(noteLookup.noteQuery);
 		search.execute(args, out);
-		assertEquals("something else", service.noteQuery);
+		assertEquals("something else", noteLookup.noteQuery);
 	}
 
-	private static class BibleStudyServiceStub implements BibleStudyService {
+	private static class BibleLookupStub implements IBibleLookup {
 		private String refQuery;
-		private String noteQuery;
 
 		public BibleVerse[] searchForReference(String query) {
 			this.refQuery = query;
 			return new BibleVerse[] {};
 		}
+
+	}
+
+	private static class NoteLookupStub implements INoteLookup {
+		private String noteQuery;
 
 		public Note[] searchForNote(String query) {
 			this.noteQuery = query;

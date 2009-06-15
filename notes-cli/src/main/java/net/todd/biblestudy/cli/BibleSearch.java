@@ -2,7 +2,6 @@ package net.todd.biblestudy.cli;
 
 import java.io.PrintStream;
 
-import net.todd.biblestudy.BibleStudyService;
 import net.todd.biblestudy.BibleVerse;
 
 import com.google.inject.Guice;
@@ -10,11 +9,13 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class BibleSearch {
-	private final BibleStudyService service;
+	private final IBibleLookup bibleLookup;
+	private final INoteLookup noteLookup;
 
 	@Inject
-	public BibleSearch(BibleStudyService service) {
-		this.service = service;
+	public BibleSearch(IBibleLookup service, INoteLookup noteLookup) {
+		this.bibleLookup = service;
+		this.noteLookup = noteLookup;
 	}
 
 	private void printUsage(PrintStream out) {
@@ -33,14 +34,14 @@ public class BibleSearch {
 		if (args == null || args.length < 2) {
 			printUsage(out);
 		} else if ("-ref".equals(args[0])) {
-			if (service != null) {
-				BibleVerse[] references = service
+			if (bibleLookup != null) {
+				BibleVerse[] references = bibleLookup
 						.searchForReference(mergeToQueryStr(args));
 				printVerses(references, out);
 			}
 		} else if ("-note".equals(args[0])) {
-			if (service != null) {
-				service.searchForNote(mergeToQueryStr(args));
+			if (noteLookup != null) {
+				noteLookup.searchForNote(mergeToQueryStr(args));
 			}
 		} else {
 			printUsage(out);

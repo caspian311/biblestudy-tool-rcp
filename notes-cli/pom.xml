@@ -15,7 +15,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.todd.biblestudy</groupId>
-			<artifactId>notes-client</artifactId>
+			<artifactId>bible-db</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
