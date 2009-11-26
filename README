@@ -1,0 +1,23 @@
+
+--------------------------------------------------------------------------------
+                                 Information
+--------------------------------------------------------------------------------
+
+Biblestudy-Tool is used to do quick look-ups and note taking with references to 
+the scriptures.
+
+--------------------------------------------------------------------------------
+                                 Requirements
+--------------------------------------------------------------------------------
+
+This needs MySQL server installed and running when the app starts up.  Derby is
+used for the Bible text but MySQL is used for the Notes.  I'd like to remove 
+that dependency, but for now, just have MySQL installed and running when .
+
+--------------------------------------------------------------------------------
+                                 Installation
+--------------------------------------------------------------------------------
+
+1. Open the projects in Eclipse.
+2. Set your target platform to the one provided.
+3. Do an export to whatever platform you need.
