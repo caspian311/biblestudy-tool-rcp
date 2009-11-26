@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Nasb Plug-in
 Bundle-SymbolicName: net.todd.biblestudy.reference.nasb;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 0.0.1
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  net.todd.biblestudy.reference

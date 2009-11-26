@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bible Study Tool
 Bundle-SymbolicName: net.todd.biblestudy.rcp;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 0.0.1
 Bundle-Activator: net.todd.biblestudy.rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
