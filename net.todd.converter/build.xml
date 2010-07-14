@@ -6,7 +6,7 @@
 
 	<target name="clean">
 		<delete dir="${build.dir}" />
-		<delete dir="${build.dir}/dist" />
+		<delete dir="${dist.dir}" />
 	</target>
 
 	<target name="init" depends="clean">
