@@ -12,6 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ConverterTest {
+	private static final String SQL_PREFIX = "INSERT INTO BIBLE ("
+			+ ColumnNames.VERSION + ", " + ColumnNames.BOOK + ", "
+			+ ColumnNames.CHAPTER + ", " + ColumnNames.VERSE + ", "
+			+ ColumnNames.TEXT + ", " + ColumnNames.ORDER_ID + ") VALUES (";
 	private Converter testObject;
 
 	@Before
@@ -28,9 +32,7 @@ public class ConverterTest {
 		assertNotNull(newLine);
 		assertEquals("Genesis", newLine.getBook());
 		assertEquals(
-				"INSERT INTO BIBLE ("
-						+ "BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID"
-						+ ") VALUES ("
+				SQL_PREFIX
 						+ "'NASB', 'Genesis', 1, 1, 'In the beginning God created the heavens and the earth.', 1"
 						+ ");", newLine.getSql());
 	}
@@ -43,9 +45,7 @@ public class ConverterTest {
 		assertNotNull(newLine);
 		assertEquals("Song of Solomon", newLine.getBook());
 		assertEquals(
-				"INSERT INTO BIBLE ("
-						+ "BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID"
-						+ ") VALUES ("
+				SQL_PREFIX
 						+ "'NASB', 'Song of Solomon', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 1"
 						+ ");", newLine.getSql());
 	}
@@ -57,12 +57,9 @@ public class ConverterTest {
 
 		assertNotNull(newLine);
 		assertEquals("1 Chronicles", newLine.getBook());
-		assertEquals(
-				"INSERT INTO BIBLE ("
-						+ "BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID"
-						+ ") VALUES ("
-						+ "'NASB', '1 Chronicles', 1, 1, 'Adam, Seth, Enosh,', 1"
-						+ ");", newLine.getSql());
+		assertEquals(SQL_PREFIX
+				+ "'NASB', '1 Chronicles', 1, 1, 'Adam, Seth, Enosh,', 1"
+				+ ");", newLine.getSql());
 	}
 
 	@Test
@@ -89,13 +86,16 @@ public class ConverterTest {
 		List<String> listOfVerses = sqlLines.get("Genesis");
 		assertEquals(10, listOfVerses.size());
 
-		String line1 = "INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Genesis', 1, 4, 'God saw that the light was good; and God separated the light from the darkness.', 1);";
+		String line1 = SQL_PREFIX
+				+ "'NASB', 'Genesis', 1, 4, 'God saw that the light was good; and God separated the light from the darkness.', 1);";
 		assertEquals(line1, listOfVerses.get(0));
 
-		String line2 = "INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Genesis', 1, 5, 'God called the light day, and the darkness He called night. And there was evening and there was morning, one day.', 2);";
+		String line2 = SQL_PREFIX
+				+ "'NASB', 'Genesis', 1, 5, 'God called the light day, and the darkness He called night. And there was evening and there was morning, one day.', 2);";
 		assertEquals(line2, listOfVerses.get(1));
 
-		String line10 = "INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Genesis', 1, 13, 'There was evening and there was morning, a third day.', 10);";
+		String line10 = SQL_PREFIX
+				+ "'NASB', 'Genesis', 1, 13, 'There was evening and there was morning, a third day.', 10);";
 		assertEquals(line10, listOfVerses.get(9));
 	}
 
@@ -106,13 +106,16 @@ public class ConverterTest {
 
 		assertEquals(3, sqlLines.keySet().size());
 
-		String line1 = "INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Genesis', 1, 1, 'In the beginning God created the heavens and the earth.', 1);";
+		String line1 = SQL_PREFIX
+				+ "'NASB', 'Genesis', 1, 1, 'In the beginning God created the heavens and the earth.', 1);";
 		assertEquals(line1, sqlLines.get("Genesis").get(0));
 
-		String line2 = "INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', '1 Chronicles', 1, 1, 'Adam, Seth, Enosh,', 2);";
+		String line2 = SQL_PREFIX
+				+ "'NASB', '1 Chronicles', 1, 1, 'Adam, Seth, Enosh,', 2);";
 		assertEquals(line2, sqlLines.get("1 Chronicles").get(0));
 
-		String line3 = "INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES ('NASB', 'Song of Solomon', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 3);";
+		String line3 = SQL_PREFIX
+				+ "'NASB', 'Song of Solomon', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 3);";
 		assertEquals(line3, sqlLines.get("Song of Solomon").get(0));
 	}
 }

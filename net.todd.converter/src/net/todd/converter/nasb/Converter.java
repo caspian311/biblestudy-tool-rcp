@@ -97,7 +97,10 @@ public class Converter {
 			line = new ConvertedLineBean();
 
 			StringBuffer sb = new StringBuffer();
-			sb.append("INSERT INTO BIBLE (BIB_VERSION, BIB_BOOK, BIB_CHAPTER, BIB_VERSE, BIB_TEXT, BIB_SEQUENCE_ID) VALUES (");
+			sb.append("INSERT INTO BIBLE (" + ColumnNames.VERSION + ", "
+					+ ColumnNames.BOOK + ", " + ColumnNames.CHAPTER + ", "
+					+ ColumnNames.VERSE + ", " + ColumnNames.TEXT + ", "
+					+ ColumnNames.ORDER_ID + ") VALUES (");
 
 			addVersion(sb);
 
