@@ -1,0 +1,27 @@
+<project name="converter" default="convert" basedir=".">
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="resources.dir" value="${basedir}/resources" />
+	<property name="dist.dir" value="${basedir}/dist" />
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${build.dir}/dist" />
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" source="1.6" target="1.6" debug="true" />
+	</target>
+
+	<target name="convert" depends="compile">
+		<java classname="net.todd.converter.nasb.Converter">
+			<arg value="${resources.dir}/nasb.txt" />
+			<arg value="${dist.dir}" />
+			<classpath location="${build.dir}" />
+		</java>
+	</target>
+</project>
