@@ -23,7 +23,7 @@ public class ExportNotesModelTest
 	@Test
 	public void testGetAllNotes() throws Exception
 	{
-		ExportNotesModel model = new ExportNotesModel()
+		ExportNoteDialogsModel model = new ExportNoteDialogsModel()
 		{
 			@Override
 			INoteDao getNoteDao()
@@ -86,7 +86,7 @@ public class ExportNotesModelTest
 	@Test
 	public void testWhenSetNotesToBeExportedGrabAllLinksAssociatedWithThoseNotes() throws Exception
 	{
-		ExportNotesModel model = new ExportNotesModel()
+		ExportNoteDialogsModel model = new ExportNoteDialogsModel()
 		{
 			@Override
 			ILinkDao getLinkDao()
@@ -164,7 +164,7 @@ public class ExportNotesModelTest
 
 		try
 		{
-			ExportNotesModel model = new ExportNotesModel();
+			ExportNoteDialogsModel model = new ExportNoteDialogsModel();
 			model.setFileToExportTo(filename);
 			model.createTemporaryDirectory();
 
@@ -180,7 +180,7 @@ public class ExportNotesModelTest
 			boolean hasANote = false;
 			for (String child : new File(tempDir.getAbsolutePath() + "/" + fileList[0]).list())
 			{
-				if (child.startsWith(ExportNotesModel.NOTE_FILE_PREFIX))
+				if (child.startsWith(ExportNoteDialogsModel.NOTE_FILE_PREFIX))
 				{
 					hasANote = true;
 				}
@@ -194,7 +194,7 @@ public class ExportNotesModelTest
 			boolean hasALink = false;
 			for (String child : new File(tempDir.getAbsolutePath() + "/" + fileList[0]).list())
 			{
-				if (child.startsWith(ExportNotesModel.LINK_FILE_PREFIX))
+				if (child.startsWith(ExportNoteDialogsModel.LINK_FILE_PREFIX))
 				{
 					hasALink = true;
 				}

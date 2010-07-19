@@ -2,105 +2,33 @@ package net.todd.biblestudy.db;
 
 import java.util.Date;
 
-public class Note
-{
-	private Integer noteId;
-	private String name;
-	private String text;
-	private Date createdTimestamp;
-	private Date lastModified;
+import net.java.ao.Entity;
+import net.java.ao.OneToMany;
 
-	public Integer getNoteId()
-	{
-		return noteId;
-	}
+public interface Note extends Entity {
+	int getNoteId();
 
-	public void setNoteId(Integer noteId)
-	{
-		this.noteId = noteId;
-	}
+	void setNoteId(int noteId);
 
-	public String getName()
-	{
-		return name;
-	}
+	String getName();
 
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+	void setName(String name);
 
-	public String getText()
-	{
-		return text;
-	}
+	String getText();
 
-	public void setText(String text)
-	{
-		this.text = text;
-	}
+	void setText(String text);
 
-	public Date getLastModified()
-	{
-		return lastModified;
-	}
+	Date getLastModified();
 
-	public void setLastModified(Date lastModified)
-	{
-		this.lastModified = lastModified;
-	}
+	void setLastModified(Date lastModified);
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		boolean isEqual = false;
+	Date getCreatedTimestamp();
 
-		if (obj instanceof Note)
-		{
-			Note that = (Note) obj;
+	void setCreatedTimestamp(Date createdTimestamp);
 
-			if (this.noteId == null ? that.noteId == null : this.noteId.equals(that.noteId))
-			{
-				if (this.name == null ? that.name == null : this.name.equals(that.name))
-				{
-					if (this.text == null ? that.text == null : this.text.equals(that.text))
-					{
-						isEqual = true;
-					}
-				}
-			}
-		}
+	@OneToMany
+	Link[] getLinks();
 
-		return isEqual;
-	}
-
-	public Date getCreatedTimestamp()
-	{
-		return createdTimestamp;
-	}
-
-	public void setCreatedTimestamp(Date createdTimestamp)
-	{
-		this.createdTimestamp = createdTimestamp;
-	}
-
-	@Override
-	public String toString()
-	{
-		String myText = "";
-
-		if (text != null)
-		{
-			if (text.length() > 10)
-			{
-				myText = text.substring(0, 10) + "...";
-			}
-			else
-			{
-				myText = text;
-			}
-		}
-
-		return noteId + " : " + name + " - " + myText;
-	}
+	@OneToMany
+	void setLinks(Link[] links);
 }

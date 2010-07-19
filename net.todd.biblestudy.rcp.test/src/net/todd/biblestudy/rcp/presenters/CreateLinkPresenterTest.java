@@ -11,7 +11,7 @@ import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.models.INoteModel;
-import net.todd.biblestudy.rcp.views.ICreateLinkDialog;
+import net.todd.biblestudy.rcp.views.ICreateLinkDialogView;
 import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.Reference;
@@ -38,7 +38,7 @@ public class CreateLinkPresenterTest
 	@Test
 	public void testCreateThePresenter() throws Exception
 	{
-		new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView, mockNoteModel, false);
+		new CreateLinkToDialogPresenter(mockCreateLinkDialog, mockNoteView, mockNoteModel, false);
 		assertTrue(mockCreateLinkDialog.wasListenerAdded());
 		assertTrue(mockCreateLinkDialog.wasDialogOpened());
 	}
@@ -46,7 +46,7 @@ public class CreateLinkPresenterTest
 	@Test
 	public void testHandleDialogOpened() throws Exception
 	{
-		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
+		ICreateLinkListener presenter = new CreateLinkToDialogPresenter(mockCreateLinkDialog, mockNoteView,
 				mockNoteModel, false);
 
 		mockNoteView.setSelectedText("woot");
@@ -61,7 +61,7 @@ public class CreateLinkPresenterTest
 	@Test
 	public void testHandleDialogClosed() throws Exception
 	{
-		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
+		ICreateLinkListener presenter = new CreateLinkToDialogPresenter(mockCreateLinkDialog, mockNoteView,
 				mockNoteModel, false);
 		assertTrue(mockCreateLinkDialog.wasListenerAdded());
 		presenter.handleCreateLinkEvent(new ViewEvent(ViewEvent.CREATE_LINK_DIALOG_CLOSED));
@@ -71,7 +71,7 @@ public class CreateLinkPresenterTest
 	@Test
 	public void testHandleDoCreateLinkToNote() throws Exception
 	{
-		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
+		ICreateLinkListener presenter = new CreateLinkToDialogPresenter(mockCreateLinkDialog, mockNoteView,
 				mockNoteModel, false);
 
 		assertTrue(mockCreateLinkDialog.wasDialogOpened());
@@ -102,7 +102,7 @@ public class CreateLinkPresenterTest
 	@Test
 	public void testHandleDoCreateLinkToReference() throws Exception
 	{
-		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
+		ICreateLinkListener presenter = new CreateLinkToDialogPresenter(mockCreateLinkDialog, mockNoteView,
 				mockNoteModel, false);
 
 		assertTrue(mockCreateLinkDialog.wasDialogOpened());
@@ -135,7 +135,7 @@ public class CreateLinkPresenterTest
 	@Test
 	public void testValidateReference() throws Exception
 	{
-		ICreateLinkListener presenter = new CreateLinkPresenter(mockCreateLinkDialog, mockNoteView,
+		ICreateLinkListener presenter = new CreateLinkToDialogPresenter(mockCreateLinkDialog, mockNoteView,
 				mockNoteModel, false);
 
 		mockCreateLinkDialog.setLinkText(null);
@@ -268,7 +268,7 @@ public class CreateLinkPresenterTest
 		{
 		}
 
-		public String getContentText()
+		public String getContent()
 		{
 			return null;
 		}
@@ -283,7 +283,7 @@ public class CreateLinkPresenterTest
 			return null;
 		}
 
-		public List<BibleVerse> getDroppedVerse()
+		public List<BibleVerse> getDroppedVerses()
 		{
 			return null;
 		}
@@ -300,7 +300,7 @@ public class CreateLinkPresenterTest
 			selectedText = string;
 		}
 
-		public String getSelectedText()
+		public String getSelectedContent()
 		{
 			return selectedText;
 		}
@@ -322,7 +322,7 @@ public class CreateLinkPresenterTest
 			return 0;
 		}
 
-		public void openDropReferenceOptions(int x, int y)
+		public void showDropReferenceMenu(int x, int y)
 		{
 		}
 
@@ -342,7 +342,7 @@ public class CreateLinkPresenterTest
 		{
 		}
 
-		public void setContentText(String text)
+		public void setContent(String text)
 		{
 		}
 
@@ -359,7 +359,7 @@ public class CreateLinkPresenterTest
 		}
 	}
 
-	private class MockCreateLinkDialog implements ICreateLinkDialog
+	private class MockCreateLinkDialog implements ICreateLinkDialogView
 	{
 		private boolean listenerAdded = false;
 
@@ -414,7 +414,7 @@ public class CreateLinkPresenterTest
 			return selectedText;
 		}
 
-		public void setSelectedLinkText(String selectionText)
+		public void setLinkText(String selectionText)
 		{
 			this.selectedText = selectionText;
 		}

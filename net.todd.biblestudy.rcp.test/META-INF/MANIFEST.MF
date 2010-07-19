@@ -5,3 +5,4 @@ Bundle-SymbolicName: net.todd.biblestudy.rcp.test
 Bundle-Version: 0.0.1
 Fragment-Host: net.todd.biblestudy.rcp;bundle-version="0.0.1"
 Require-Bundle: org.junit4
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

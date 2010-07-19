@@ -3,52 +3,58 @@ package net.todd.biblestudy.rcp.views;
 import java.util.List;
 
 import net.todd.biblestudy.db.NoteStyle;
-import net.todd.biblestudy.rcp.presenters.INoteViewListener;
 import net.todd.biblestudy.reference.BibleVerse;
 
 import org.eclipse.swt.graphics.Point;
 
-public interface INoteView
-{
-	public void addNoteViewListener(INoteViewListener noteListener);
+public interface INoteView {
+	void addNoteContentListener(IListener listener);
 
-	public void removeNoteViewListener(INoteViewListener noteListener);
+	void addCreateLinkListener(IListener listener);
 
-	public String getContentText();
+	void addCreateReferenceListener(IListener listener);
 
-	public void setContentText(String text);
+	void addRightClickListener(IListener listener);
 
-	public void setViewTitle(String title);
+	void addLeftClickListener(IListener listener);
 
-	public Point getLastClickedCoordinates();
+	void addMouseHoveringListener(IListener listener);
 
-	public void showRightClickPopup(int x, int y);
+	void addContentDroppedInListener(IListener listener);
 
-	public String getSelectedText();
+	void addInsertLinkToReferenceListener(IListener listener);
 
-	public Point getSelectionPoint();
+	void changeCursorToPointer();
 
-	public void saveNote();
+	void changeCursorToText();
 
-	public void deleteNote();
+	Point getLastClickedCoordinates();
 
-	public void closeView(String noteName);
+	int getCurrentCarretPosition();
 
-	public void replaceNoteStyles(List<NoteStyle> list);
+	void showRightClickPopup(int x, int y);
 
-	public void changeCursorToPointer();
+	void setContent(String content);
 
-	public void changeCursorToText();
+	String getContent();
 
-	public int getCurrentCarretPosition();
+	String getSelectedContent();
 
-	public List<BibleVerse> getDroppedVerse();
+	void replaceNoteStyles(List<NoteStyle> styleList);
 
-	public void openDropReferenceOptions(int x, int y);
+	void removeNoteStyles();
 
-	public Point getDropCoordinates();
+	void showDropReferenceMenu(int x, int y);
 
-	public void removeNoteStyles();
+	Point getDropCoordinates();
 
-	public int openDeleteConfirmationWindow();
+	List<BibleVerse> getDroppedVerses();
+
+	void addDropReferenceOptionListener(IListener listener);
+
+	void addDropReferenceWithTextListener(IListener listener);
+
+	Point getCurrentMouseLocation();
+
+	void setTitle(String title);
 }

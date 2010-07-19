@@ -6,5 +6,5 @@ public interface ColumnNames {
 	final String CHAPTER = "chapter";
 	final String BOOK = "book";
 	final String VERSION = "version";
-	final String ORDER_ID = "order_id";
+	final String ORDER_ID = "orderId";
 }

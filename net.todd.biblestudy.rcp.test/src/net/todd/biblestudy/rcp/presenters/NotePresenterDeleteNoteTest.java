@@ -66,7 +66,7 @@ public class NotePresenterDeleteNoteTest
 			selectionText = text;
 		}
 
-		public String getSelectedText()
+		public String getSelectedContent()
 		{
 			return selectionText;
 		}
@@ -85,12 +85,12 @@ public class NotePresenterDeleteNoteTest
 		{
 		}
 
-		public String getContentText()
+		public String getContent()
 		{
 			return contentText;
 		}
 
-		public void setContentText(String text)
+		public void setContent(String text)
 		{
 			contentText = text;
 		}
@@ -138,7 +138,7 @@ public class NotePresenterDeleteNoteTest
 			return 0;
 		}
 
-		public List<BibleVerse> getDroppedVerse()
+		public List<BibleVerse> getDroppedVerses()
 		{
 			return null;
 		}
@@ -152,7 +152,7 @@ public class NotePresenterDeleteNoteTest
 			return null;
 		}
 
-		public void openDropReferenceOptions(int x, int y)
+		public void showDropReferenceMenu(int x, int y)
 		{
 		}
 

@@ -8,69 +8,55 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-public class ExportJob extends Job
-{
-	private ExportNotesModel exportNotesModel;
+public class ExportJob extends Job {
+	private ExportNoteDialogsModel exportNotesModel;
+	private final ExportExecutor exportExecutor;
 
-	public ExportJob(String name)
-	{
+	public ExportJob(String name, ExportExecutor exportExecutor) {
 		super(name);
+		this.exportExecutor = exportExecutor;
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor)
-	{
-		try
-		{
+	protected IStatus run(IProgressMonitor monitor) {
+		try {
 			int totalWork = 3;
-			totalWork += exportNotesModel.getAllNotes().size();
-			totalWork += exportNotesModel.getAssociatedLinks().size();
+			totalWork += exportExecutor.getTotalWorkLoad();
 
 			monitor.beginTask("Exporting...", totalWork);
 
-			exportNotesModel.createTemporaryDirectory();
+			exportExecutor.createTemporaryDirectory();
 			monitor.worked(1);
 
-			for (Note note : exportNotesModel.getAllNotes())
-			{
+			for (Note note : exportNotesModel.getAllNotes()) {
 				exportNotesModel.addNoteToXML(note);
 				monitor.worked(1);
 
-				if (monitor.isCanceled())
-				{
+				if (monitor.isCanceled()) {
 					return Status.CANCEL_STATUS;
 				}
 			}
 
-			for (Link link : exportNotesModel.getAssociatedLinks())
-			{
+			for (Link link : exportNotesModel.getAssociatedLinks()) {
 				exportNotesModel.addLinkToXML(link);
 				monitor.worked(1);
 
-				if (monitor.isCanceled())
-				{
+				if (monitor.isCanceled()) {
 					return Status.CANCEL_STATUS;
 				}
 			}
 
-			exportNotesModel.zipFile();
+			exportExecutor.zipFile();
 			monitor.worked(1);
 
-			exportNotesModel.cleanup();
+			exportExecutor.cleanup();
 			monitor.worked(1);
 
 			monitor.done();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return Status.CANCEL_STATUS;
 		}
 
 		return Status.OK_STATUS;
-	}
-
-	public void setExportModel(ExportNotesModel exportNotesModel)
-	{
-		this.exportNotesModel = exportNotesModel;
 	}
 }

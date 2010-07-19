@@ -8,3 +8,4 @@ Require-Bundle: org.eclipse.ui,
  net.todd.biblestudy.reference
 Eclipse-LazyStart: false
 Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -13,35 +13,30 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BaseDaoTest
-{
+public class BaseDaoTest {
 	@Before
-	public void setUp()
-	{
-		ScopedPreferenceStore preference = new ScopedPreferenceStore(new ConfigurationScope(),
-				Activator.PLUGIN_ID);
+	public void setUp() {
+		ScopedPreferenceStore preference = new ScopedPreferenceStore(
+				new ConfigurationScope(), Activator.PLUGIN_ID);
 		preference.setValue(PreferenceInitializer.DB_USER, "root");
 		preference.setValue(PreferenceInitializer.DB_PASS, "root");
 	}
 
 	@After
-	public void tearDown()
-	{
-		ScopedPreferenceStore preference = new ScopedPreferenceStore(new ConfigurationScope(),
-				Activator.PLUGIN_ID);
-		preference.setValue(PreferenceInitializer.DB_USER, preference
-				.getDefaultString(PreferenceInitializer.DB_USER));
-		preference.setValue(PreferenceInitializer.DB_PASS, preference
-				.getDefaultString(PreferenceInitializer.DB_PASS));
+	public void tearDown() {
+		ScopedPreferenceStore preference = new ScopedPreferenceStore(
+				new ConfigurationScope(), Activator.PLUGIN_ID);
+		preference.setValue(PreferenceInitializer.DB_USER,
+				preference.getDefaultString(PreferenceInitializer.DB_USER));
+		preference.setValue(PreferenceInitializer.DB_PASS,
+				preference.getDefaultString(PreferenceInitializer.DB_PASS));
 	}
 
 	@Test
-	public void testDBConnection() throws Exception
-	{
-		Connection connection = new BaseDao()
-		{
+	public void testDBConnection() throws Exception {
+		Connection connection = new BaseDao() {
 		}.getSqlMapConfig().getDataSource().getConnection();
-		assertFalse(connection.isClosed());
+
 		assertFalse(connection.isClosed());
 		assertFalse(connection.isReadOnly());
 	}

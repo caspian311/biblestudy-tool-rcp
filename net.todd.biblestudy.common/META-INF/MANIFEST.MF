@@ -4,13 +4,9 @@ Bundle-Name: Common Plug-in
 Bundle-SymbolicName: net.todd.biblestudy.common
 Bundle-Version: 0.0.1
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.junit4;bundle-version="4.3.1",
+ org.apache.commons.logging;bundle-version="1.0.4"
 Eclipse-LazyStart: false
 Export-Package: net.todd.biblestudy.common,
- net.todd.biblestudy.common.db,
- org.apache.commons.lang
-Bundle-ClassPath: lib/junit-4.4.jar,
- .,
- lib/commons-lang-2.3.jar,
- lib/log4j-1.2.15.jar,
- lib/commons-logging-1.1.1.jar
+ net.todd.biblestudy.common.db

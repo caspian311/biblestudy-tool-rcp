@@ -63,7 +63,7 @@ public class NotePresenterHandleEventTest
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
 		assertNull(model.getUpdatedContent());
 
-		view.setContentText("test");
+		view.setContent("test");
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
 		assertEquals("test", model.getUpdatedContent());
 		assertEquals("test*", view.getViewTitle());
@@ -152,7 +152,7 @@ public class NotePresenterHandleEventTest
 		model.setNote(note);
 
 		NotePresenter presenter = new NotePresenter(view, model);
-		view.setContentText("test");
+		view.setContent("test");
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
 
 		assertEquals("test*", view.getViewTitle());
@@ -285,7 +285,7 @@ public class NotePresenterHandleEventTest
 		view.setDroppedVerse(new ArrayList<BibleVerse>());
 
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_TEXT));
-		assertEquals("abcdefg", view.getContentText());
+		assertEquals("abcdefg", view.getContent());
 	}
 
 	@Test
@@ -306,7 +306,7 @@ public class NotePresenterHandleEventTest
 		view.setDroppedVerse(verses);
 
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_TEXT));
-		assertEquals("aa\nbcdefg", view.getContentText());
+		assertEquals("aa\nbcdefg", view.getContent());
 	}
 
 	@Test
@@ -330,7 +330,7 @@ public class NotePresenterHandleEventTest
 		view.setDroppedVerse(verses);
 
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_TEXT));
-		assertEquals("abcda\nb\nefg", view.getContentText());
+		assertEquals("abcda\nb\nefg", view.getContent());
 	}
 
 	@Test
@@ -354,7 +354,7 @@ public class NotePresenterHandleEventTest
 		view.setDroppedVerse(verses);
 
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_REFERENCE_AND_TEXT));
-		assertEquals("abcdref 1:2 - test\nefg", view.getContentText());
+		assertEquals("abcdref 1:2 - test\nefg", view.getContent());
 	}
 
 	@Test
@@ -378,7 +378,7 @@ public class NotePresenterHandleEventTest
 		view.setDroppedVerse(verses);
 
 		presenter.handleEvent(new ViewEvent(ViewEvent.NOTE_DROP_LINK_TO_REFERENCE));
-		assertEquals("abcdref 1:2\nefg", view.getContentText());
+		assertEquals("abcdref 1:2\nefg", view.getContent());
 	}
 
 	@Test
@@ -409,7 +409,7 @@ public class NotePresenterHandleEventTest
 		assertEquals(4, model.getReferenceLinkedToStart().get(0));
 		assertEquals(11, model.getReferenceLinkedToStop().get(0));
 
-		assertEquals("abcdref 1:2\nefg", view.getContentText());
+		assertEquals("abcdref 1:2\nefg", view.getContent());
 	}
 
 	@Test
@@ -456,7 +456,7 @@ public class NotePresenterHandleEventTest
 		assertEquals(13, model.getReferenceLinkedToStart().get(1));
 		assertEquals(21, model.getReferenceLinkedToStop().get(1));
 
-		assertEquals("abcdref1 1:1\nref2 2:2\nefg", view.getContentText());
+		assertEquals("abcdref1 1:1\nref2 2:2\nefg", view.getContent());
 	}
 
 	@Test
@@ -499,7 +499,7 @@ public class NotePresenterHandleEventTest
 		assertEquals(4, model.getReferenceLinkedToStart().get(0));
 		assertEquals(13, model.getReferenceLinkedToStop().get(0));
 
-		assertEquals("abcdref 1:1-2\nefg", view.getContentText());
+		assertEquals("abcdref 1:1-2\nefg", view.getContent());
 	}
 
 	@Test
@@ -546,7 +546,7 @@ public class NotePresenterHandleEventTest
 		assertEquals(4, model.getReferenceLinkedToStart().get(0));
 		assertEquals(13, model.getReferenceLinkedToStop().get(0));
 
-		assertEquals("abcdref 1:1-3\nefg", view.getContentText());
+		assertEquals("abcdref 1:1-3\nefg", view.getContent());
 	}
 
 	@Test
@@ -597,7 +597,7 @@ public class NotePresenterHandleEventTest
 		assertEquals(14, model.getReferenceLinkedToStart().get(1));
 		assertEquals(21, model.getReferenceLinkedToStop().get(1));
 
-		assertEquals("abcdref 1:1-2\nref 2:3\nefg", view.getContentText());
+		assertEquals("abcdref 1:1-2\nref 2:3\nefg", view.getContent());
 	}
 
 	private class MockNoteModel implements INoteModel
@@ -815,7 +815,7 @@ public class NotePresenterHandleEventTest
 			droppedVerses = verses;
 		}
 
-		public List<BibleVerse> getDroppedVerse()
+		public List<BibleVerse> getDroppedVerses()
 		{
 			return droppedVerses;
 		}
@@ -832,7 +832,7 @@ public class NotePresenterHandleEventTest
 			return lastClickedCoordinates;
 		}
 
-		public String getSelectedText()
+		public String getSelectedContent()
 		{
 			return null;
 		}
@@ -861,7 +861,7 @@ public class NotePresenterHandleEventTest
 			return refOptionOpen;
 		}
 
-		public void openDropReferenceOptions(int x, int y)
+		public void showDropReferenceMenu(int x, int y)
 		{
 			refOptionOpen = true;
 			refOptionMenuCoordX = x;
@@ -919,12 +919,12 @@ public class NotePresenterHandleEventTest
 
 		private String contentText;
 
-		public void setContentText(String s)
+		public void setContent(String s)
 		{
 			this.contentText = s;
 		}
 
-		public String getContentText()
+		public String getContent()
 		{
 			return contentText;
 		}

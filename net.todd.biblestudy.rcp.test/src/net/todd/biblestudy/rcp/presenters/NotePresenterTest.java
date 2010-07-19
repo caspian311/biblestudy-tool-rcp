@@ -54,7 +54,7 @@ public class NotePresenterTest
 		NotePresenter presenter = new NotePresenter(noteView, noteModel);
 
 		assertEquals("Test", noteView.getViewTitle());
-		assertEquals("blah blah blah", noteView.getContentText());
+		assertEquals("blah blah blah", noteView.getContent());
 
 		assertNotNull(noteView.getNoteViewListener());
 		assertTrue(presenter == noteView.getNoteViewListener());
@@ -70,7 +70,7 @@ public class NotePresenterTest
 
 		Thread.sleep(1000);
 
-		noteView.setContentText(noteView.getContentText() + "asdf");
+		noteView.setContent(noteView.getContent() + "asdf");
 		notePresenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
 
 		assertTrue(noteModel.isDocumentDirty());
@@ -106,7 +106,7 @@ public class NotePresenterTest
 			selectionText = text;
 		}
 
-		public String getSelectedText()
+		public String getSelectedContent()
 		{
 			return selectionText;
 		}
@@ -125,12 +125,12 @@ public class NotePresenterTest
 		{
 		}
 
-		public String getContentText()
+		public String getContent()
 		{
 			return contentText;
 		}
 
-		public void setContentText(String text)
+		public void setContent(String text)
 		{
 			contentText = text;
 		}
@@ -178,7 +178,7 @@ public class NotePresenterTest
 			return 0;
 		}
 
-		public List<BibleVerse> getDroppedVerse()
+		public List<BibleVerse> getDroppedVerses()
 		{
 			return null;
 		}
@@ -192,7 +192,7 @@ public class NotePresenterTest
 			return null;
 		}
 
-		public void openDropReferenceOptions(int x, int y)
+		public void showDropReferenceMenu(int x, int y)
 		{
 		}
 

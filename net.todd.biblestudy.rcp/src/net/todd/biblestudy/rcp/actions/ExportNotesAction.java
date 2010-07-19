@@ -1,36 +1,31 @@
 package net.todd.biblestudy.rcp.actions;
 
-import net.todd.biblestudy.rcp.models.ExportNotesModel;
-import net.todd.biblestudy.rcp.models.IExportNotesModel;
-import net.todd.biblestudy.rcp.presenters.ExportNotesPresenter;
-import net.todd.biblestudy.rcp.views.ExportNotesView;
-import net.todd.biblestudy.rcp.views.IExportNotesView;
+import net.todd.biblestudy.rcp.views.ExportNotesDialog;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-public class ExportNotesAction implements IWorkbenchWindowActionDelegate
-{
-	public void dispose()
-	{
+public class ExportNotesAction implements IWorkbenchWindowActionDelegate {
+	private Shell shell;
+
+	@Override
+	public void dispose() {
 	}
 
-	public void init(IWorkbenchWindow window)
-	{
+	@Override
+	public void init(IWorkbenchWindow window) {
+		shell = window.getShell();
 	}
 
-	public void run(IAction action)
-	{
-		IExportNotesModel model = new ExportNotesModel();
-		IExportNotesView view = new ExportNotesView(Display.getCurrent().getActiveShell());
-
-		new ExportNotesPresenter(view, model);
+	@Override
+	public void run(IAction action) {
+		new ExportNotesDialog(shell).open();
 	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
 	}
 }

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.todd.biblestudy.rcp.models.INewNoteDialogModel;
 import net.todd.biblestudy.rcp.models.INoteModel;
-import net.todd.biblestudy.rcp.views.INewNoteDialog;
+import net.todd.biblestudy.rcp.views.INewNoteDialogView;
 import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.rcp.views.IViewer;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
@@ -117,7 +117,7 @@ public class NewNoteDialogPresenterTest
 		assertTrue(view.isOkButtonDisabled());
 	}
 
-	private class MockNewNoteDialog implements INewNoteDialog
+	private class MockNewNoteDialog implements INewNoteDialogView
 	{
 		boolean openDialogCalled = false;
 		boolean isOkButtonDisabled = false;

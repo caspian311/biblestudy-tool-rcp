@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.rcp.models.IExportNotesModel;
-import net.todd.biblestudy.rcp.views.IExportNotesView;
+import net.todd.biblestudy.rcp.models.IExportNotesDialogModel;
+import net.todd.biblestudy.rcp.views.IExportNotesDialogView;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,14 +36,14 @@ public class ExportNotesPresenterTest
 	@Test
 	public void testPresenterOpensExportDialogWhenInstantiated() throws Exception
 	{
-		new ExportNotesPresenter(view, model);
+		new ExportNotesDialogPresenter(view, model);
 		assertTrue(view.isExportDialogOpen());
 	}
 
 	@Test
 	public void testThatPresenterIsAListenerForEventsFromTheView() throws Exception
 	{
-		new ExportNotesPresenter(view, model)
+		new ExportNotesDialogPresenter(view, model)
 		{
 			@Override
 			public void handleEvent(ViewEvent event)
@@ -59,7 +59,7 @@ public class ExportNotesPresenterTest
 	@Test
 	public void testThatAfterViewIsOpenedPresenterPopulatesAllNotesIntoView() throws Exception
 	{
-		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
+		ExportNotesDialogPresenter presenter = new ExportNotesDialogPresenter(view, model);
 		assertFalse(view.allNotesHaveBeenPopulated());
 		assertNull(view.getAllNotes());
 		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DIALOG_OPENED));
@@ -70,7 +70,7 @@ public class ExportNotesPresenterTest
 	@Test
 	public void testThatWhenDialogIsClosedPresenterStopsListeningForEvents() throws Exception
 	{
-		new ExportNotesPresenter(view, model);
+		new ExportNotesDialogPresenter(view, model);
 		view.fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DIALOG_CLOSED));
 		view.fireEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DIALOG_OPENED));
 		assertFalse(view.allNotesHaveBeenPopulated());
@@ -94,7 +94,7 @@ public class ExportNotesPresenterTest
 		notes.add(note2);
 		model.setAllNotes(notes);
 
-		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
+		ExportNotesDialogPresenter presenter = new ExportNotesDialogPresenter(view, model);
 
 		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_DIALOG_OPENED));
 		assertTrue(view.allNotesHaveBeenPopulated());
@@ -107,9 +107,9 @@ public class ExportNotesPresenterTest
 	@Test
 	public void testWhenExportTakeAllSelectedNotesFromViewAndPutIntoModel() throws Exception
 	{
-		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
+		ExportNotesDialogPresenter presenter = new ExportNotesDialogPresenter(view, model);
 		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
-		assertNull(model.getSelectedNotes());
+		assertNull(model.getNotesToExport());
 
 		List<Note> notes = new ArrayList<Note>();
 
@@ -128,7 +128,7 @@ public class ExportNotesPresenterTest
 		view.setSelectedNotes(notes);
 
 		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
-		List<Note> selectedNotes = model.getSelectedNotes();
+		List<Note> selectedNotes = model.getNotesToExport();
 		assertNotNull(selectedNotes);
 		assertEquals(2, selectedNotes.size());
 		assertEquals("1 : test1 - text1", selectedNotes.get(0).toString());
@@ -138,7 +138,7 @@ public class ExportNotesPresenterTest
 	@Test
 	public void testWhenExportPopupFileDialog() throws Exception
 	{
-		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
+		ExportNotesDialogPresenter presenter = new ExportNotesDialogPresenter(view, model);
 		assertFalse(view.isFileDialogOpen());
 		assertNull(model.getFileToExportTo());
 
@@ -152,7 +152,7 @@ public class ExportNotesPresenterTest
 	@Test
 	public void testCallExportOnModelAndPutJobIntoView() throws Exception
 	{
-		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
+		ExportNotesDialogPresenter presenter = new ExportNotesDialogPresenter(view, model);
 
 		assertFalse(model.wasCreateExportJobCalled());
 		assertNull(view.getExportJob());
@@ -166,13 +166,13 @@ public class ExportNotesPresenterTest
 	@Test
 	public void testWhenExportDialogIsClosed() throws Exception
 	{
-		ExportNotesPresenter presenter = new ExportNotesPresenter(view, model);
+		ExportNotesDialogPresenter presenter = new ExportNotesDialogPresenter(view, model);
 		assertTrue(view.isExportDialogOpen());
 		presenter.handleEvent(new ViewEvent(ViewEvent.EXPORT_NOTES_EXPORT));
 		assertFalse(view.isExportDialogOpen());
 	}
 
-	private class MockExportNotesView implements IExportNotesView
+	private class MockExportNotesView implements IExportNotesDialogView
 	{
 		private boolean exportDialogOpen = false;
 
@@ -276,7 +276,7 @@ public class ExportNotesPresenterTest
 		}
 	}
 
-	private class MockExportNotesModel implements IExportNotesModel
+	private class MockExportNotesModel implements IExportNotesDialogModel
 	{
 		private boolean createExportJobCalled = false;
 
@@ -324,7 +324,7 @@ public class ExportNotesPresenterTest
 
 		private List<Note> selectedNotes;
 
-		public List<Note> getSelectedNotes()
+		public List<Note> getNotesToExport()
 		{
 			return selectedNotes;
 		}

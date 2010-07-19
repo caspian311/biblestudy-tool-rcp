@@ -15,7 +15,7 @@ import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.models.IOpenNoteModel;
 import net.todd.biblestudy.rcp.views.INoteView;
-import net.todd.biblestudy.rcp.views.IOpenNoteDialog;
+import net.todd.biblestudy.rcp.views.IOpenNoteDialogView;
 import net.todd.biblestudy.rcp.views.IViewer;
 import net.todd.biblestudy.rcp.views.ViewerFactory;
 import net.todd.biblestudy.reference.Reference;
@@ -170,7 +170,7 @@ public class OpenNoteDialogPresenterTest
 		assertEquals("oldNoteName", model.getRenameOldNoteName());
 	}
 
-	private class MockOpenNoteDialog implements IOpenNoteDialog
+	private class MockOpenNoteDialog implements IOpenNoteDialogView
 	{
 		private boolean dialogOpen = false;
 

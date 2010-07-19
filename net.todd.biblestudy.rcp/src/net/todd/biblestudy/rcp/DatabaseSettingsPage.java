@@ -14,49 +14,45 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class DatabaseSettingsPage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage
-{
-	private ScopedPreferenceStore preferences;
+		IWorkbenchPreferencePage {
+	private final ScopedPreferenceStore preferences;
 
-	public DatabaseSettingsPage()
-	{
+	public DatabaseSettingsPage() {
 		super(GRID);
-		preferences = new ScopedPreferenceStore(new ConfigurationScope(), Activator.PLUGIN_ID);
+		preferences = new ScopedPreferenceStore(new ConfigurationScope(),
+				Activator.PLUGIN_ID);
 		setPreferenceStore(preferences);
 		setDescription("Database settings");
 	}
 
 	@Override
-	protected void createFieldEditors()
-	{
-		StringFieldEditor userFieldEditor = new StringFieldEditor(PreferenceInitializer.DB_USER,
+	protected void createFieldEditors() {
+		StringFieldEditor userFieldEditor = new StringFieldEditor(
+				PreferenceInitializer.DB_USER,
 				"Username used to connect to database", getFieldEditorParent());
 		addField(userFieldEditor);
 
-		StringFieldEditor passFieldEditor = new StringFieldEditor(PreferenceInitializer.DB_PASS,
+		StringFieldEditor passFieldEditor = new StringFieldEditor(
+				PreferenceInitializer.DB_PASS,
 				"Password used to connect to database", getFieldEditorParent());
 		addField(passFieldEditor);
 	}
 
 	@Override
-	public boolean performOk()
-	{
-		try
-		{
+	public boolean performOk() {
+		try {
 			preferences.save();
 			BaseDao.resetMapper();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			ExceptionHandlerFactory.getHandler().handle(
-					"An error occurred while trying to save your settings.", this, e,
-					SeverityLevel.ERROR);
+					"An error occurred while trying to save your settings.",
+					this, e, SeverityLevel.ERROR);
 		}
 
 		return super.performOk();
 	}
 
-	public void init(IWorkbench workbench)
-	{
+	@Override
+	public void init(IWorkbench workbench) {
 	}
 }

@@ -5,3 +5,4 @@ Bundle-SymbolicName: net.todd.biblestudy.reference.test
 Bundle-Version: 0.0.1
 Fragment-Host: net.todd.biblestudy.reference;bundle-version="0.0.1"
 Require-Bundle: org.junit4
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -1,23 +1,13 @@
 package net.todd.biblestudy.rcp.models;
 
-import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.rcp.views.IListener;
 
-public interface INewNoteDialogModel
-{
-	/**
-	 * See if a note by the given name already exists
-	 * 
-	 * @param newNoteName
-	 * @return whether or not the note exists
-	 * @throws BiblestudyException
-	 */
-	public boolean noteAlreadyExists(String newNoteName) throws BiblestudyException;
+public interface INewNoteDialogModel {
+	void createNewNote();
 
-	/**
-	 * Create a new, blank (no content) note based on the given note name
-	 * 
-	 * @param newNoteName
-	 * @throws BiblestudyException
-	 */
-	public void createNewNote(String newNoteName) throws BiblestudyException;
+	boolean isValidState();
+
+	void setNoteName(String newNoteName);
+
+	void addValidStateListener(IListener iListener);
 }

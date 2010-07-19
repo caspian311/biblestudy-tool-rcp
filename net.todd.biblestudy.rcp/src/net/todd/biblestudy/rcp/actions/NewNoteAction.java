@@ -1,28 +1,29 @@
 package net.todd.biblestudy.rcp.actions;
 
-import net.todd.biblestudy.rcp.views.ViewerFactory;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-public class NewNoteAction implements IWorkbenchWindowActionDelegate
-{
-	public void dispose()
-	{
+public class NewNoteAction implements IWorkbenchWindowActionDelegate {
+	private Shell shell;
+
+	@Override
+	public void dispose() {
 	}
 
-	public void init(IWorkbenchWindow window)
-	{
+	@Override
+	public void init(IWorkbenchWindow window) {
+		shell = window.getShell();
 	}
 
-	public void run(IAction action)
-	{
-		ViewerFactory.getViewer().openNewNoteDialog();
+	@Override
+	public void run(IAction action) {
+		new NewNoteDialogLauncher().openNewNoteDialog(shell);
 	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
 	}
 }

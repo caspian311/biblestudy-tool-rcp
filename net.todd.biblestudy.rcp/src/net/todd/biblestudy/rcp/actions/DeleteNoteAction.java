@@ -1,42 +1,26 @@
 package net.todd.biblestudy.rcp.actions;
 
-import net.todd.biblestudy.rcp.views.INoteView;
+import net.todd.biblestudy.rcp.models.INoteModel;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
-public class DeleteNoteAction implements IViewActionDelegate
-{
-	private INoteView view;
+public class DeleteNoteAction implements IViewActionDelegate {
+	@Override
+	public void init(IViewPart viewPart) {
+	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
-	 */
-	public void init(IViewPart view)
-	{
-		if (view instanceof INoteView)
-		{
-			this.view = (INoteView)view;
-		}
+	@Override
+	public void run(IAction action) {
+		// TODO make super model know which note is currently being viewed
+		INoteModel noteModel = null;
+		String noteName = noteModel.getNote().getName();
+
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	public void run(IAction action)
-	{
-		view.deleteNote();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection)
-	{
+
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
 	}
 }

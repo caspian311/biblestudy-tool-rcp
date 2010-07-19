@@ -1,116 +1,37 @@
 package net.todd.biblestudy.db;
 
-public class Link
-{
-	public interface Types
-	{
+import net.java.ao.Entity;
+
+public interface Link extends Entity {
+	public interface Types {
 		int INVALID_LINK = 0;
 		int LINK_TO_NOTE = 1;
 		int LINK_TO_REFERENCE = 2;
 	}
 
-	private Integer linkId;
-	private Integer containingNoteId;
-	private String linkToNoteName;
-	private String linkToReference;
-	private Integer start;
-	private Integer end;
+	Integer getLinkId();
 
-	public Integer getLinkId()
-	{
-		return linkId;
-	}
+	void setLinkId(Integer linkId);
 
-	public void setLinkId(Integer linkId)
-	{
-		this.linkId = linkId;
-	}
+	Integer getContainingNoteId();
 
-	public Integer getContainingNoteId()
-	{
-		return containingNoteId;
-	}
+	void setContainingNoteId(Integer containingNoteId);
 
-	public void setContainingNoteId(Integer containingNoteId)
-	{
-		this.containingNoteId = containingNoteId;
-	}
+	String getLinkToNoteName();
 
-	public String getLinkToNoteName()
-	{
-		return linkToNoteName;
-	}
+	void setLinkToNoteName(String linkToNoteName);
 
-	public void setLinkToNoteName(String linkToNoteName)
-	{
-		this.linkToNoteName = linkToNoteName;
-	}
+	Integer getStart();
 
-	public Integer getStart()
-	{
-		return start;
-	}
+	void setStart(Integer start);
 
-	public void setStart(Integer start)
-	{
-		this.start = start;
-	}
+	Integer getEnd();
 
-	public Integer getEnd()
-	{
-		return end;
-	}
+	void setEnd(Integer end);
 
-	public void setEnd(Integer end)
-	{
-		this.end = end;
-	}
+	String getLinkToReference();
 
-	public String getLinkToReference()
-	{
-		return linkToReference;
-	}
+	void setLinkToReference(String linkToReference);
 
-	public void setLinkToReference(String linkToReference)
-	{
-		this.linkToReference = linkToReference;
-	}
-
-	public int getType()
-	{
-		int type = Types.INVALID_LINK;
-
-		if (linkToNoteName != null)
-		{
-			type = Types.LINK_TO_NOTE;
-		}
-		else if (linkToReference != null)
-		{
-			type = Types.LINK_TO_REFERENCE;
-		}
-
-		return type;
-	}
-
-	@Override
-	public String toString()
-	{
-		String s = "";
-
-		switch (getType())
-		{
-		case Types.LINK_TO_NOTE:
-			s = "Link to: " + getLinkToNoteName();
-			break;
-
-		case Types.LINK_TO_REFERENCE:
-			s = "Link to: " + getLinkToReference();
-			break;
-
-		default:
-			break;
-		}
-
-		return s;
-	}
+	int getType();
 }

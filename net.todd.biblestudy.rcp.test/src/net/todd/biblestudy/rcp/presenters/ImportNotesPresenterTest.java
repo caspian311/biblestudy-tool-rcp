@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.rcp.models.IImportNotesModel;
-import net.todd.biblestudy.rcp.views.IImportNotesView;
+import net.todd.biblestudy.rcp.models.IImportNotesDialogModel;
+import net.todd.biblestudy.rcp.views.IImportNotesDialogView;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,7 +28,7 @@ public class ImportNotesPresenterTest
 	public void testThatPresenterPopsUpFileDialogUponInstantiation() throws Exception
 	{
 		assertFalse(view.isFileDialogOpen());
-		new ImportNotesPresenter(view, model);
+		new ImportNotesDialogPresenter(view, model);
 		assertTrue(view.isFileDialogOpen());
 	}
 
@@ -37,7 +37,7 @@ public class ImportNotesPresenterTest
 	{
 		view.setFilename("test.xml.zip");
 		assertNull(model.getFilename());
-		new ImportNotesPresenter(view, model);
+		new ImportNotesDialogPresenter(view, model);
 		assertNotNull(model.getFilename());
 		assertEquals("test.xml.zip", model.getFilename());
 	}
@@ -45,7 +45,7 @@ public class ImportNotesPresenterTest
 	@Test
 	public void testThatPresenterIsAListenerForEventsFromTheView() throws Exception
 	{
-		new ImportNotesPresenter(view, model)
+		new ImportNotesDialogPresenter(view, model)
 		{
 			@Override
 			public void handleEvent(ViewEvent event)
@@ -70,7 +70,7 @@ public class ImportNotesPresenterTest
 			}
 		});
 
-		new ImportNotesPresenter(view, model);
+		new ImportNotesDialogPresenter(view, model);
 		Job job = view.getJob();
 		assertNotNull(job);
 		assertEquals("test", job.getName());
@@ -79,7 +79,7 @@ public class ImportNotesPresenterTest
 	@Test
 	public void testImportDialogIsOpenedWhenJobFinishes() throws Exception
 	{
-		ImportNotesPresenter presenter = new ImportNotesPresenter(view, model);
+		ImportNotesDialogPresenter presenter = new ImportNotesDialogPresenter(view, model);
 		assertFalse(view.isImportDialogOpen());
 		presenter.handleEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_JOB_FINISHED));
 		assertTrue(view.isImportDialogOpen());
@@ -100,7 +100,7 @@ public class ImportNotesPresenterTest
 
 		model.setNotesFromFile(notes);
 
-		new ImportNotesPresenter(view, model);
+		new ImportNotesDialogPresenter(view, model);
 		assertNull(view.getNotes());
 		view.fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_DIALOG_HAS_OPENED));
 		notes = view.getNotes();
@@ -125,7 +125,7 @@ public class ImportNotesPresenterTest
 
 		model.setNotesFromFile(notes);
 
-		new ImportNotesPresenter(view, model);
+		new ImportNotesDialogPresenter(view, model);
 		view.fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_DIALOG_CLOSED));
 		view.fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_DIALOG_HAS_OPENED));
 		assertNull(view.getNotes());
@@ -147,7 +147,7 @@ public class ImportNotesPresenterTest
 
 		view.setSelectedNotes(notes);
 
-		new ImportNotesPresenter(view, model);
+		new ImportNotesDialogPresenter(view, model);
 		view.fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_IMPORT));
 		List<Note> selectedNotes = model.getSelectedNotes();
 		assertNotNull(selectedNotes);
@@ -159,13 +159,13 @@ public class ImportNotesPresenterTest
 	@Test
 	public void testThatWhenOkPressedPresenterTellsModelToImportIntoDatabase() throws Exception
 	{
-		new ImportNotesPresenter(view, model);
+		new ImportNotesDialogPresenter(view, model);
 		assertFalse(model.isImportedIntoDatabase());
 		view.fireEvent(new ViewEvent(ViewEvent.IMPORT_NOTES_IMPORT));
 		assertTrue(model.isImportedIntoDatabase());
 	}
 
-	private class MockImportNotesView implements IImportNotesView
+	private class MockImportNotesView implements IImportNotesDialogView
 	{
 		private String filename;
 
@@ -194,7 +194,7 @@ public class ImportNotesPresenterTest
 			this.listener = listener;
 		}
 
-		public void unregisterListener(ImportNotesPresenter listener)
+		public void unregisterListener(ImportNotesDialogPresenter listener)
 		{
 			this.listener = null;
 		}
@@ -256,7 +256,7 @@ public class ImportNotesPresenterTest
 		}
 	}
 
-	private class MockImportNotesModel implements IImportNotesModel
+	private class MockImportNotesModel implements IImportNotesDialogModel
 	{
 		private String filename;
 

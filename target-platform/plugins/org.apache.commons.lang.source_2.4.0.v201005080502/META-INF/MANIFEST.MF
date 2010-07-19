@@ -1,0 +1,298 @@
+Manifest-Version: 1.0
+Bundle-Vendor: %providerName
+Eclipse-SourceBundle: org.apache.commons.lang;version="2.4.0.v20100508
+ 0502"
+Bundle-Localization: plugin
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.apache.commons.lang.source
+Bundle-Version: 2.4.0.v201005080502
+Bundle-ManifestVersion: 2
+
+Name: org/apache/commons/lang/mutable/package.html
+SHA1-Digest: IOuArmptQXhRwjmvs0rAUymuadE=
+
+Name: org/apache/commons/lang/IncompleteArgumentException.java
+SHA1-Digest: 498z3mn4D6PVoC6uoHISwqjXG4w=
+
+Name: org/apache/commons/lang/mutable/MutableBoolean.java
+SHA1-Digest: UtiWvg9wwWwe169okERKgKRkm1U=
+
+Name: org/apache/commons/lang/text/StrLookup.java
+SHA1-Digest: qgBmmxI51KYWQTYiTf/kNPFlgOg=
+
+Name: org/apache/commons/lang/exception/NestableRuntimeException.java
+SHA1-Digest: NkpyAomnu+Jvnp0yvyHMAj5LIgk=
+
+Name: org/apache/commons/lang/BooleanUtils.java
+SHA1-Digest: wH7OOMikHpRcjBzIb3Q/lDHUnwY=
+
+Name: org/apache/commons/lang/CharSetUtils.java
+SHA1-Digest: W8SkAnJMRdQdRWEXqfzu8j4cHhk=
+
+Name: org/apache/commons/lang/time/DurationFormatUtils.java
+SHA1-Digest: NT2afd+6Wvhb4Yh941u3PfwP72c=
+
+Name: org/apache/commons/lang/math/Fraction.java
+SHA1-Digest: CSdR1fd06hbhE0l2BOg2Kd5WbAg=
+
+Name: org/apache/commons/lang/text/StrTokenizer.java
+SHA1-Digest: CRqan53/Np50mosOyYoWc+AXVUI=
+
+Name: org/apache/commons/lang/mutable/MutableFloat.java
+SHA1-Digest: O9NZjG2ucF3tA9E54EEnCp5zJnM=
+
+Name: org/apache/commons/lang/mutable/MutableByte.java
+SHA1-Digest: qpQfDrC8VO4yW7H3vmWckFX9nPE=
+
+Name: org/apache/commons/lang/text/CompositeFormat.java
+SHA1-Digest: gfwNgDvlvxervTTijTJryYCDMao=
+
+Name: org/apache/commons/lang/text/package.html
+SHA1-Digest: ZOsvX3b2oKv5DE5aq4trh6Nb80Y=
+
+Name: org/apache/commons/lang/text/StrMatcher.java
+SHA1-Digest: JBDHIwgzcnCb5kzgwCSz122aRak=
+
+Name: org/apache/commons/lang/enums/package.html
+SHA1-Digest: pin7E3LNHiYt9hrNnINa64IK5wY=
+
+Name: org/apache/commons/lang/exception/NestableDelegate.java
+SHA1-Digest: LDyQTBBq4yFo3MAeLkt2kWTxKlo=
+
+Name: org/apache/commons/lang/math/package.html
+SHA1-Digest: bBIVGFwDvBRwK2aMDiKwKhnniKE=
+
+Name: org/apache/commons/lang/RandomStringUtils.java
+SHA1-Digest: 1DBolFJmJH4A878QAiWfIxm2hgM=
+
+Name: org/apache/commons/lang/builder/ToStringBuilder.java
+SHA1-Digest: sUztRkuDpsAIcU3l25AxWU/F1j0=
+
+Name: org/apache/commons/lang/mutable/MutableInt.java
+SHA1-Digest: fiRId+g8ykxOXtnAjiAmF6ONq+4=
+
+Name: org/apache/commons/lang/exception/Nestable.java
+SHA1-Digest: K7bJ2PSwqA8YvWvsGdEgt8CUGpc=
+
+Name: org/apache/commons/lang/mutable/MutableLong.java
+SHA1-Digest: DeWMgPqZSv8Y1D1djOfkugqCFTA=
+
+Name: org/apache/commons/lang/enums/ValuedEnum.java
+SHA1-Digest: 1Iq8NDaVcs2u0rSjTCGDxCIbsmg=
+
+Name: org/apache/commons/lang/overview.html
+SHA1-Digest: gpgGGYDh/rtjx5Xn8yw80WXB7xo=
+
+Name: org/apache/commons/lang/time/DateFormatUtils.java
+SHA1-Digest: L2QVaQsF/aOW/u5QrXWgT1QbjRM=
+
+Name: org/apache/commons/lang/CharEncoding.java
+SHA1-Digest: 76InbfzLHks4W2zl1I7O2LPFKBk=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: KyT9FF7C7t86NoBoa2kZT3ZJBfw=
+
+Name: org/apache/commons/lang/enum/Enum.java
+SHA1-Digest: m4puHbn+VMManAZrBZG2iieXoOU=
+
+Name: org/apache/commons/lang/mutable/MutableDouble.java
+SHA1-Digest: DIWS25dD3zYclZ5XOc0H1CI0zw8=
+
+Name: org/apache/commons/lang/IllegalClassException.java
+SHA1-Digest: OBxCbIcDulzPtYghBVRHKLQR2sA=
+
+Name: org/apache/commons/lang/CharSet.java
+SHA1-Digest: GJLoO4VlpXx5xuh5LIrmlmhGCNI=
+
+Name: org/apache/commons/lang/text/ExtendedMessageFormat.java
+SHA1-Digest: vOeYihpE/h8CBCWpdzpQEPq3Q6w=
+
+Name: org/apache/commons/lang/exception/ExceptionUtils.java
+SHA1-Digest: xuSwIK+ffYG5JU6G09LIqH69PXQ=
+
+Name: org/apache/commons/lang/enum/EnumUtils.java
+SHA1-Digest: DaiblptGRu+XrRN0ZlDrIK41R34=
+
+Name: org/apache/commons/lang/Entities.java
+SHA1-Digest: TMD7uYqYHLZfrrVqdEwm5NWJ0S8=
+
+Name: org/apache/commons/lang/builder/package.html
+SHA1-Digest: ILMZo2OYlie/koKZSMorSP8bA7A=
+
+Name: org/apache/commons/lang/IntHashMap.java
+SHA1-Digest: JUxt6ZmI86E192SwAinf2d5JKtA=
+
+Name: org/apache/commons/lang/CharRange.java
+SHA1-Digest: bcBhlEV+dMCy+NcI1JXB4Ns3+8A=
+
+Name: org/apache/commons/lang/enums/Enum.java
+SHA1-Digest: GRBxNyLB4meqkMvOPpQsXO8tVu0=
+
+Name: org/apache/commons/lang/math/JVMRandom.java
+SHA1-Digest: qIC2BlZnKWcM5Z/VUjsVQ5BMjf4=
+
+Name: org/apache/commons/lang/time/FastDateFormat.java
+SHA1-Digest: 9oUVD+leci5Ku18yLbCU4qrnCU4=
+
+Name: org/apache/commons/lang/StringUtils.java
+SHA1-Digest: /9KX0iKlI89VM9IlF6xjTNodqBc=
+
+Name: org/apache/commons/lang/package.html
+SHA1-Digest: qhq0fVE2T8/D22wnnNQ8ODKXVf0=
+
+Name: org/apache/commons/lang/mutable/Mutable.java
+SHA1-Digest: EpVTAyhccADEpj3bsHZlx4hcXNw=
+
+Name: org/apache/commons/lang/CharUtils.java
+SHA1-Digest: 3+ealKqRtiCLGF3ASUghevW/eTQ=
+
+Name: org/apache/commons/lang/math/IEEE754rUtils.java
+SHA1-Digest: w/F4NEG2WuSWCCX0+yMRoLItJX4=
+
+Name: org/apache/commons/lang/LocaleUtils.java
+SHA1-Digest: nFmQn6ZZH3kM25RDnbKaeqlzcyU=
+
+Name: org/apache/commons/lang/enum/package.html
+SHA1-Digest: UHX1WEOszPOO7nf37TpoBHjHyBQ=
+
+Name: org/apache/commons/lang/math/NumberRange.java
+SHA1-Digest: 7uEnrWD/XWc76qujzQfE+AzK1I0=
+
+Name: org/apache/commons/lang/UnhandledException.java
+SHA1-Digest: LKwqrLNZm/IOCk0eov4ZS9YLtrM=
+
+Name: org/apache/commons/lang/time/StopWatch.java
+SHA1-Digest: HD9l7ocapgbt79k8Z0MgWb0DRqM=
+
+Name: org/apache/commons/lang/enums/EnumUtils.java
+SHA1-Digest: dHwJGLRlz2QNH8PoUPKU0pwTHEc=
+
+Name: org/apache/commons/lang/builder/ToStringStyle.java
+SHA1-Digest: Icw/PQVWRNzPE1Q1yxzJcQRtpLw=
+
+Name: org/apache/commons/lang/math/RandomUtils.java
+SHA1-Digest: RoFcMgxxZX4LVJK9YDCuj1nR0n8=
+
+Name: org/apache/commons/lang/math/DoubleRange.java
+SHA1-Digest: dIHapagqx7Z5eF9iVG9C5Q8GWqY=
+
+Name: org/apache/commons/lang/text/StrBuilder.java
+SHA1-Digest: 4tLVH063hmw79udvDiCXCQ2uFCs=
+
+Name: org/apache/commons/lang/builder/HashCodeBuilder.java
+SHA1-Digest: oINlgdEF5GuK94yOsfQXI00l21s=
+
+Name: org/apache/commons/lang/time/DateUtils.java
+SHA1-Digest: HNKzdo6j7gv/U9YT16m3izJSS4E=
+
+Name: org/apache/commons/lang/math/NumberUtils.java
+SHA1-Digest: kEoBoJEZ+labf1r8miOebDlrrRM=
+
+Name: org/apache/commons/lang/SerializationUtils.java
+SHA1-Digest: 28smEkqgf5sX2NAVV/VptGvdzGA=
+
+Name: plugin.properties
+SHA1-Digest: rUeoKz39sAqBDfR2ERG4r3yk33I=
+
+Name: org/apache/commons/lang/SystemUtils.java
+SHA1-Digest: ssaMNYneGpDesOJnoIHUVJicxfY=
+
+Name: org/apache/commons/lang/enum/ValuedEnum.java
+SHA1-Digest: IfQSiJ0vhMWLdRu3UuaFKyU/1d8=
+
+Name: org/apache/commons/lang/ClassUtils.java
+SHA1-Digest: 0AIxojGnPWapIwZ1XmcbUGzhDs4=
+
+Name: org/apache/commons/lang/StringEscapeUtils.java
+SHA1-Digest: nVhDrD6RLNo9OdpCfvTwVIiaKzc=
+
+Name: org/apache/commons/lang/math/Range.java
+SHA1-Digest: K2FKxztuAg1ylX9YjXjN6u06wJ0=
+
+Name: about_files/LICENSE.txt
+SHA1-Digest: K4uBUimqimHkg/tLoFiLi2xJGJA=
+
+Name: org/apache/commons/lang/exception/NestableError.java
+SHA1-Digest: r/fOFQRY1Kge8FSXdVBRPq7cYrA=
+
+Name: org/apache/commons/lang/NumberRange.java
+SHA1-Digest: V/HjzX7Avg/XtIvi4SvSm5dKTdU=
+
+Name: org/apache/commons/lang/builder/StandardToStringStyle.java
+SHA1-Digest: GIITcp/7bWIub3tJ32bwlBrs+2M=
+
+Name: org/apache/commons/lang/ObjectUtils.java
+SHA1-Digest: YVZQVeojZR+EN7pD7TfQTsU+p5k=
+
+Name: about_files/NOTICE.txt
+SHA1-Digest: RcoUBEWG6lAqJiFBQANqfHl+oQ4=
+
+Name: org/apache/commons/lang/builder/ReflectionToStringBuilder.java
+SHA1-Digest: /ImZLdaZy/iOeyxOTFHLlXIJsm4=
+
+Name: org/apache/commons/lang/NullArgumentException.java
+SHA1-Digest: EBSXt7V/aGxY+rxd7+I2KOTr6vU=
+
+Name: org/apache/commons/lang/math/FloatRange.java
+SHA1-Digest: 7EFSw+/Km8TDN4/4fncIWO+ZHCY=
+
+Name: org/apache/commons/lang/NumberUtils.java
+SHA1-Digest: jji+93cjBwRo9fEgCswCRW1L8yA=
+
+Name: about.html
+SHA1-Digest: 1L2R6NK7fn+h1S/Bl1FpO8O8ycA=
+
+Name: org/apache/commons/lang/builder/EqualsBuilder.java
+SHA1-Digest: ieVNhbo4WEvnKJaag3FqMZmirck=
+
+Name: org/apache/commons/lang/mutable/MutableShort.java
+SHA1-Digest: hNSBRHFrkc+oRLug9/BIGapiL2c=
+
+Name: org/apache/commons/lang/SerializationException.java
+SHA1-Digest: CpGpYTHdg2G6wLU9JGomkce4GGc=
+
+Name: org/apache/commons/lang/WordUtils.java
+SHA1-Digest: cHcwclYVUXRnn3AaPBTR5JU/uBE=
+
+Name: org/apache/commons/lang/time/package.html
+SHA1-Digest: CSZJIcXMmn2UXxm7Jem0abKleSU=
+
+Name: org/apache/commons/lang/math/LongRange.java
+SHA1-Digest: cRkElxn/Y/ROIe7lIPzy4One9p0=
+
+Name: about_files/RELEASE-NOTES.txt
+SHA1-Digest: kcq8jhdW8wyXW4n8yQ4u64HQA60=
+
+Name: org/apache/commons/lang/NotImplementedException.java
+SHA1-Digest: jfF20CnfiMTPjpW719/57nhkiT4=
+
+Name: org/apache/commons/lang/ArrayUtils.java
+SHA1-Digest: i9ljX/Y56uQXiW219jviN+riztk=
+
+Name: org/apache/commons/lang/text/StrSubstitutor.java
+SHA1-Digest: Y896NDiVQ9pBGuIh9yWV6lOFhKQ=
+
+Name: org/apache/commons/lang/Validate.java
+SHA1-Digest: BVfwOm6SN5YbMnonInWdLVe0+0Y=
+
+Name: org/apache/commons/lang/exception/package.html
+SHA1-Digest: FA1HgT7LrdCL8DvzlD4sP/UcHJc=
+
+Name: org/apache/commons/lang/exception/NestableException.java
+SHA1-Digest: brktG4bswqzddD8JKr5zpiQDKcA=
+
+Name: org/apache/commons/lang/mutable/MutableObject.java
+SHA1-Digest: Ry6YaLMAW7Ldvqqu3wDYTo75po0=
+
+Name: org/apache/commons/lang/text/FormatFactory.java
+SHA1-Digest: 83PnBBBh1USCJ/Ge2A6aVrm+5uM=
+
+Name: org/apache/commons/lang/builder/CompareToBuilder.java
+SHA1-Digest: 0CuZT4V4T4UN1Ze3BkNznnHmpeM=
+
+Name: org/apache/commons/lang/math/IntRange.java
+SHA1-Digest: WMCTe2eARY/hK7pEvjeybMIIW9A=
+
+Name: org/apache/commons/lang/BitField.java
+SHA1-Digest: QcAfkDHw5Tq3UPBdjg0uYigQle0=
+

@@ -15,62 +15,50 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
-public class Application implements IApplication
-{
-	public Object start(IApplicationContext context) throws Exception
-	{
-		Thread.setDefaultUncaughtExceptionHandler(ExceptionHandlerFactory.getHandler());
+public class Application implements IApplication {
+	@Override
+	public Object start(IApplicationContext context) throws Exception {
+		Thread.setDefaultUncaughtExceptionHandler(ExceptionHandlerFactory
+				.getHandler());
 
 		Display display = PlatformUI.createDisplay();
 
-		if (setupDatabase(display.getActiveShell()))
-		{
-			try
-			{
+		if (setupDatabase(display.getActiveShell())) {
+			try {
 				int returnCode = PlatformUI.createAndRunWorkbench(display,
 						new ApplicationWorkbenchAdvisor());
-				if (returnCode == PlatformUI.RETURN_RESTART)
-				{
+				if (returnCode == PlatformUI.RETURN_RESTART) {
 					return IApplication.EXIT_RESTART;
 				}
 				return IApplication.EXIT_OK;
-			}
-			finally
-			{
+			} finally {
 				display.dispose();
 			}
-		}
-		else
-		{
-			try
-			{
+		} else {
+			try {
 				return IApplication.EXIT_OK;
-			}
-			finally
-			{
+			} finally {
 				display.dispose();
 			}
 		}
 	}
 
-	private boolean setupDatabase(Shell shell)
-	{
+	private boolean setupDatabase(Shell shell) {
 		ISetupDatabaseView view = new SetupDatabaseView(shell);
 		ISetupDatabaseModel model = new SetupDatabaseModel(new SetupDBDao());
 
 		return new SetupDatabasePresenter(view, model).setup();
 	}
 
-	public void stop()
-	{
+	@Override
+	public void stop() {
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		if (workbench == null)
 			return;
 		final Display display = workbench.getDisplay();
-		display.syncExec(new Runnable()
-		{
-			public void run()
-			{
+		display.syncExec(new Runnable() {
+			@Override
+			public void run() {
 				if (!display.isDisposed())
 					workbench.close();
 			}

@@ -23,58 +23,50 @@ import net.todd.biblestudy.db.Note;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.Test;
 
-public class ImportNotesModelTest
-{
-	private List<Note> savingNotes = new ArrayList<Note>();
-	private List<String> deletedNotes = new ArrayList<String>();
-	private List<Link> savingLinks = new ArrayList<Link>();
-	private List<Link> deletedLinks = new ArrayList<Link>();
+public class ImportNotesModelTest {
+	private final List<Note> savingNotes = new ArrayList<Note>();
+	private final List<String> deletedNotes = new ArrayList<String>();
+	private final List<Link> savingLinks = new ArrayList<Link>();
+	private final List<Link> deletedLinks = new ArrayList<Link>();
 
 	@Test
-	public void testCreateJob() throws Exception
-	{
-		Job job = new ImportNotesModel().createImportJob();
+	public void testCreateJob() throws Exception {
+		Job job = new ImportNotesDialogModel().createImportJob();
 		assertNotNull(job);
 		assertEquals("Importing Notes from file", job.getName());
 	}
 
 	private File outputFile;
 
-	private void copyFileToSomewhereElse() throws Exception
-	{
-		outputFile = File.createTempFile("biblestudy_" + new Date().getTime(), ".zip");
+	private void copyFileToSomewhereElse() throws Exception {
+		outputFile = File.createTempFile("biblestudy_" + new Date().getTime(),
+				".zip");
 
 		InputStream in = null;
 		OutputStream out = null;
 
-		try
-		{
+		try {
 			in = this.getClass().getResourceAsStream("test.zip");
 			out = new FileOutputStream(outputFile);
 
 			byte[] buffer = new byte[1024];
 			int len = 0;
-			while ((len = in.read(buffer)) > 0)
-			{
+			while ((len = in.read(buffer)) > 0) {
 				out.write(buffer, 0, len);
 			}
-		}
-		finally
-		{
+		} finally {
 			in.close();
 			out.close();
 		}
 	}
 
 	@Test
-	public void testRetrievingNotesAndLinksFromZip() throws Exception
-	{
-		try
-		{
+	public void testRetrievingNotesAndLinksFromZip() throws Exception {
+		try {
 			copyFileToSomewhereElse();
 
 			String filename = outputFile.getAbsolutePath();
-			ImportNotesModel model = new ImportNotesModel();
+			ImportNotesDialogModel model = new ImportNotesDialogModel();
 			model.setFilename(filename);
 
 			model.unpackageZipFile();
@@ -86,29 +78,23 @@ public class ImportNotesModelTest
 			assertEquals(2, model.getNotesFromFile().size());
 
 			model.cleanup();
-		}
-		finally
-		{
+		} finally {
 			new FileUtil().recrusivelyDelete(outputFile);
 			assertFalse(outputFile.exists());
 		}
 	}
 
 	@Test
-	public void testImportingFromNonExistentZip() throws Exception
-	{
+	public void testImportingFromNonExistentZip() throws Exception {
 		String filename = "/asdf/asdf/asdf/asdf.zip";
 
-		ImportNotesModel model = new ImportNotesModel();
+		ImportNotesDialogModel model = new ImportNotesDialogModel();
 		model.setFilename(filename);
 
-		try
-		{
+		try {
 			model.unpackageZipFile();
 			fail();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			// FIXME: want to have better errors
 			assertTrue(e instanceof Exception);
 			// assertEquals("An error occurred while trying to unpackage the zip
@@ -119,8 +105,7 @@ public class ImportNotesModelTest
 	}
 
 	@Test
-	public void testImportingNotesAssociatesLinksWithNotes() throws Exception
-	{
+	public void testImportingNotesAssociatesLinksWithNotes() throws Exception {
 		Note note1 = new Note();
 		note1.setNoteId(4);
 		note1.setName("test");
@@ -134,11 +119,9 @@ public class ImportNotesModelTest
 		notes.add(note1);
 		notes.add(note2);
 
-		ImportNotesModel model = new ImportNotesModel()
-		{
+		ImportNotesDialogModel model = new ImportNotesDialogModel() {
 			@Override
-			List<Link> getLinksFromFile()
-			{
+			List<Link> getLinksFromFile() {
 				Link link1 = new Link();
 				link1.setContainingNoteId(4);
 				link1.setLinkToNoteName("woot");
@@ -159,13 +142,12 @@ public class ImportNotesModelTest
 			private int noteId = 1;
 
 			@Override
-			INoteDao getNoteDao()
-			{
-				return new INoteDao()
-				{
+			INoteDao getNoteDao() {
+				return new INoteDao() {
 
-					public Note createNote(String newNoteName) throws BiblestudyException
-					{
+					@Override
+					public Note createNote(String newNoteName)
+							throws BiblestudyException {
 						Note note = new Note();
 						note.setNoteId(noteId);
 						note.setName(newNoteName);
@@ -173,66 +155,72 @@ public class ImportNotesModelTest
 						return note;
 					}
 
-					public void deleteNote(Note note) throws BiblestudyException
-					{
+					@Override
+					public void deleteNote(Note note)
+							throws BiblestudyException {
 					}
 
-					public List<Note> getAllNotes() throws BiblestudyException
-					{
+					@Override
+					public List<Note> getAllNotes() throws BiblestudyException {
 						return null;
 					}
 
-					public Note getNoteByName(String name) throws BiblestudyException
-					{
+					@Override
+					public Note getNoteByName(String name)
+							throws BiblestudyException {
 						return null;
 					}
 
-					public void saveNote(Note note) throws BiblestudyException
-					{
+					@Override
+					public void saveNote(Note note) throws BiblestudyException {
 						savingNotes.add(note);
 					}
 
-					public void deleteNoteByName(String noteName) throws BiblestudyException
-					{
+					@Override
+					public void deleteNoteByName(String noteName)
+							throws BiblestudyException {
 						deletedNotes.add(noteName);
 					}
 				};
 			}
 
 			@Override
-			ILinkDao getLinkDao()
-			{
-				return new ILinkDao()
-				{
-					public Link createLink(Link link) throws BiblestudyException
-					{
+			ILinkDao getLinkDao() {
+				return new ILinkDao() {
+					@Override
+					public Link createLink(Link link)
+							throws BiblestudyException {
 						savingLinks.add(link);
 						return null;
 					}
 
-					public List<Link> getAllLinksForNote(Integer containingNoteId)
-							throws BiblestudyException
-					{
+					@Override
+					public List<Link> getAllLinksForNote(
+							Integer containingNoteId)
+							throws BiblestudyException {
 						return null;
 					}
 
+					@Override
 					public List<Link> getAllLinksThatLinkTo(String oldNoteName)
-							throws BiblestudyException
-					{
+							throws BiblestudyException {
 						return null;
 					}
 
-					public void removeAllLinksForNote(Note note) throws BiblestudyException
-					{
+					@Override
+					public void removeAllLinksForNote(Note note)
+							throws BiblestudyException {
 					}
 
-					public void removeLink(Link link) throws BiblestudyException
-					{
+					@Override
+					public void removeLink(Link link)
+							throws BiblestudyException {
 						deletedLinks.add(link);
 					}
 
-					public void updateLink(Link link) throws BiblestudyException
-					{
+					@Override
+					public void updateLink(Link link)
+							throws BiblestudyException {
 					}
 				};
 			}

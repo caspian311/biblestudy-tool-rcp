@@ -44,7 +44,7 @@ public class NotePresenterHandlesModelEventTest
 		{
 		}
 
-		public String getContentText()
+		public String getContent()
 		{
 			return null;
 		}
@@ -59,7 +59,7 @@ public class NotePresenterHandlesModelEventTest
 			return null;
 		}
 
-		public List<BibleVerse> getDroppedVerse()
+		public List<BibleVerse> getDroppedVerses()
 		{
 			return null;
 		}
@@ -69,7 +69,7 @@ public class NotePresenterHandlesModelEventTest
 			return null;
 		}
 
-		public String getSelectedText()
+		public String getSelectedContent()
 		{
 			return null;
 		}
@@ -84,7 +84,7 @@ public class NotePresenterHandlesModelEventTest
 			return 0;
 		}
 
-		public void openDropReferenceOptions(int x, int y)
+		public void showDropReferenceMenu(int x, int y)
 		{
 		}
 
@@ -113,7 +113,7 @@ public class NotePresenterHandlesModelEventTest
 		{
 		}
 
-		public void setContentText(String text)
+		public void setContent(String text)
 		{
 		}
 

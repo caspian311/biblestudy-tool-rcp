@@ -1,43 +1,46 @@
 package net.todd.biblestudy.rcp.models;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.event.EventListenerList;
-
+import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.BiblestudyException;
 import net.todd.biblestudy.db.ILinkDao;
-import net.todd.biblestudy.db.INoteDao;
 import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.LinkDao;
 import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.db.NoteDao;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.presenters.INoteModelListener;
 import net.todd.biblestudy.rcp.presenters.ModelEvent;
 import net.todd.biblestudy.reference.Reference;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-public class NoteModel implements INoteModel
-{
-	private EventListenerList eventListeners = new EventListenerList();
+public class NoteModel implements INoteModel {
+	private static final Log LOG = LogFactory.getLog(NoteModel.class);
 
 	private Note note;
 
 	private List<Link> links = new ArrayList<Link>();
 	private Date timestampFromDB;
 
-	public void populateNoteInfo(String noteName) throws BiblestudyException
-	{
-		Note note = getNoteDao().getNoteByName(noteName);
+	private final EntityManager entityManager;
 
-		if (note == null)
-		{
-			getNoteDao().createNote(noteName);
+	public NoteModel(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
-			note = getNoteDao().getNoteByName(noteName);
+	@Override
+	public void populateNoteInfo(String noteName) {
+		Note note = findNoteByName(noteName);
+
+		if (note == null) {
+			note = createEmptyNote();
+			note.setName(noteName);
 		}
 
 		this.note = note;
@@ -47,97 +50,118 @@ public class NoteModel implements INoteModel
 		populateAllLinksForNoteInDB(note);
 	}
 
-	private void populateAllLinksForNoteInDB(Note note) throws BiblestudyException
-	{
-		if (note != null)
-		{
+	private Note createEmptyNote() {
+		try {
+			return entityManager.create(Note.class);
+		} catch (SQLException e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	private Note findNoteByName(String noteName) {
+		Note note = null;
+		try {
+			Note[] notes = entityManager.find(Note.class, "name = ?", noteName);
+			if (notes.length != 0) {
+				note = notes[0];
+			}
+		} catch (SQLException e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		}
+		return note;
+	}
+
+	private void populateAllLinksForNoteInDB(Note note)
+			throws BiblestudyException {
+		if (note != null) {
 			links = getLinkDao().getAllLinksForNote(note.getNoteId());
 
-			if (links == null)
-			{
+			if (links == null) {
 				links = new ArrayList<Link>();
 			}
 		}
 	}
 
-	protected ILinkDao getLinkDao()
-	{
+	protected ILinkDao getLinkDao() {
 		return new LinkDao();
 	}
 
-	public Note getNote()
-	{
+	@Override
+	public Note getNote() {
 		return note;
 	}
 
-	public boolean isDocumentDirty()
-	{
+	@Override
+	public boolean isDocumentDirty() {
 		return isLatestFromDBSameAsCurrent() == false;
 	}
 
-	private boolean isLatestFromDBSameAsCurrent()
-	{
+	private boolean isLatestFromDBSameAsCurrent() {
 		return note.getLastModified().equals(timestampFromDB);
 	}
 
-	public List<NoteStyle> getNoteStylesForRange(int start, int end)
-	{
+	@Override
+	public List<NoteStyle> getNoteStylesForRange(int start, int end) {
 		List<NoteStyle> styles = new ArrayList<NoteStyle>();
 
-		for (Link link : getLinks())
-		{
+		for (Link link : links) {
 			// start of link is at or before the end of request
 			// and
 			// end of request is at or after beginning of link
-			if (link.getStart() <= end && link.getEnd() >= start)
-			{
-				int startPoint = link.getStart() >= start ? link.getStart() : start;
+			if (link.getStart() <= end && link.getEnd() >= start) {
+				int startPoint = link.getStart() >= start ? link.getStart()
+						: start;
 				int endPoint = link.getEnd() <= end ? link.getEnd() : end;
 
-				styles.add(getUnderLineStyle(startPoint, endPoint - startPoint, link.getType()));
+				styles.add(getUnderLineStyle(startPoint, endPoint - startPoint,
+						link.getType()));
 			}
 		}
 
 		return styles;
 	}
 
-	protected List<Link> getLinks()
-	{
-		return links;
-	}
-
-	private NoteStyle getUnderLineStyle(int start, int length, int linkType)
-	{
+	private NoteStyle getUnderLineStyle(int start, int length, int linkType) {
 		NoteStyle style = new NoteStyle();
 		style.setStart(start);
 		style.setLength(length);
 		style.setUnderlined(true);
-		if (linkType == Link.Types.LINK_TO_NOTE)
-		{
+		if (linkType == Link.Types.LINK_TO_NOTE) {
 			style.setForeground(NoteStyle.Colors.BLUE);
 		}
-		if (linkType == Link.Types.LINK_TO_REFERENCE)
-		{
+		if (linkType == Link.Types.LINK_TO_REFERENCE) {
 			style.setForeground(NoteStyle.Colors.GREEN);
 		}
 
 		return style;
 	}
 
-	public void addLinkToNote(String noteName, int start, int stop)
-	{
-		Link link = new Link();
+	@Override
+	public void addLinkToNote(String noteName, int start, int stop) {
+		Link link = createEmptyLink();
 		link.setContainingNoteId(getNote().getNoteId());
 		link.setLinkToNoteName(noteName);
 		link.setStart(start);
 		link.setEnd(stop);
+		link.save();
 
 		addLink(link);
 	}
 
-	public void addLinkToReference(Reference reference, int start, int stop)
-	{
-		Link link = new Link();
+	private Link createEmptyLink() {
+		try {
+			return entityManager.create(Link.class);
+		} catch (SQLException e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void addLinkToReference(Reference reference, int start, int stop) {
+		Link link = createEmptyLink();
 		link.setContainingNoteId(getNote().getNoteId());
 		link.setLinkToReference(reference.toString());
 		link.setStart(start);
@@ -146,77 +170,69 @@ public class NoteModel implements INoteModel
 		addLink(link);
 	}
 
-	private void addLink(Link link)
-	{
-		getLinks().add(link);
+	private void addLink(Link link) {
+		links.add(link);
 		getNote().setLastModified(new Date());
 
 		fireEvent(new ModelEvent(ModelEvent.MODEL_LINK_ADDED));
 	}
 
-	public void registerModelListener(INoteModelListener listener)
-	{
+	@Override
+	public void registerModelListener(INoteModelListener listener) {
 		eventListeners.add(INoteModelListener.class, listener);
 	}
 
-	public void unRegisterModelListener(INoteModelListener listener)
-	{
+	@Override
+	public void unRegisterModelListener(INoteModelListener listener) {
 		eventListeners.remove(INoteModelListener.class, listener);
 	}
 
-	private void fireEvent(ModelEvent event)
-	{
-		INoteModelListener[] listeners = eventListeners.getListeners(INoteModelListener.class);
+	private void fireEvent(ModelEvent event) {
+		INoteModelListener[] listeners = eventListeners
+				.getListeners(INoteModelListener.class);
 
-		for (INoteModelListener listener : listeners)
-		{
+		for (INoteModelListener listener : listeners) {
 			listener.handleModelEvent(event);
 		}
 	}
 
-	public void saveNoteAndLinks() throws BiblestudyException
-	{
-		getNoteDao().saveNote(getNote());
+	@Override
+	public void saveNoteAndLinks() throws BiblestudyException {
+		getNote().save();
 
 		getLinkDao().removeAllLinksForNote(getNote());
 
-		for (Link link : getLinks())
-		{
+		for (Link link : links) {
 			getLinkDao().createLink(link);
 		}
 
 		timestampFromDB = (Date) getNote().getLastModified().clone();
 	}
 
-	protected INoteDao getNoteDao()
-	{
-		return new NoteDao();
-	}
-
-	public void deleteNoteAndLinks() throws BiblestudyException
-	{
-		getNoteDao().deleteNote(getNote());
-		getLinkDao().removeAllLinksForNote(getNote());
+	@Override
+	public void deleteNoteAndLinks() throws BiblestudyException {
+		try {
+			entityManager.delete(getNote().getLinks());
+			entityManager.delete(getNote());
+		} catch (SQLException e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		}
 
 		clearModel();
 	}
 
-	private void clearModel()
-	{
+	private void clearModel() {
 		note = null;
-		getLinks().clear();
+		links.clear();
 	}
 
-	public void updateContent(String newContentText) throws BiblestudyException
-	{
-		if (getNote().getText() != null)
-		{
-			try
-			{
+	@Override
+	public void updateContent(String newContentText) throws BiblestudyException {
+		if (getNote().getText() != null) {
+			try {
 				updateLinks(newContentText);
-			}
-			catch (Throwable e)
-			{
+			} catch (Throwable e) {
 				throw new BiblestudyException(e.getMessage(), e);
 			}
 		}
@@ -226,91 +242,75 @@ public class NoteModel implements INoteModel
 		getNote().setLastModified(new Date());
 	}
 
-	private void updateLinks(String newContentText)
-	{
-		boolean isDeleting = newContentText.length() < getNote().getText().length();
+	private void updateLinks(String newContentText) {
+		boolean isDeleting = newContentText.length() < getNote().getText()
+				.length();
 
 		int differenceLength = findLengthOfDifferingText(newContentText);
 
-		if (differenceLength != 0)
-		{
+		if (differenceLength != 0) {
 			int location = findLocationOfNewText(newContentText);
 
-			if (differenceLength >= getNote().getText().length() && location == 0)
-			{
+			if (differenceLength >= getNote().getText().length()
+					&& location == 0) {
 				removeAllLinksForNote();
-			}
-			else
-			{
+			} else {
 				List<Link> linksToBeDeleted = new ArrayList<Link>();
 
-				for (Link link : getLinks())
-				{
-					if (location == link.getStart().intValue() && isDeleting == false)
-					{
+				for (Link link : links) {
+					if (location == link.getStart().intValue()
+							&& isDeleting == false) {
 						shiftLink(link, differenceLength);
-					}
-					else if (location == link.getStart().intValue() && isDeleting)
-					{
+					} else if (location == link.getStart().intValue()
+							&& isDeleting) {
 						linksToBeDeleted.add(link);
-					}
-					else if (location >= link.getStart().intValue()
-							&& location <= link.getEnd().intValue())
-					{ // edit is in text
+					} else if (location >= link.getStart().intValue()
+							&& location <= link.getEnd().intValue()) { // edit
+																		// is in
+																		// text
 
 						linksToBeDeleted.add(link);
 						// if (getNote().getText().length() >
 						// newContentText.length())
 						// { // is removing content
 						// }
-					}
-					else if (location <= link.getStart().intValue())
-					{
-						if (isDeleting)
-						{
+					} else if (location <= link.getStart().intValue()) {
+						if (isDeleting) {
 							shiftLink(link, differenceLength * -1);
-						}
-						else
-						{
+						} else {
 							shiftLink(link, differenceLength);
 						}
 					}
 				}
 
-				for (Link linkToDelete : linksToBeDeleted)
-				{
+				for (Link linkToDelete : linksToBeDeleted) {
 					removeLink(linkToDelete);
 				}
 			}
 		}
 	}
 
-	private void removeLink(Link linkToDelete)
-	{
-		getLinks().remove(linkToDelete);
+	private void removeLink(Link linkToDelete) {
+		links.remove(linkToDelete);
 	}
 
-	private void removeAllLinksForNote()
-	{
-		getLinks().clear();
+	private void removeAllLinksForNote() {
+		links.clear();
 	}
 
-	protected int findLengthOfDifferingText(String newContentText)
-	{
+	protected int findLengthOfDifferingText(String newContentText) {
 		String oldContentText = getNote().getText();
 		String originalNewContentText = newContentText;
 
-		int lengthOfDifferingText = oldContentText.length() - originalNewContentText.length();
+		int lengthOfDifferingText = oldContentText.length()
+				- originalNewContentText.length();
 
-		if (lengthOfDifferingText < 0)
-		{
+		if (lengthOfDifferingText < 0) {
 			lengthOfDifferingText *= -1;
 		}
 
-		if (lengthOfDifferingText == 0)
-		{
-			if (oldContentText.equals(originalNewContentText) == false)
-			{
+		if (lengthOfDifferingText == 0) {
+			if (oldContentText.equals(originalNewContentText) == false) {
 				lengthOfDifferingText = oldContentText.length();
 			}
 		}
@@ -352,25 +352,22 @@ public class NoteModel implements INoteModel
 		return lengthOfDifferingText;
 	}
 
-	private void shiftLink(Link link, int i)
-	{
+	private void shiftLink(Link link, int i) {
 		link.setStart(new Integer(link.getStart() + i));
 		link.setEnd(new Integer(link.getEnd() + i));
 	}
 
-	protected int findLocationOfNewText(String newContentText)
-	{
-		return StringUtils.indexOfDifference(getNote().getText(), newContentText);
+	protected int findLocationOfNewText(String newContentText) {
+		return StringUtils.indexOfDifference(getNote().getText(),
+				newContentText);
 	}
 
-	public Link getLinkAtOffset(int offset)
-	{
+	@Override
+	public Link getLinkAtOffset(int offset) {
 		Link targetLink = null;
 
-		for (Link link : links)
-		{
-			if (offset >= link.getStart() && offset <= link.getEnd())
-			{
+		for (Link link : links) {
+			if (offset >= link.getStart() && offset <= link.getEnd()) {
 				targetLink = link;
 				break;
 			}
@@ -379,9 +376,9 @@ public class NoteModel implements INoteModel
 		return targetLink;
 	}
 
-	public void createNewNoteInfo(String noteName) throws BiblestudyException
-	{
-		note = getNoteDao().createNote(noteName);
+	@Override
+	public void createNewNoteInfo(String noteName) throws BiblestudyException {
+		note = noteDao.createNote(noteName);
 
 		timestampFromDB = (Date) note.getLastModified().clone();
 
