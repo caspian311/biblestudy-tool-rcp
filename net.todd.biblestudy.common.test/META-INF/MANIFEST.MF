@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common Test
+Bundle-SymbolicName: net.todd.biblestudy.common.test
+Bundle-Version: 1.0.0
+Fragment-Host: net.todd.biblestudy.common
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
