@@ -1,6 +1,6 @@
 package net.todd.biblestudy.rcp.presenters;
 
-import net.todd.biblestudy.rcp.views.IListener;
+import net.todd.biblestudy.common.IListener;
 
 public interface ICreateLinkToDialogModel {
 	void createLink();

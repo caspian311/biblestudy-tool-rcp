@@ -1,5 +1,7 @@
 package net.todd.biblestudy.rcp.views;
 
+import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.ListenerManager;
 import net.todd.biblestudy.db.Note;
 
 import org.apache.commons.lang.StringUtils;

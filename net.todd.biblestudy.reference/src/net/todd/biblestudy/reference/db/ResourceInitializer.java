@@ -2,11 +2,9 @@ package net.todd.biblestudy.reference.db;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.common.db.DataInitializer;
+import net.todd.biblestudy.db.DataInitializer;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -15,7 +13,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-public class ResourceInitializer extends BaseDao {
+public class ResourceInitializer {
 	private static final String FILENAME_ATTRIBUTE = "filename";
 
 	private static final String DB_SCRIPTS_EXTENSION_POINT_TYPE = "net.todd.biblestudy.reference.dbScripts";
@@ -25,18 +23,9 @@ public class ResourceInitializer extends BaseDao {
 
 	private final DataInitializer dataInitializer;
 
-	public ResourceInitializer() throws BiblestudyException {
-		dataInitializer = new DataInitializer(getConnection());
-	}
-
-	private Connection getConnection() throws BiblestudyException {
-		try {
-			return getSqlMapConfig().getDataSource().getConnection();
-		} catch (SQLException e) {
-			throw new BiblestudyException("An error occurred while "
-					+ "trying to get a connection to the database: "
-					+ e.getMessage(), e);
-		}
+	public ResourceInitializer(DataInitializer dataInitializer)
+			throws BiblestudyException {
+		this.dataInitializer = dataInitializer;
 	}
 
 	public void initializeData() throws BiblestudyException {

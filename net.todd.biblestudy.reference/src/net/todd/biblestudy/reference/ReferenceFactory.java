@@ -6,23 +6,22 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ReferenceFactory
-{
+public class ReferenceFactory {
 	private Reference reference;
 	private int lastPoint = 0;
 
-	public Reference getReference(String referenceStr) throws InvalidReferenceException
-	{
+	public Reference getReference(String referenceStr)
+			throws InvalidReferenceException {
 		return validateReferenceStr(referenceStr);
 	}
 
-	private Reference validateReferenceStr(String referenceStr) throws InvalidReferenceException
-	{
+	private Reference validateReferenceStr(String referenceStr)
+			throws InvalidReferenceException {
 		reference = new Reference();
 
-		if (StringUtils.isEmpty(referenceStr))
-		{
-			throw new InvalidReferenceException("Invalid Reference: empty reference");
+		if (StringUtils.isEmpty(referenceStr)) {
+			throw new InvalidReferenceException(
+					"Invalid Reference: empty reference");
 		}
 
 		extractBook(referenceStr);
@@ -32,49 +31,40 @@ public class ReferenceFactory
 		return reference;
 	}
 
-	private void extractVerse(String referenceStr) throws InvalidReferenceException
-	{
+	private void extractVerse(String referenceStr)
+			throws InvalidReferenceException {
 		String ref = referenceStr.substring(lastPoint);
 		ref = ref.trim();
 
-		if (StringUtils.isEmpty(ref) == false)
-		{
-			if (StringUtils.contains(ref, "-") || StringUtils.contains(ref, ","))
-			{
+		if (StringUtils.isEmpty(ref) == false) {
+			if (StringUtils.contains(ref, "-")
+					|| StringUtils.contains(ref, ",")) {
 				Integer[] verses = getMixedNumberArray(ref);
 
 				reference.setVerses(verses);
-			}
-			else
-			{
-				try
-				{
-					reference.setVerses(new Integer[] { Integer.parseInt(ref) });
-				}
-				catch (NumberFormatException e)
-				{
-					throw new InvalidReferenceException("Invalid Reference: incorrect verse");
+			} else {
+				try {
+					reference
+							.setVerses(new Integer[] { Integer.parseInt(ref) });
+				} catch (NumberFormatException e) {
+					throw new InvalidReferenceException(
+							"Invalid Reference: incorrect verse");
 				}
 			}
 		}
 	}
 
-	private Integer[] getMixedNumberArray(String ref)
-	{
+	private Integer[] getMixedNumberArray(String ref) {
 		List<Integer> numberList = new ArrayList<Integer>();
 
 		StringTokenizer tokenizer = new StringTokenizer(ref, ",");
 
-		while (tokenizer.hasMoreTokens())
-		{
+		while (tokenizer.hasMoreTokens()) {
 			String numberStr = tokenizer.nextToken();
 
-			if (StringUtils.contains(numberStr, "-"))
-			{
+			if (StringUtils.contains(numberStr, "-")) {
 				numberList.addAll(getNumberArray(numberStr));
-			}
-			else
-			{
+			} else {
 				Integer number = Integer.parseInt(numberStr.trim());
 				numberList.add(number);
 			}
@@ -86,58 +76,50 @@ public class ReferenceFactory
 		return numbers;
 	}
 
-	private void extractChapter(String referenceStr) throws InvalidReferenceException
-	{
+	private void extractChapter(String referenceStr)
+			throws InvalidReferenceException {
 		String ref = referenceStr.substring(lastPoint);
 		ref = ref.trim();
 
-		if (StringUtils.isEmpty(ref) == false)
-		{
-			if (StringUtils.isNumeric(ref))
-			{
-				try
-				{
-					reference.setChapters(new Integer[] { Integer.parseInt(ref) });
-				}
-				catch (NumberFormatException e)
-				{
-					throw new InvalidReferenceException("Invalid Reference: incorrect chapter");
+		if (StringUtils.isEmpty(ref) == false) {
+			if (StringUtils.isNumeric(ref)) {
+				try {
+					reference
+							.setChapters(new Integer[] { Integer.parseInt(ref) });
+				} catch (NumberFormatException e) {
+					throw new InvalidReferenceException(
+							"Invalid Reference: incorrect chapter");
 				}
 
 				lastPoint = reference.getBook().length() + ref.length() + 1;
-			}
-			else if (StringUtils.contains(ref, ":"))
-			{
+			} else if (StringUtils.contains(ref, ":")) {
 				StringTokenizer tokenizer = new StringTokenizer(ref, ":");
 				String chapterStr = tokenizer.nextToken();
 
-				try
-				{
-					reference.setChapters(new Integer[] { Integer.parseInt(chapterStr) });
-				}
-				catch (NumberFormatException e)
-				{
-					throw new InvalidReferenceException("Invalid Reference: incorrect chapter");
+				try {
+					reference.setChapters(new Integer[] { Integer
+							.parseInt(chapterStr) });
+				} catch (NumberFormatException e) {
+					throw new InvalidReferenceException(
+							"Invalid Reference: incorrect chapter");
 				}
 
-				lastPoint = reference.getBook().length() + chapterStr.length() + 2;
-			}
-			else if (StringUtils.contains(ref, "-") || StringUtils.contains(ref, ","))
-			{
+				lastPoint = reference.getBook().length() + chapterStr.length()
+						+ 2;
+			} else if (StringUtils.contains(ref, "-")
+					|| StringUtils.contains(ref, ",")) {
 				Integer[] numbers = getMixedNumberArray(ref);
 
 				reference.setChapters(numbers);
 				lastPoint = reference.getBook().length() + ref.length() + 1;
-			}
-			else
-			{
-				throw new InvalidReferenceException("Invalid Reference: incorrect chapter");
+			} else {
+				throw new InvalidReferenceException(
+						"Invalid Reference: incorrect chapter");
 			}
 		}
 	}
 
-	private List<Integer> getNumberArray(String ref)
-	{
+	private List<Integer> getNumberArray(String ref) {
 		StringTokenizer tokenizer = new StringTokenizer(ref, "-");
 
 		String startStr = tokenizer.nextToken();
@@ -150,39 +132,34 @@ public class ReferenceFactory
 
 		List<Integer> numbers = new ArrayList<Integer>();
 
-		for (int i = startingChapter; i <= endingChapter; i++)
-		{
+		for (int i = startingChapter; i <= endingChapter; i++) {
 			numbers.add(i);
 		}
 
 		return numbers;
 	}
 
-	private void extractBook(String referenceStr) throws InvalidReferenceException
-	{
+	private void extractBook(String referenceStr)
+			throws InvalidReferenceException {
 		StringTokenizer tokenizer = new StringTokenizer(referenceStr);
-		if (tokenizer.hasMoreTokens() == false)
-		{
-			throw new InvalidReferenceException("Invalid Reference: incorrect book");
+		if (tokenizer.hasMoreTokens() == false) {
+			throw new InvalidReferenceException(
+					"Invalid Reference: incorrect book");
 		}
 
 		String book = "";
 
 		boolean firstToken = true;
 
-		while (tokenizer.hasMoreTokens())
-		{
+		while (tokenizer.hasMoreTokens()) {
 			String token = tokenizer.nextToken();
-			if (StringUtils.isNumeric(token) && firstToken == false)
-			{
+			if (StringUtils.isNumeric(token) && firstToken == false) {
 				break;
 			}
-			if (StringUtils.contains(token, ":"))
-			{
+			if (StringUtils.contains(token, ":")) {
 				break;
 			}
-			if (StringUtils.contains(token, "-"))
-			{
+			if (StringUtils.contains(token, "-")) {
 				break;
 			}
 

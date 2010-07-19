@@ -3,14 +3,13 @@ package net.todd.biblestudy.reference.views;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.event.EventListenerList;
-
-import net.todd.biblestudy.common.ViewHelper;
+import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.ListenerManager;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.ReferenceTransfer;
-import net.todd.biblestudy.reference.presenters.IReferenceViewListener;
 import net.todd.biblestudy.reference.util.ScriptureTextUtil;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -43,10 +42,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.part.ViewPart;
 
-public class ReferenceView extends ViewPart implements IReferenceView
-{
+public class ReferenceView implements IReferenceView {
 	protected static final String ID = "net.todd.biblestudy.reference.common.ReferenceView";
 
 	private static final int TEXT_COLUMN_WIDTH = 200;
@@ -54,9 +51,9 @@ public class ReferenceView extends ViewPart implements IReferenceView
 	private static final String REFERENCE_COLUMN_HEADER = "Reference";
 	private static final int REFERENCE_COLUMN_WIDTH = 100;
 
-	private int textColumnWidth = TEXT_COLUMN_WIDTH;
-
-	private EventListenerList eventListeners = new EventListenerList();
+	private final ListenerManager lookupButtonPressedListenerManager = new ListenerManager();
+	private final ListenerManager createLinkToNoteListenerManager = new ListenerManager();
+	private final ListenerManager rightClickListenerManager = new ListenerManager();
 
 	private Combo referenceCombo;
 
@@ -81,86 +78,73 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 	private TableItem[] currentSelection;
 
-	@Override
-	public void createPartControl(Composite parent)
-	{
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginBottom = 2;
-		layout.marginTop = 2;
-		layout.marginLeft = 2;
-		layout.marginRight = 2;
-
-		Composite composite = new Composite(parent, SWT.NONE);
-
-		composite.setLayout(layout);
+	public ReferenceView(Composite composite) {
+		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
 
 		createControls(composite);
 		createResultsArea(composite);
 		createRightClickMenu(composite);
 	}
 
-	private void createRightClickMenu(Composite parent)
-	{
+	private void createRightClickMenu(Composite parent) {
 		rightClickMenu = new Menu(parent);
 		rightClickMenu.setVisible(false);
 
 		MenuItem createLinkToNote = new MenuItem(rightClickMenu, SWT.POP_UP);
 		createLinkToNote.setText("Show Entire Chapter");
 		createLinkToNote.setEnabled(true);
-		createLinkToNote.addSelectionListener(new SelectionAdapter()
-		{
+		createLinkToNote.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				fireEvent(new ReferenceViewEvent(
-						ReferenceViewEvent.REFERENCE_VIEW_SHOW_ENTIRE_CHAPTER));
+			public void widgetSelected(SelectionEvent e) {
+				createLinkToNoteListenerManager.notifyListeners();
 			}
 		});
 	}
 
-	private void createResultsArea(Composite parent)
-	{
+	private void createResultsArea(Composite parent) {
 		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL
 				| SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION | SWT.MULTI);
 		resultsTableViewer.setLabelProvider(new ResultsTableLabelProvider());
 		resultsTableViewer.setContentProvider(new ArrayContentProvider());
 
 		resultsTable = resultsTableViewer.getTable();
-		resultsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		resultsTable
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		resultsTable.setHeaderVisible(true);
 		resultsTable.setLinesVisible(true);
 
-		resultsTable.addMouseListener(new MouseAdapter()
-		{
+		resultsTable.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseUp(MouseEvent e)
-			{
-				if (e.stateMask == SWT.BUTTON3 || e.stateMask == (SWT.BUTTON1 | SWT.CTRL))
-				{ // right-click and ctrl+mouse1 for macs
+			public void mouseUp(MouseEvent e) {
+				if (isRightClick(e) || isMacRightClick(e)) {
 					lastRightClickPosition = new Point(e.x, e.y);
 
-					fireEvent(new ReferenceViewEvent(
-							ReferenceViewEvent.REFERENCE_VIEW_SHOW_RIGHT_CLICK_MENU));
+					rightClickListenerManager.notifyListeners();
 				}
+			}
+
+			private boolean isMacRightClick(MouseEvent e) {
+				return e.stateMask == (SWT.BUTTON1 | SWT.CTRL);
+			}
+
+			private boolean isRightClick(MouseEvent e) {
+				return e.stateMask == SWT.BUTTON3;
 			}
 		});
 
-		resultsTable.addSelectionListener(new SelectionAdapter()
-		{
+		resultsTable.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				TableItem[] selection = resultsTable.getSelection();
 
 				currentSelection = selection;
 			}
 		});
 
-		resultsTable.addListener(SWT.MeasureItem, new Listener()
-		{
-			public void handleEvent(Event event)
-			{
+		resultsTable.addListener(SWT.MeasureItem, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
 				TableItem item = (TableItem) event.item;
 				String text = item.getText(event.index);
 				Point size = event.gc.textExtent(text);
@@ -168,42 +152,39 @@ public class ReferenceView extends ViewPart implements IReferenceView
 				event.height = Math.max(event.height, size.y + TEXT_MARGIN);
 			}
 		});
-		resultsTable.addListener(SWT.EraseItem, new Listener()
-		{
-			public void handleEvent(Event event)
-			{
+		resultsTable.addListener(SWT.EraseItem, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
 				event.detail &= ~SWT.FOREGROUND;
 			}
 		});
-		resultsTable.addListener(SWT.PaintItem, new Listener()
-		{
-			public void handleEvent(Event event)
-			{
+		resultsTable.addListener(SWT.PaintItem, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
 				TableItem item = (TableItem) event.item;
 				String text = item.getText(event.index);
 				/* center column 1 vertically */
 				int yOffset = 0;
-				if (event.index == 1)
-				{
+				if (event.index == 1) {
 					Point size = event.gc.textExtent(text);
 					yOffset = Math.max(0, (event.height - size.y) / 2);
 				}
-				event.gc.drawText(text, event.x + TEXT_MARGIN, event.y + yOffset, true);
+				event.gc.drawText(text, event.x + TEXT_MARGIN, event.y
+						+ yOffset, true);
 			}
 		});
-		resultsTable.addControlListener(new ControlListener()
-		{
-			public void controlMoved(ControlEvent e)
-			{
+		resultsTable.addControlListener(new ControlListener() {
+			@Override
+			public void controlMoved(ControlEvent e) {
 			}
 
-			public void controlResized(ControlEvent e)
-			{
+			@Override
+			public void controlResized(ControlEvent e) {
 				Rectangle clientArea = resultsTable.getClientArea();
 
 				int tableWidth = clientArea.width - 100;
 
-				textColumnWidth = tableWidth - REFERENCE_COLUMN_WIDTH;
+				int textColumnWidth = tableWidth - REFERENCE_COLUMN_WIDTH;
 				textColumn.setWidth(textColumnWidth);
 				redoTheText();
 				// textColumn.pack();
@@ -223,32 +204,30 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		makeDragable();
 	}
 
-	public BibleVerse getSelectedVerse()
-	{
+	@Override
+	public BibleVerse getSelectedVerse() {
 		BibleVerse selectedVerse = null;
 
-		if (currentSelection != null && currentSelection.length > 0)
-		{
+		if (currentSelection != null && currentSelection.length > 0) {
 			selectedVerse = (BibleVerse) currentSelection[0].getData();
 		}
 
 		return selectedVerse;
 	}
 
-	private void redoTheText()
-	{
+	private void redoTheText() {
 		GC gc = new GC(resultsTable);
 		FontMetrics fontMetrics = gc.getFontMetrics();
 		int averageCharWidth = fontMetrics.getAverageCharWidth();
 		gc.dispose();
 
-		for (TableItem item : resultsTable.getItems())
-		{
+		for (TableItem item : resultsTable.getItems()) {
 			String columnText = item.getText(1);
 
-			int maxCharactersPerLine = textColumnWidth / averageCharWidth;
+			int maxCharactersPerLine = TEXT_COLUMN_WIDTH / averageCharWidth;
 
-			String newColumnText = ScriptureTextUtil.addNewLines(columnText, maxCharactersPerLine);
+			String newColumnText = ScriptureTextUtil.addNewLines(columnText,
+					maxCharactersPerLine);
 
 			item.setText(1, newColumnText);
 		}
@@ -256,26 +235,24 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		resultsTable.layout();
 	}
 
-	private void makeDragable()
-	{
-		DragSource dragSource = new DragSource(resultsTableViewer.getTable(), DND.DROP_MOVE);
-		dragSource.setTransfer(new Transfer[] { ReferenceTransfer.getInstance() });
-		dragSource.addDragListener(new DragSourceAdapter()
-		{
+	private void makeDragable() {
+		DragSource dragSource = new DragSource(resultsTableViewer.getTable(),
+				DND.DROP_MOVE);
+		dragSource
+				.setTransfer(new Transfer[] { ReferenceTransfer.getInstance() });
+		dragSource.addDragListener(new DragSourceAdapter() {
 			@Override
-			public void dragSetData(DragSourceEvent event)
-			{
-				if (ReferenceTransfer.getInstance().isSupportedType(event.dataType))
-				{
+			public void dragSetData(DragSourceEvent event) {
+				if (ReferenceTransfer.getInstance().isSupportedType(
+						event.dataType)) {
 					List<BibleVerse> verses = new ArrayList<BibleVerse>();
 
 					TableItem[] selectionList = getCurrentSelection();
 
-					if (selectionList != null)
-					{
-						for (TableItem selectedItem : selectionList)
-						{
-							BibleVerse verse = (BibleVerse) selectedItem.getData();
+					if (selectionList != null) {
+						for (TableItem selectedItem : selectionList) {
+							BibleVerse verse = (BibleVerse) selectedItem
+									.getData();
 
 							verses.add(verse);
 						}
@@ -287,26 +264,33 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		});
 	}
 
-	private TableItem[] getCurrentSelection()
-	{
+	@Override
+	public void addLookupButtonPressedListener(IListener listener) {
+		lookupButtonPressedListenerManager.addListener(listener);
+	}
+
+	@Override
+	public void addCreateLinkToNoteListener(IListener listener) {
+		createLinkToNoteListenerManager.addListener(listener);
+	}
+
+	@Override
+	public void addRightClickListener(IListener listener) {
+		rightClickListenerManager.addListener(listener);
+	}
+
+	private TableItem[] getCurrentSelection() {
 		return currentSelection;
 	}
 
-	public void setResults(final BibleVerse[] results)
-	{
-		ViewHelper.runWithBusyIndicator(new Runnable()
-		{
-			public void run()
-			{
-				resultsTableViewer.setInput(results);
+	@Override
+	public void setResults(final BibleVerse[] results) {
+		resultsTableViewer.setInput(results);
 
-				redoTheText();
-			}
-		});
+		redoTheText();
 	}
 
-	private void createControls(Composite parent)
-	{
+	private void createControls(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 
 		GridLayout layout = new GridLayout(4, false);
@@ -319,150 +303,94 @@ public class ReferenceView extends ViewPart implements IReferenceView
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
 		lookupText = new Text(composite, SWT.BORDER);
-		lookupText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
+		lookupText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false,
+				3, 1));
 
 		lookupButton = new Button(composite, SWT.PUSH);
 		lookupButton.setText("Search");
-		lookupButton.addSelectionListener(new SelectionAdapter()
-		{
+		lookupButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				fireEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SEARCH));
+			public void widgetSelected(SelectionEvent e) {
+				lookupButtonPressedListenerManager.notifyListeners();
 			}
 		});
 
-		getSite().getShell().setDefaultButton(lookupButton);
+		composite.getShell().setDefaultButton(lookupButton);
 
 		referenceSearchButton = new Button(composite, SWT.RADIO);
 		referenceSearchButton.setText("Reference");
 		referenceSearchButton.setSelection(true);
-		referenceSearchButton.addSelectionListener(new SelectionAdapter()
-		{
+		referenceSearchButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				keywordOrReference = "reference";
 			}
 		});
 		keywordSearchButton = new Button(composite, SWT.RADIO);
 		keywordSearchButton.setText("Keyword");
-		keywordSearchButton.addSelectionListener(new SelectionAdapter()
-		{
+		keywordSearchButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				keywordOrReference = "keyword";
 			}
 		});
 
 		referenceCombo = new Combo(composite, SWT.BORDER | SWT.DROP_DOWN);
-		referenceCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 2, 1));
+		referenceCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false,
+				false, 2, 1));
 
 		resultsMessage = new Label(composite, SWT.NORMAL);
-		resultsMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 4, 1));
+		resultsMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING,
+				true, false, 4, 1));
 	}
 
 	@Override
-	public void setFocus()
-	{
-		lookupText.setFocus();
-	}
-
-	@Override
-	public void dispose()
-	{
-		fireEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_DISPOSED));
-
-		super.dispose();
-	}
-
-	public void addReferenceViewListener(IReferenceViewListener listener)
-	{
-		eventListeners.add(IReferenceViewListener.class, listener);
-	}
-
-	public void fireEvent(ReferenceViewEvent event)
-	{
-		IReferenceViewListener[] listeners = eventListeners
-				.getListeners(IReferenceViewListener.class);
-
-		for (IReferenceViewListener listener : listeners)
-		{
-			listener.handleEvent(event);
-		}
-	}
-
-	public void removeReferenceViewListener(IReferenceViewListener listener)
-	{
-		eventListeners.remove(IReferenceViewListener.class, listener);
-	}
-
-	public void setDataSourcesInDropDown(List<String> sourceIds)
-	{
-		for (String version : sourceIds)
-		{
+	public void setDataSourcesInDropDown(List<String> sourceIds) {
+		for (String version : sourceIds) {
 			referenceCombo.add(version);
 		}
 
 		referenceCombo.select(0);
 	}
 
-	public String getReferenceSourceId()
-	{
+	@Override
+	public String getReferenceSourceId() {
 		return referenceCombo.getText();
 	}
 
-	public void setLookupText(String lookupString)
-	{
+	@Override
+	public void setLookupText(String lookupString) {
 		lookupText.setText(lookupString);
 	}
 
-	public String getLookupText()
-	{
+	@Override
+	public String getLookupText() {
 		return lookupText.getText();
 	}
 
-	public void displayLimitResultsMessage(final int totalSize)
-	{
-		ViewHelper.runWithoutBusyIndicator(new Runnable()
-		{
-			public void run()
-			{
-				resultsMessage.setText("Only displaying 100 of " + totalSize + " results.");
-			}
-		});
+	@Override
+	public void displayLimitResultsMessage(final int totalSize) {
+		resultsMessage.setText("Only displaying 100 of " + totalSize
+				+ " results.");
 	}
 
-	public void displayErrorMessage(final String message)
-	{
-		ViewHelper.runWithoutBusyIndicator(new Runnable()
-		{
-			public void run()
-			{
-				resultsMessage.setText(message);
-			}
-		});
+	@Override
+	public void displayErrorMessage(final String message) {
+		resultsMessage.setText(message);
 	}
 
-	public void hideLimitResultsMessage()
-	{
-		ViewHelper.runWithoutBusyIndicator(new Runnable()
-		{
-			public void run()
-			{
-				resultsMessage.setText("");
-			}
-		});
+	@Override
+	public void hideLimitResultsMessage() {
+		resultsMessage.setText("");
 	}
 
-	public String getKeywordOrReference()
-	{
+	@Override
+	public String getKeywordOrReference() {
 		return keywordOrReference;
 	}
 
-	public void showRightClickMenu()
-	{
+	@Override
+	public void showRightClickMenu() {
 		int x = lastRightClickPosition.x;
 		int y = lastRightClickPosition.y;
 
@@ -470,10 +398,5 @@ public class ReferenceView extends ViewPart implements IReferenceView
 
 		rightClickMenu.setLocation(point);
 		rightClickMenu.setVisible(true);
-	}
-
-	public void setViewTitle(String title)
-	{
-		this.setPartName(title);
 	}
 }

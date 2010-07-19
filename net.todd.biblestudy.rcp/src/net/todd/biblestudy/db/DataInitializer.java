@@ -1,4 +1,4 @@
-package net.todd.biblestudy.common.db;
+package net.todd.biblestudy.db;
 
 import java.io.BufferedReader;
 import java.io.File;

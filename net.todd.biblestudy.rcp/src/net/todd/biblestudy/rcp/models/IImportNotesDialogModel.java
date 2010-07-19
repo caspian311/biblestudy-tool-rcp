@@ -2,8 +2,8 @@ package net.todd.biblestudy.rcp.models;
 
 import java.util.List;
 
+import net.todd.biblestudy.common.IListener;
 import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.rcp.views.IListener;
 
 public interface IImportNotesDialogModel {
 	void setFilename(String filename);

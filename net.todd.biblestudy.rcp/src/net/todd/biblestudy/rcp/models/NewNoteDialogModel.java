@@ -3,9 +3,9 @@ package net.todd.biblestudy.rcp.models;
 import java.sql.SQLException;
 
 import net.java.ao.EntityManager;
+import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.ListenerManager;
 import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.rcp.views.IListener;
-import net.todd.biblestudy.rcp.views.ListenerManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

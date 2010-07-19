@@ -1,5 +1,8 @@
 package net.todd.biblestudy.rcp.views;
 
+import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.ListenerManager;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;

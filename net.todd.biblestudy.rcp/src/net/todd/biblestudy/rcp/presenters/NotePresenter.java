@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.IListener;
 import net.todd.biblestudy.db.Link;
 import net.todd.biblestudy.db.NoteStyle;
 import net.todd.biblestudy.rcp.LinkStatusLineUtil;
 import net.todd.biblestudy.rcp.models.INoteModel;
 import net.todd.biblestudy.rcp.views.ICreateLinkToDialogLauncher;
 import net.todd.biblestudy.rcp.views.IDeleteConfirmationLauncher;
-import net.todd.biblestudy.rcp.views.IListener;
 import net.todd.biblestudy.rcp.views.INoteView;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.InvalidReferenceException;

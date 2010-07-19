@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.java.ao.EntityManager;
+import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.ListenerManager;
 import net.todd.biblestudy.db.Note;
 import net.todd.biblestudy.rcp.presenters.IExportNoteLauncher;
-import net.todd.biblestudy.rcp.views.IListener;
-import net.todd.biblestudy.rcp.views.ListenerManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

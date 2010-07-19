@@ -1,4 +1,4 @@
-package net.todd.biblestudy.rcp.views;
+package net.todd.biblestudy.common;
 
 import java.util.ArrayList;
 import java.util.List;

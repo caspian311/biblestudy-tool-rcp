@@ -2,6 +2,7 @@ package net.todd.biblestudy.rcp.views;
 
 import java.util.List;
 
+import net.todd.biblestudy.common.IListener;
 import net.todd.biblestudy.db.Note;
 
 public interface IExportNotesDialogView {

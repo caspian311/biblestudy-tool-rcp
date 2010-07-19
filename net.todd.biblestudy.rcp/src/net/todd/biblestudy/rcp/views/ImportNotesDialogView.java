@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.ListenerManager;
 import net.todd.biblestudy.db.Note;
 
 import org.eclipse.jface.layout.GridDataFactory;

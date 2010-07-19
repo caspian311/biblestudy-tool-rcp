@@ -1,9 +1,9 @@
 package net.todd.biblestudy.rcp.presenters;
 
+import net.todd.biblestudy.common.IListener;
 import net.todd.biblestudy.rcp.models.IImportNotesDialogModel;
 import net.todd.biblestudy.rcp.views.IImportFileDialogLauncher;
 import net.todd.biblestudy.rcp.views.IImportNotesDialogView;
-import net.todd.biblestudy.rcp.views.IListener;
 
 public class ImportNotesDialogPresenter {
 	public ImportNotesDialogPresenter(final IImportNotesDialogView view,

@@ -1,5 +1,7 @@
-package net.todd.biblestudy.rcp.views;
+package net.todd.biblestudy.common;
 
 public interface IListener {
+
 	void handleEvent();
+
 }

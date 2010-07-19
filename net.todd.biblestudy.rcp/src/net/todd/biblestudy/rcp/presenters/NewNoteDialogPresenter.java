@@ -1,7 +1,7 @@
 package net.todd.biblestudy.rcp.presenters;
 
+import net.todd.biblestudy.common.IListener;
 import net.todd.biblestudy.rcp.models.INewNoteDialogModel;
-import net.todd.biblestudy.rcp.views.IListener;
 import net.todd.biblestudy.rcp.views.INewNoteDialogView;
 
 public class NewNoteDialogPresenter {

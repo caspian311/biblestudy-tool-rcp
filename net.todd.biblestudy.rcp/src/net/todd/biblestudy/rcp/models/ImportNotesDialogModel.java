@@ -3,10 +3,10 @@ package net.todd.biblestudy.rcp.models;
 import java.util.List;
 
 import net.java.ao.EntityManager;
+import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.ListenerManager;
 import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.rcp.views.IListener;
 import net.todd.biblestudy.rcp.views.ImportJobExecutor;
-import net.todd.biblestudy.rcp.views.ListenerManager;
 
 public class ImportNotesDialogModel implements IImportNotesDialogModel {
 	private final ListenerManager selectionChangeListenerManager = new ListenerManager();

@@ -2,38 +2,35 @@ package net.todd.biblestudy.reference.views;
 
 import java.util.List;
 
+import net.todd.biblestudy.common.IListener;
 import net.todd.biblestudy.reference.BibleVerse;
-import net.todd.biblestudy.reference.presenters.IReferenceViewListener;
 
-public interface IReferenceView
-{
-	public void fireEvent(ReferenceViewEvent event);
+public interface IReferenceView {
+	void setDataSourcesInDropDown(List<String> ids);
 
-	public void addReferenceViewListener(IReferenceViewListener listener);
+	String getReferenceSourceId();
 
-	public void removeReferenceViewListener(IReferenceViewListener listener);
+	String getLookupText();
 
-	public void setDataSourcesInDropDown(List<String> ids);
+	void setLookupText(String lookupText);
 
-	public String getReferenceSourceId();
+	void setResults(BibleVerse[] results);
 
-	public String getLookupText();
+	void displayErrorMessage(final String message);
 
-	public void setLookupText(String lookupText);
+	void displayLimitResultsMessage(int totalSize);
 
-	public void setResults(BibleVerse[] results);
+	void hideLimitResultsMessage();
 
-	public void displayErrorMessage(final String message);
+	String getKeywordOrReference();
 
-	public void displayLimitResultsMessage(int totalSize);
+	BibleVerse getSelectedVerse();
 
-	public void hideLimitResultsMessage();
+	void showRightClickMenu();
 
-	public String getKeywordOrReference();
+	void addCreateLinkToNoteListener(IListener listener);
 
-	public BibleVerse getSelectedVerse();
+	void addLookupButtonPressedListener(IListener listener);
 
-	public void showRightClickMenu();
-
-	public void setViewTitle(String title);
+	void addRightClickListener(IListener listener);
 }
