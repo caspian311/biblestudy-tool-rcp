@@ -6,7 +6,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="true"
-            class="net.todd.biblestudy.reference.views.ReferenceViewPart"
+            class="net.todd.biblestudy.reference.ReferenceViewPart"
             icon="icons/docs.png"
             id="net.todd.biblestudy.reference.common.ReferenceView"
             name="ReferenceView">

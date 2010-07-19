@@ -11,6 +11,5 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.lang;bundle-version="2.4.0",
  org.apache.commons.logging;bundle-version="1.0.4"
 Eclipse-LazyStart: false
-Export-Package: net.todd.biblestudy.reference,
- net.todd.biblestudy.reference.views
+Export-Package: net.todd.biblestudy.reference
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

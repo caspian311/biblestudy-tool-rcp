@@ -1,6 +1,5 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.rcp.views.NoteViewPart;
 
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;

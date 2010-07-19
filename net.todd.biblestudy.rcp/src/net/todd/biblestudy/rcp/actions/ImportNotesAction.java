@@ -1,6 +1,6 @@
 package net.todd.biblestudy.rcp.actions;
 
-import net.todd.biblestudy.rcp.views.ImportNotesDialog;
+import net.todd.biblestudy.rcp.ImportNotesDialog;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

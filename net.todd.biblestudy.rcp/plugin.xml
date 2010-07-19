@@ -107,7 +107,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="true"
-            class="net.todd.biblestudy.rcp.views.NoteView"
+            class="net.todd.biblestudy.rcp.NoteView"
             icon="icons/text_file.png"
             id="net.todd.biblestudy.rcp.NoteView"
             name="NoteView">
@@ -177,20 +177,6 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+W">
       </key>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="net.todd.biblestudy.rcp.PreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="net.todd.biblestudy.rcp.DatabaseSettingsPage"
-            id="net.todd.biblestudy.rcp.databaseSettingsPage"
-            name="Database Settings">
-      </page>
    </extension>
 
 </plugin>

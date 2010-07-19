@@ -1,6 +1,6 @@
 package net.todd.biblestudy.rcp.actions;
 
-import net.todd.biblestudy.rcp.models.INoteModel;
+import net.todd.biblestudy.rcp.INoteModel;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

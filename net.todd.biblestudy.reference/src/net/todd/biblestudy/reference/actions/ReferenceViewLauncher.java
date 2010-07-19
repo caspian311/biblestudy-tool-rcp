@@ -1,7 +1,7 @@
 package net.todd.biblestudy.reference.actions;
 
 import net.todd.biblestudy.reference.Reference;
-import net.todd.biblestudy.reference.views.ReferenceViewPart;
+import net.todd.biblestudy.reference.ReferenceViewPart;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

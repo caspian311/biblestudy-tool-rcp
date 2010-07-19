@@ -1,6 +1,6 @@
 package net.todd.biblestudy.rcp.actions;
 
-import net.todd.biblestudy.rcp.views.NewNoteDialog;
+import net.todd.biblestudy.rcp.NewNoteDialog;
 
 import org.eclipse.swt.widgets.Shell;
 
