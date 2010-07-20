@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.common.IListener;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.InvalidReferenceException;
 import net.todd.biblestudy.reference.Reference;
 import net.todd.biblestudy.reference.ReferenceFactory;
-import net.todd.biblestudy.reference.views.ReferenceViewerFactory;
 
 import org.eclipse.swt.graphics.Point;
 
@@ -29,19 +27,6 @@ public class NotePresenter {
 		this.createLinkToDialogLauncher = createLinkToDialogLauncher;
 		this.deleteConfirmationLauncher = deleteConfirmationDialogLauncher;
 		this.noteViewLauncher = noteViewLauncher;
-
-		handleOpenNote();
-
-		noteView.addNoteContentListener(new IListener() {
-			@Override
-			public void handleEvent() {
-			}
-		});
-		noteView.addCreateLinkListener(new IListener() {
-			@Override
-			public void handleEvent() {
-			}
-		});
 	}
 
 	// public void handleEvent(ViewEvent event) {

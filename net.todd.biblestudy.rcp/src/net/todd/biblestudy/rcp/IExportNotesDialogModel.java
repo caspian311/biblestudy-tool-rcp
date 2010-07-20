@@ -2,9 +2,15 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.IMvpListener;
 
-public interface IExportNotesDialogModel {
+public interface IExportNotesDialogModel extends IMvpListener {
+	enum Type {
+		EXPORT_FILE_LOCATION
+	}
+
+	Type EXPORT_FILE_LOCATION = Type.EXPORT_FILE_LOCATION;
+
 	/**
 	 * Get all notes in the application
 	 * 
@@ -32,8 +38,6 @@ public interface IExportNotesDialogModel {
 	public String getExportFileLocation();
 
 	public void doExport();
-
-	public void addExportFileLocationChangedListener(IListener iListener);
 
 	void setNotesToExport(List<Note> noteToExport);
 }

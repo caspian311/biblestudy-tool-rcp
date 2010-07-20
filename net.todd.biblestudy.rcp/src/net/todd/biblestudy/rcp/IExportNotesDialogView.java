@@ -2,22 +2,23 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.IMvpListener;
 
-public interface IExportNotesDialogView {
+public interface IExportNotesDialogView extends IMvpListener {
+	enum Type {
+		TABLE_SELECTION, EXPORT_FILE_LOCATION, FILE_BROWSE_BUTTON, OK_BUTTON
+	}
+
+	Type SELECTION = Type.TABLE_SELECTION;
+	Type EXPORT_FILE_LOCATION = Type.EXPORT_FILE_LOCATION;
+	Type FILE_BROWSE = Type.FILE_BROWSE_BUTTON;
+	Type OK = Type.OK_BUTTON;
+
 	void okPressed();
-
-	void addTableSelectionChangedListener(IListener listener);
-
-	void addOkPressedListener(IListener listener);
 
 	void populateAllNotes(List<Note> notes);
 
 	List<Note> getSelectedNotes();
-
-	void addExportFileBrowseButtonListener(IListener listener);
-
-	void addExportFileLocationChangedListener(IListener listener);
 
 	void setExportFileLocation(String exportFileLocation);
 }

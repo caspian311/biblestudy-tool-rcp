@@ -1,7 +1,6 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -13,10 +12,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class CreateLinkDialogView implements ICreateLinkDialogView {
-	private final ListenerManager linkTextChangedListenerManager = new ListenerManager();
-	private final ListenerManager okPressedListenerManager = new ListenerManager();
-
+public class CreateLinkDialogView extends AbstractMvpListener implements
+		ICreateLinkDialogView {
 	private final Text linkTextField;
 	private final Label errorLabel;
 	private final CreateLinkToDialog parentDialog;
@@ -34,7 +31,7 @@ public class CreateLinkDialogView implements ICreateLinkDialogView {
 		linkTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				linkTextChangedListenerManager.notifyListeners();
+				notifyListeners(LINKED_TEXT);
 			}
 		});
 
@@ -42,11 +39,6 @@ public class CreateLinkDialogView implements ICreateLinkDialogView {
 		errorLabel.setText("Invalid Link");
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(errorLabel);
 		errorLabel.setVisible(false);
-	}
-
-	@Override
-	public void addLinkTextChangedListener(IListener listener) {
-		linkTextChangedListenerManager.addListener(listener);
 	}
 
 	@Override
@@ -61,12 +53,7 @@ public class CreateLinkDialogView implements ICreateLinkDialogView {
 
 	@Override
 	public void okPressed() {
-		okPressedListenerManager.notifyListeners();
-	}
-
-	@Override
-	public void addOkPressedListener(IListener listener) {
-		okPressedListenerManager.addListener(listener);
+		notifyListeners(OK_PRESSED);
 	}
 
 	@Override

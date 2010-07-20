@@ -7,8 +7,6 @@ import java.util.List;
 
 import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.db.ILinkDao;
-import net.todd.biblestudy.rcp.presenters.INoteModelListener;
 import net.todd.biblestudy.reference.Reference;
 
 import org.apache.commons.lang.StringUtils;
@@ -77,10 +75,6 @@ public class NoteModel implements INoteModel {
 				links = new ArrayList<Link>();
 			}
 		}
-	}
-
-	protected ILinkDao getLinkDao() {
-		return new LinkDao();
 	}
 
 	@Override
@@ -170,25 +164,6 @@ public class NoteModel implements INoteModel {
 		getNote().setLastModified(new Date());
 
 		fireEvent(new ModelEvent(ModelEvent.MODEL_LINK_ADDED));
-	}
-
-	@Override
-	public void registerModelListener(INoteModelListener listener) {
-		eventListeners.add(INoteModelListener.class, listener);
-	}
-
-	@Override
-	public void unRegisterModelListener(INoteModelListener listener) {
-		eventListeners.remove(INoteModelListener.class, listener);
-	}
-
-	private void fireEvent(ModelEvent event) {
-		INoteModelListener[] listeners = eventListeners
-				.getListeners(INoteModelListener.class);
-
-		for (INoteModelListener listener : listeners) {
-			listener.handleModelEvent(event);
-		}
 	}
 
 	@Override

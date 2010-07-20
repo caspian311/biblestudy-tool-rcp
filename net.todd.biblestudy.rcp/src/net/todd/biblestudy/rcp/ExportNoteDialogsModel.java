@@ -5,22 +5,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.java.ao.EntityManager;
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ExportNoteDialogsModel implements IExportNotesDialogModel {
+public class ExportNoteDialogsModel extends AbstractMvpListener implements
+		IExportNotesDialogModel {
 	private static final Log LOG = LogFactory
 			.getLog(ExportNoteDialogsModel.class);
-	private final ListenerManager exportFileLocationChangedListenerManager = new ListenerManager();
-
-	private String zipFilename;
-	private List<Note> notesToExport;
 
 	private final EntityManager entityManager;
 	private final IExportNoteLauncher exportNoteLauncher;
+
+	private String zipFilename;
+	private List<Note> notesToExport;
 
 	public ExportNoteDialogsModel(EntityManager entityManager,
 			IExportNoteLauncher exportNoteLauncher) {
@@ -46,6 +45,7 @@ public class ExportNoteDialogsModel implements IExportNotesDialogModel {
 	@Override
 	public void setFileToExportTo(String filename) {
 		this.zipFilename = filename;
+		notifyListeners(EXPORT_FILE_LOCATION);
 	}
 
 	@Override
@@ -61,10 +61,5 @@ public class ExportNoteDialogsModel implements IExportNotesDialogModel {
 	@Override
 	public String getExportFileLocation() {
 		return zipFilename;
-	}
-
-	@Override
-	public void addExportFileLocationChangedListener(IListener listener) {
-		exportFileLocationChangedListenerManager.addListener(listener);
 	}
 }

@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -32,15 +31,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-public class ImportNotesDialogView implements IImportNotesDialogView {
-	private final ListenerManager okPressedListenerManager = new ListenerManager();
-	private final ListenerManager selectionChangedListnerManager = new ListenerManager();
-	private final ListenerManager selectAllNotesListenerManager = new ListenerManager();
-	private final ListenerManager selectNoNotesListenerManager = new ListenerManager();
-	private final ListenerManager selectInverseNotesListenerManager = new ListenerManager();
-	private final ListenerManager importFileChangedListenerManager = new ListenerManager();
-	private final ListenerManager importFileBrowseButtonListenerManager = new ListenerManager();
-
+public class ImportNotesDialogView extends AbstractMvpListener implements
+		IImportNotesDialogView {
 	private static final String NOTE_NAME_COLUMN_HEADER = "Note";
 	private static final String LAST_MODIFIED_COLUMN_HEADER = "Last modified";
 	private static final String CREATED_COLUMN_HEADER = "Created on";
@@ -67,7 +59,7 @@ public class ImportNotesDialogView implements IImportNotesDialogView {
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectAllNotesListenerManager.notifyListeners();
+				notifyListeners(SELECT_ALL_BUTTON);
 			}
 		});
 
@@ -76,7 +68,7 @@ public class ImportNotesDialogView implements IImportNotesDialogView {
 		selectNoNotesButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectNoNotesListenerManager.notifyListeners();
+				notifyListeners(SELECT_NONE_BUTTON);
 			}
 		});
 
@@ -85,7 +77,7 @@ public class ImportNotesDialogView implements IImportNotesDialogView {
 		selectInverseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectInverseNotesListenerManager.notifyListeners();
+				notifyListeners(SELECT_INVERSE_BUTTON);
 			}
 		});
 
@@ -104,7 +96,7 @@ public class ImportNotesDialogView implements IImportNotesDialogView {
 			@Override
 			public void handleEvent(Event event) {
 				if (event.detail == SWT.CHECK) {
-					selectionChangedListnerManager.notifyListeners();
+					notifyListeners(SELECTION);
 				}
 			}
 		});
@@ -149,7 +141,7 @@ public class ImportNotesDialogView implements IImportNotesDialogView {
 		importFileLocationText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				importFileChangedListenerManager.notifyListeners();
+				notifyListeners(IMPORT_FILE);
 			}
 		});
 		importFileBrowserButton = new Button(composite, SWT.PUSH);
@@ -157,7 +149,7 @@ public class ImportNotesDialogView implements IImportNotesDialogView {
 		importFileBrowserButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				importFileBrowseButtonListenerManager.notifyListeners();
+				notifyListeners(BROWSE_BUTTON);
 			}
 		});
 	}
@@ -170,36 +162,6 @@ public class ImportNotesDialogView implements IImportNotesDialogView {
 	@Override
 	public void setImportFileLocation(String importFileLocation) {
 		importFileLocationText.setText(importFileLocation);
-	}
-
-	@Override
-	public void addImportFileChangedListener(IListener listener) {
-		importFileChangedListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addImportFileBrowseButtonListener(IListener listener) {
-		importFileBrowseButtonListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addSelectionChangedListener(IListener listener) {
-		selectionChangedListnerManager.addListener(listener);
-	}
-
-	@Override
-	public void addSelectNoNotesListenerManager(IListener listener) {
-		selectNoNotesListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addSelectAllNotesListenerManager(IListener listener) {
-		selectAllNotesListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addSelectInverseNotesListenerManager(IListener listener) {
-		selectInverseNotesListenerManager.addListener(listener);
 	}
 
 	@Override
@@ -224,13 +186,8 @@ public class ImportNotesDialogView implements IImportNotesDialogView {
 	}
 
 	@Override
-	public void addOkPressedListener(IListener listener) {
-		okPressedListenerManager.addListener(listener);
-	}
-
-	@Override
 	public void okPressed() {
-		okPressedListenerManager.notifyListeners();
+		notifyListeners(OK);
 	}
 
 	private class ImportNoteLabelProvider extends LabelProvider implements

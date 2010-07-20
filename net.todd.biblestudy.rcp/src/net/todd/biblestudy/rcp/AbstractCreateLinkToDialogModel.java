@@ -1,28 +1,20 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 
-public abstract class AbstractCreateLinkToDialogModel implements
-		ICreateLinkToDialogModel {
-	private final ListenerManager validStateListenerManager = new ListenerManager();
-
+public abstract class AbstractCreateLinkToDialogModel extends
+		AbstractMvpListener implements ICreateLinkToDialogModel {
 	private String linkText;
 
 	@Override
 	public void setLinkText(String linkText) {
 		this.linkText = linkText;
 
-		validStateListenerManager.notifyListeners();
+		notifyListeners(VALID_STATE);
 	}
 
 	@Override
 	public String getLinkText() {
 		return linkText;
-	}
-
-	@Override
-	public void addValidStateListener(IListener listener) {
-		validStateListenerManager.addListener(listener);
 	}
 }

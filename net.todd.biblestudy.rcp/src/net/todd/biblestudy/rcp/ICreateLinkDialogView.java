@@ -1,8 +1,15 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.IMvpListener;
 
-public interface ICreateLinkDialogView {
+public interface ICreateLinkDialogView extends IMvpListener {
+	enum Type {
+		LINKED_TEXT, OK_PRESSED
+	}
+
+	Type LINKED_TEXT = Type.LINKED_TEXT;
+	Type OK_PRESSED = Type.OK_PRESSED;
+
 	void setLinkText(String selectionText);
 
 	String getLinkText();
@@ -13,9 +20,5 @@ public interface ICreateLinkDialogView {
 
 	void okPressed();
 
-	void addOkPressedListener(IListener listener);
-
 	void setOkButtonEnabled(boolean isEnabled);
-
-	void addLinkTextChangedListener(IListener listener);
 }

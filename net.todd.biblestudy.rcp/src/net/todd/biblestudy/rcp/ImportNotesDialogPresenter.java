@@ -6,42 +6,42 @@ public class ImportNotesDialogPresenter {
 	public ImportNotesDialogPresenter(final IImportNotesDialogView view,
 			final IImportNotesDialogModel model,
 			final IImportFileDialogLauncher importFileDialog) {
-		view.addOkPressedListener(new IListener() {
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.doImport();
 			}
-		});
-		view.addSelectionChangedListener(new IListener() {
+		}, ImportNotesDialogView.OK);
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.setSelectedNotes(view.getSelectedNotes());
 			}
-		});
-		view.addImportFileBrowseButtonListener(new IListener() {
+		}, ImportNotesDialogView.SELECTION);
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.setFilename(importFileDialog.launchImportFileDialog());
 			}
-		});
-		view.addImportFileChangedListener(new IListener() {
+		}, ImportNotesDialogView.BROWSE_BUTTON);
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.setFilename(view.getImportFile());
 			}
-		});
-		model.addSelectionChangeListener(new IListener() {
+		}, ImportNotesDialogView.IMPORT_FILE);
+		model.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				view.setSelectedNotes(model.getSelectedNotes());
 			}
-		});
-		model.addImportFileChangeListener(new IListener() {
+		}, IImportNotesDialogModel.SELECTION);
+		model.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				view.setImportFileLocation(model.getImportFileLocation());
 			}
-		});
+		}, IImportNotesDialogModel.IMPORT_FILE);
 		view.populateAllNotes(model.getAllNotes());
 	}
 }

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class MvpListener implements IMvpListener {
+public abstract class AbstractMvpListener implements IMvpListener {
 	private final Map<Enum<?>, List<IListener>> listenersByType = new HashMap<Enum<?>, List<IListener>>();
 
 	private static enum InternalTypes {

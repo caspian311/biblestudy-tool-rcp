@@ -6,30 +6,30 @@ public class ExportNotesDialogPresenter {
 	public ExportNotesDialogPresenter(final IExportNotesDialogView view,
 			final IExportNotesDialogModel model,
 			final IFileDialogLauncher fileDialogLauncher) {
-		view.addOkPressedListener(new IListener() {
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.doExport();
 			}
-		});
-		view.addTableSelectionChangedListener(new IListener() {
+		}, IExportNotesDialogView.OK);
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.setNotesToExport(view.getSelectedNotes());
 			}
-		});
-		view.addExportFileBrowseButtonListener(new IListener() {
+		}, IExportNotesDialogView.SELECTION);
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.setFileToExportTo(fileDialogLauncher.launchFileDialog());
 			}
-		});
-		model.addExportFileLocationChangedListener(new IListener() {
+		}, IExportNotesDialogView.FILE_BROWSE);
+		model.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				view.setExportFileLocation(model.getExportFileLocation());
 			}
-		});
+		}, IExportNotesDialogModel.EXPORT_FILE_LOCATION);
 		view.populateAllNotes(model.getAllNotes());
 	}
 }

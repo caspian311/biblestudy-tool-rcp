@@ -2,9 +2,16 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.IMvpListener;
 
-public interface IImportNotesDialogModel {
+public interface IImportNotesDialogModel extends IMvpListener {
+	enum Type {
+		IMPORT_FILE, SELECTION
+	}
+
+	Type IMPORT_FILE = Type.IMPORT_FILE;
+	Type SELECTION = Type.SELECTION;
+
 	void setFilename(String filename);
 
 	void doImport();
@@ -13,11 +20,7 @@ public interface IImportNotesDialogModel {
 
 	List<Note> getSelectedNotes();
 
-	void addSelectionChangeListener(IListener iListener);
-
 	String getImportFileLocation();
-
-	void addImportFileChangeListener(IListener iListener);
 
 	void setSelectedNotes(List<Note> selectedNotes);
 }

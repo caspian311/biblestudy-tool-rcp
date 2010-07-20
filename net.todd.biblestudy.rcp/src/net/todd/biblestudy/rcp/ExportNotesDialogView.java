@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -22,7 +23,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -30,13 +30,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class ExportNotesDialogView implements IExportNotesDialogView {
+public class ExportNotesDialogView extends AbstractMvpListener implements
+		IExportNotesDialogView {
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(
 			"MM/dd/yyyy");
-	private final ListenerManager okPressedListenerManager = new ListenerManager();
-	private final ListenerManager tableSelectionChangedListenerManager = new ListenerManager();
-	private final ListenerManager exportFileBrowseButtonListenerManager = new ListenerManager();
-	private final ListenerManager exportFileLocationChangedListenerManager = new ListenerManager();
 
 	private static final String NOTE_NAME_COLUMN_HEADER = "Note";
 	private static final String LAST_MODIFIED_COLUMN_HEADER = "Last modified";
@@ -51,19 +48,9 @@ public class ExportNotesDialogView implements IExportNotesDialogView {
 	private final Button exportFileBrowseButton;
 
 	public ExportNotesDialogView(Composite composite) {
-		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.marginTop = 2;
-		gridLayout.marginBottom = 2;
-		gridLayout.marginLeft = 2;
-		gridLayout.marginRight = 2;
-
-		GridData compositeLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
-				true);
-		compositeLayoutData.widthHint = 450;
-		compositeLayoutData.heightHint = 200;
-
-		composite.setLayout(gridLayout);
-		composite.setLayoutData(compositeLayoutData);
+		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
+		GridDataFactory.fillDefaults().grab(true, true).hint(450, 200)
+				.applyTo(composite);
 
 		Composite otherComposite = new Composite(composite, SWT.NONE);
 		FillLayout layout = new FillLayout(SWT.HORIZONTAL);
@@ -78,7 +65,7 @@ public class ExportNotesDialogView implements IExportNotesDialogView {
 					item.setChecked(true);
 				}
 
-				tableSelectionChangedListenerManager.notifyListeners();
+				notifyListeners(SELECTION);
 			}
 		});
 
@@ -91,7 +78,7 @@ public class ExportNotesDialogView implements IExportNotesDialogView {
 					item.setChecked(false);
 				}
 
-				tableSelectionChangedListenerManager.notifyListeners();
+				notifyListeners(SELECTION);
 			}
 		});
 
@@ -108,7 +95,7 @@ public class ExportNotesDialogView implements IExportNotesDialogView {
 					}
 				}
 
-				tableSelectionChangedListenerManager.notifyListeners();
+				notifyListeners(SELECTION);
 			}
 		});
 
@@ -127,7 +114,7 @@ public class ExportNotesDialogView implements IExportNotesDialogView {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (e.detail == SWT.CHECK) {
-					tableSelectionChangedListenerManager.notifyListeners();
+					notifyListeners(SELECTION);
 				}
 			}
 		});
@@ -172,7 +159,7 @@ public class ExportNotesDialogView implements IExportNotesDialogView {
 		exportFileLocationText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				exportFileLocationChangedListenerManager.notifyListeners();
+				notifyListeners(EXPORT_FILE_LOCATION);
 			}
 		});
 		exportFileBrowseButton = new Button(composite, SWT.BORDER);
@@ -180,13 +167,7 @@ public class ExportNotesDialogView implements IExportNotesDialogView {
 		exportFileBrowseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				exportFileBrowseButtonListenerManager.notifyListeners();
-			}
-		});
-		exportFileLocationText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				exportFileLocationChangedListenerManager.notifyListeners();
+				notifyListeners(FILE_BROWSE);
 			}
 		});
 	}
@@ -197,28 +178,8 @@ public class ExportNotesDialogView implements IExportNotesDialogView {
 	}
 
 	@Override
-	public void addExportFileBrowseButtonListener(IListener listener) {
-		exportFileBrowseButtonListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addExportFileLocationChangedListener(IListener listener) {
-		exportFileLocationChangedListenerManager.addListener(listener);
-	}
-
-	@Override
 	public void okPressed() {
-		okPressedListenerManager.notifyListeners();
-	}
-
-	@Override
-	public void addOkPressedListener(IListener listener) {
-		okPressedListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addTableSelectionChangedListener(IListener listener) {
-		tableSelectionChangedListenerManager.addListener(listener);
+		notifyListeners(OK);
 	}
 
 	@Override

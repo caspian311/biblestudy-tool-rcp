@@ -10,7 +10,7 @@ public class MvpListenerTest {
 
 	@Before
 	public void setUp() {
-		testObject = new MvpListener() {
+		testObject = new AbstractMvpListener() {
 		};
 	}
 

@@ -3,16 +3,14 @@ package net.todd.biblestudy.rcp;
 import java.sql.SQLException;
 
 import net.java.ao.EntityManager;
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class NewNoteDialogModel implements INewNoteDialogModel {
+public class NewNoteDialogModel extends AbstractMvpListener implements
+		INewNoteDialogModel {
 	private static final Log LOG = LogFactory.getLog(NewNoteDialogModel.class);
-
-	private final ListenerManager validStateListenerManager = new ListenerManager();
 
 	private final EntityManager entityManager;
 
@@ -20,11 +18,6 @@ public class NewNoteDialogModel implements INewNoteDialogModel {
 
 	public NewNoteDialogModel(EntityManager entityManager) {
 		this.entityManager = entityManager;
-	}
-
-	@Override
-	public void addValidStateListener(IListener listener) {
-		validStateListenerManager.addListener(listener);
 	}
 
 	@Override
@@ -36,7 +29,7 @@ public class NewNoteDialogModel implements INewNoteDialogModel {
 	public void setNoteName(String newNoteName) {
 		this.newNoteName = newNoteName;
 
-		validStateListenerManager.notifyListeners();
+		notifyListeners(VALID_STATE);
 	}
 
 	private boolean noteExistswithName(String newNoteName) {

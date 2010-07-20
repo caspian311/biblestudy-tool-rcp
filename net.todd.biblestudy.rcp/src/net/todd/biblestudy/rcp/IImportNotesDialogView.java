@@ -2,28 +2,26 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.IMvpListener;
 
-public interface IImportNotesDialogView {
+public interface IImportNotesDialogView extends IMvpListener {
+	enum Type {
+		OK, SELECTION, SELECT_ALL_BUTTON, SELECT_NONE_BUTTON, SELECT_INVERSE_BUTTON, IMPORT_FILE, BROWSE_BUTTON
+	}
+
+	Type OK = Type.OK;
+	Type SELECTION = Type.SELECTION;
+	Type SELECT_ALL_BUTTON = Type.SELECT_ALL_BUTTON;
+	Type SELECT_NONE_BUTTON = Type.SELECT_NONE_BUTTON;
+	Type SELECT_INVERSE_BUTTON = Type.SELECT_INVERSE_BUTTON;
+	Type IMPORT_FILE = Type.IMPORT_FILE;
+	Type BROWSE_BUTTON = Type.BROWSE_BUTTON;
+
 	void populateAllNotes(List<Note> notes);
 
 	List<Note> getSelectedNotes();
 
 	void okPressed();
-
-	void addOkPressedListener(IListener listener);
-
-	void addSelectionChangedListener(IListener listener);
-
-	void addSelectNoNotesListenerManager(IListener listener);
-
-	void addSelectInverseNotesListenerManager(IListener listener);
-
-	void addSelectAllNotesListenerManager(IListener listener);
-
-	void addImportFileBrowseButtonListener(IListener listener);
-
-	void addImportFileChangedListener(IListener listener);
 
 	String getImportFile();
 

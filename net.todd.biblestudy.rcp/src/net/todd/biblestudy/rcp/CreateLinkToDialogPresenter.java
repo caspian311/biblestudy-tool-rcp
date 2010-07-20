@@ -5,19 +5,19 @@ import net.todd.biblestudy.common.IListener;
 public class CreateLinkToDialogPresenter {
 	public CreateLinkToDialogPresenter(final ICreateLinkDialogView view,
 			final ICreateLinkToDialogModel model) {
-		view.addOkPressedListener(new IListener() {
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.createLink();
 			}
-		});
-		view.addLinkTextChangedListener(new IListener() {
+		}, ICreateLinkDialogView.OK_PRESSED);
+		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.setLinkText(view.getLinkText());
 			}
-		});
-		model.addValidStateListener(new IListener() {
+		}, ICreateLinkDialogView.LINKED_TEXT);
+		model.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				boolean isValidState = model.isValidState();
@@ -29,7 +29,7 @@ public class CreateLinkToDialogPresenter {
 					view.showErrorMessage();
 				}
 			}
-		});
+		}, ICreateLinkToDialogModel.VALID_STATE);
 		view.setLinkText(model.getLinkText());
 	}
 }

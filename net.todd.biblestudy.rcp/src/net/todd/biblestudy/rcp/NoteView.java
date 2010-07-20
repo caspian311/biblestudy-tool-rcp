@@ -2,8 +2,7 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.ReferenceTransfer;
 
@@ -34,18 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-public class NoteView implements INoteView {
-	private final ListenerManager noteContentModifiedListenerManager = new ListenerManager();
-	private final ListenerManager createLinkListenerManager = new ListenerManager();
-	private final ListenerManager createReferenceListenerManager = new ListenerManager();
-	private final ListenerManager rightClickListenerManager = new ListenerManager();
-	private final ListenerManager leftClickListenerManager = new ListenerManager();
-	private final ListenerManager mouseHoveringListenerManager = new ListenerManager();
-	private final ListenerManager contentDroppedInListenerManager = new ListenerManager();
-	private final ListenerManager insertLinkToReferenceListenerManager = new ListenerManager();
-	private final ListenerManager dropReferenceOptionListenerManager = new ListenerManager();
-	private final ListenerManager dropReferenceWithTextListenerManager = new ListenerManager();
-
+public class NoteView extends AbstractMvpListener implements INoteView {
 	private final Menu rightClickTextMenu;
 	private final Menu dropReferenceOptionsMenu;
 
@@ -80,7 +68,7 @@ public class NoteView implements INoteView {
 		noteContentText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				noteContentModifiedListenerManager.notifyListeners();
+				notifyListeners(NOTE_CONTENT);
 			}
 		});
 		noteContentText.addMouseListener(new MouseAdapter() {
@@ -88,9 +76,9 @@ public class NoteView implements INoteView {
 			public void mouseUp(MouseEvent e) {
 				lastClickedLocation = new Point(e.x, e.y);
 				if (isRightClick(e) || isMacRightClick(e)) {
-					rightClickListenerManager.notifyListeners();
+					notifyListeners(RIGHT_CLICK);
 				} else if (e.stateMask == SWT.BUTTON1) {
-					leftClickListenerManager.notifyListeners();
+					notifyListeners(LEFT_CLICK);
 				}
 			}
 		});
@@ -98,7 +86,7 @@ public class NoteView implements INoteView {
 			@Override
 			public void mouseMove(MouseEvent e) {
 				currentMouseLocation = new Point(e.x, e.y);
-				mouseHoveringListenerManager.notifyListeners();
+				notifyListeners(MOUSE_HOVER);
 			}
 		});
 		DropTarget dropTarget = new DropTarget(noteContentText, DND.DROP_MOVE);
@@ -111,7 +99,7 @@ public class NoteView implements INoteView {
 				dropCoordinates = new Point(event.x, event.y);
 				droppedVerses = (List<BibleVerse>) event.data;
 
-				contentDroppedInListenerManager.notifyListeners();
+				notifyListeners(CONTENT_DROPPED);
 			}
 		});
 
@@ -124,7 +112,7 @@ public class NoteView implements INoteView {
 		createLinkToNote.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				createLinkListenerManager.notifyListeners();
+				notifyListeners(CREATE_LINK);
 			}
 		});
 
@@ -135,7 +123,7 @@ public class NoteView implements INoteView {
 		createLinkToReference.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				createReferenceListenerManager.notifyListeners();
+				notifyListeners(CREATE_REFERENCE);
 			}
 		});
 
@@ -149,7 +137,7 @@ public class NoteView implements INoteView {
 		dropReferenceLink.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				insertLinkToReferenceListenerManager.notifyListeners();
+				notifyListeners(INSERT_LINK_TO_REFERENCE);
 			}
 		});
 
@@ -160,7 +148,7 @@ public class NoteView implements INoteView {
 		dropReferenceText.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				dropReferenceOptionListenerManager.notifyListeners();
+				notifyListeners(DROP_REFERENCE_OPTION);
 			}
 		});
 
@@ -171,7 +159,7 @@ public class NoteView implements INoteView {
 		dropReferenceAndText.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				dropReferenceWithTextListenerManager.notifyListeners();
+				notifyListeners(DROP_REFERENCE_OPTION_WITH_TEXT);
 			}
 		});
 
@@ -192,56 +180,6 @@ public class NoteView implements INoteView {
 	@Override
 	public void setTitle(String title) {
 		parentViewPart.setPartName(title);
-	}
-
-	@Override
-	public void addNoteContentListener(IListener listener) {
-		noteContentModifiedListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addCreateLinkListener(IListener listener) {
-		createLinkListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addCreateReferenceListener(IListener listener) {
-		createReferenceListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addRightClickListener(IListener listener) {
-		rightClickListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addLeftClickListener(IListener listener) {
-		leftClickListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addMouseHoveringListener(IListener listener) {
-		mouseHoveringListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addContentDroppedInListener(IListener listener) {
-		contentDroppedInListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addInsertLinkToReferenceListener(IListener listener) {
-		insertLinkToReferenceListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addDropReferenceOptionListener(IListener listener) {
-		dropReferenceOptionListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addDropReferenceWithTextListener(IListener listener) {
-		dropReferenceWithTextListenerManager.addListener(listener);
 	}
 
 	private boolean isMacRightClick(MouseEvent e) {

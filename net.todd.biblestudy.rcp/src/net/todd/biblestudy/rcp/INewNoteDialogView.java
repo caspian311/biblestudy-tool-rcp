@@ -1,8 +1,15 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.IMvpListener;
 
-public interface INewNoteDialogView {
+public interface INewNoteDialogView extends IMvpListener {
+	enum Type {
+		NEW_NOTE_NAME, OK
+	}
+
+	Type NEW_NOTE_NAME = Type.NEW_NOTE_NAME;
+	Type OK = Type.OK;
+
 	String getNewNoteName();
 
 	void showErrorMessage();
@@ -11,9 +18,5 @@ public interface INewNoteDialogView {
 
 	void okPressed();
 
-	void addNewNoteNameChangedListener(IListener listener);
-
 	void setEnableOkButton(boolean isEnabled);
-
-	void addOkPressedListener(IListener listener);
 }

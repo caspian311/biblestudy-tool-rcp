@@ -1,7 +1,6 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -15,10 +14,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class NewNoteDialogView implements INewNoteDialogView {
-	private final ListenerManager newNoteNameChangedListenerManager = new ListenerManager();
-	private final ListenerManager okPressedListenerManager = new ListenerManager();
-
+public class NewNoteDialogView extends AbstractMvpListener implements
+		INewNoteDialogView {
 	private final Text newNoteNameField;
 	private final Label errorMessageLabel;
 	private final NewNoteDialog parentDialog;
@@ -34,7 +31,7 @@ public class NewNoteDialogView implements INewNoteDialogView {
 		newNoteNameField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				newNoteNameChangedListenerManager.notifyListeners();
+				notifyListeners(NEW_NOTE_NAME);
 			}
 		});
 
@@ -46,18 +43,8 @@ public class NewNoteDialogView implements INewNoteDialogView {
 	}
 
 	@Override
-	public void addNewNoteNameChangedListener(IListener listener) {
-		newNoteNameChangedListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addOkPressedListener(IListener listener) {
-		okPressedListenerManager.addListener(listener);
-	}
-
-	@Override
 	public void okPressed() {
-		okPressedListenerManager.notifyListeners();
+		notifyListeners(OK);
 	}
 
 	@Override
