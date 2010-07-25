@@ -11,16 +11,14 @@ import org.eclipse.ui.PlatformUI;
 public class Application implements IApplication {
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
-		Thread.setDefaultUncaughtExceptionHandler(ExceptionHandlerFactory
-				.getHandler());
+		Thread.setDefaultUncaughtExceptionHandler(ExceptionHandlerFactory.getHandler());
 
 		Display display = PlatformUI.createDisplay();
 
 		new DatabaseSetup().setupDatabase();
 
 		try {
-			int returnCode = PlatformUI.createAndRunWorkbench(display,
-					new ApplicationWorkbenchAdvisor());
+			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IApplication.EXIT_RESTART;
 			}
@@ -33,15 +31,16 @@ public class Application implements IApplication {
 	@Override
 	public void stop() {
 		final IWorkbench workbench = PlatformUI.getWorkbench();
-		if (workbench == null)
-			return;
-		final Display display = workbench.getDisplay();
-		display.syncExec(new Runnable() {
-			@Override
-			public void run() {
-				if (!display.isDisposed())
-					workbench.close();
-			}
-		});
+		if (workbench != null) {
+			final Display display = workbench.getDisplay();
+			display.syncExec(new Runnable() {
+				@Override
+				public void run() {
+					if (!display.isDisposed()) {
+						workbench.close();
+					}
+				}
+			});
+		}
 	}
 }

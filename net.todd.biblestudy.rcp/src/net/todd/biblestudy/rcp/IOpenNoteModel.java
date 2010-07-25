@@ -2,30 +2,27 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.IMvpListener;
 
-public interface IOpenNoteModel
-{
-	/**
-	 * this method is used to populate the new note dialog's drop down list
-	 * 
-	 * @return list of all notes available
-	 * @throws BiblestudyException
-	 */
-	public List<Note> getAllNotes() throws BiblestudyException;
+public interface IOpenNoteModel extends IMvpListener {
+	enum Type {
+		SELECTION, ALL_NOTES
+	}
 
-	/**
-	 * this method renames a given existing note
-	 * 
-	 * this will check existing notes for the same name and throw an exception
-	 * if one already exists
-	 * 
-	 * if this note is referenced by other notes through links, it will rename
-	 * those notes
-	 * 
-	 * @param oldNoteName
-	 * @param newNoteName
-	 * @throws BiblestudyException
-	 */
-	public void renameNote(String oldNoteName, String newNoteName) throws BiblestudyException;
+	Type SELECTION = Type.SELECTION;
+	Type ALL_NOTES = Type.ALL_NOTES;
+
+	List<Note> getAllNotes();
+
+	void openSelectedNote();
+
+	void setSelectedNote(Note note);
+
+	Note getSelectedNote();
+
+	void setNewNoteName(String newName);
+
+	void renameSelectedNote();
+
+	void deleteSelectedNote();
 }

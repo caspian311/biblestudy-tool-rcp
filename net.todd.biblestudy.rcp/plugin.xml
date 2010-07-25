@@ -24,14 +24,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="net.todd.biblestudy.rcp.application"
-            name="Bible Study Tool">
-         <property
-               name="windowImages"
-               value="icons/biblestudy_16.gif,icons/biblestudy_32.gif">
-         </property>
+            name="Biblestudy Tool">
          <property
                name="appName"
-               value="Bible Study Tool">
+               value="Biblestudy Tool">
          </property>
          <property
                name="preferenceCustomization"
@@ -60,21 +56,21 @@
             label="Global Actions"
             visible="true">
          <action
-               class="net.todd.biblestudy.rcp.actions.ImportNotesAction"
+               class="net.todd.biblestudy.rcp.ImportNotesAction"
                icon="icons/import.png"
                id="net.todd.biblestudy.rcp.ImportNotes"
                label="Import Notes"
                toolbarPath="main/global">
          </action>
          <action
-               class="net.todd.biblestudy.rcp.actions.ExportNotesAction"
+               class="net.todd.biblestudy.rcp.ExportNotesAction"
                icon="icons/export.png"
                id="net.todd.biblestudy.rcp.ExportNotes"
                label="Export All Notes"
                toolbarPath="main/global">
          </action>
          <action
-               class="net.todd.biblestudy.rcp.actions.SaveNoteAction"
+               class="net.todd.biblestudy.rcp.SaveNoteAction"
                definitionId="org.eclipse.ui.file.save"
                icon="icons/floppy.png"
                id="net.todd.biblestudy.rcp.SaveNoteAction"
@@ -82,7 +78,7 @@
                toolbarPath="main/global">
          </action>
          <action
-               class="net.todd.biblestudy.rcp.actions.OpenNoteAction"
+               class="net.todd.biblestudy.rcp.OpenNoteAction"
                definitionId="net.todd.biblestudy.rcp.openNoteCommand"
                icon="icons/folder_open.png"
                id="net.todd.biblestudy.rcp.OpenNoteAction"
@@ -92,7 +88,7 @@
                tooltip="Open Existing Note">
          </action>
          <action
-               class="net.todd.biblestudy.rcp.actions.NewNoteAction"
+               class="net.todd.biblestudy.rcp.NewNoteAction"
                definitionId="net.todd.biblestudy.rcp.newNoteCommand"
                icon="icons/text_file.png"
                id="net.todd.biblestudy.rcp.NewNoteAction"
@@ -119,7 +115,7 @@
             id="net.todd.biblestudy.rcp.NoteViewContributions"
             targetID="net.todd.biblestudy.rcp.NoteView">
          <action
-               class="net.todd.biblestudy.rcp.actions.DeleteNoteAction"
+               class="net.todd.biblestudy.rcp.DeleteNoteAction"
                icon="icons/delete.png"
                id="net.todd.biblestudy.rcp.action1"
                label="Delete Note"
@@ -153,7 +149,7 @@
       </command>
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="net.todd.biblestudy.rcp.actions.CloseNoteHandler"
+            defaultHandler="net.todd.biblestudy.rcp.CloseNoteHandler"
             id="net.todd.biblestudy.rcp.closeNoteCommand"
             name="Close Note">
       </command>

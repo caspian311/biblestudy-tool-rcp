@@ -1,0 +1,6 @@
+----------------------------------------------------------------
+2010-07-24 20:58:21.801 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.6.1.0 - (938214): instance a816c00e-012a-063f-cbf1-0000029902e0 
+on database directory /home/mtodd/checkout/biblestudy-rcp/net.todd.biblestudy.rcp.test/myDB   with class loader org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader@4cfa9
+
+Database Class Loader started - derby.database.classpath=''

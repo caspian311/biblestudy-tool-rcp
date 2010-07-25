@@ -1,5 +1,6 @@
 package net.todd.biblestudy.rcp;
 
+import net.java.ao.EntityManager;
 
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
@@ -28,11 +29,11 @@ public class OpenNoteDialog extends TrayDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.None);
 		view = new OpenNoteDialogView(composite, this);
-		IOpenNoteModel model = new OpenNoteModel();
-		INoteViewCloser noteViewCloser = new NoteViewCloser();
 		INoteViewLauncher noteViewLauncher = new NoteViewLauncher();
-		new OpenNoteDialogPresenter(view, model, noteViewCloser,
-				noteViewLauncher);
+		EntityManager entityManager = EntityManagerProvider.getEntityManager();
+		IOpenNoteModel model = new OpenNoteModel(entityManager, noteViewLauncher);
+		IDeleteConfirmationLauncher deleteConfirmationLauncher = new DeleteConfirmationLauncher();
+		OpenNoteDialogPresenter.create(view, model, deleteConfirmationLauncher);
 
 		return composite;
 	}

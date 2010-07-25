@@ -1,58 +1,74 @@
 package net.todd.biblestudy.rcp;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
-import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.db.ILinkDao;
-import net.todd.biblestudy.db.INoteDao;
+import net.java.ao.EntityManager;
+import net.todd.biblestudy.common.AbstractMvpListener;
 
-public class OpenNoteModel implements IOpenNoteModel
-{
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.todd.biblestudy.rcp.models.INewNoteModel#getAllNotes()
-	 */
-	public List<Note> getAllNotes() throws BiblestudyException
-	{
-		List<Note> notes = new ArrayList<Note>();
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-		notes = getNoteDao().getAllNotes();
+public class OpenNoteModel extends AbstractMvpListener implements IOpenNoteModel {
+	private static Log LOG = LogFactory.getLog(OpenNoteModel.class);
 
-		return notes;
+	private final EntityManager entityManager;
+	private final INoteViewLauncher noteViewLauncher;
+
+	private Note selectedNote;
+
+	public OpenNoteModel(EntityManager entityManager, INoteViewLauncher noteViewLauncher) {
+		this.entityManager = entityManager;
+		this.noteViewLauncher = noteViewLauncher;
 	}
 
-	private INoteDao getNoteDao()
-	{
-		return new NoteDao();
-	}
-
-	public void renameNote(String oldNoteName, String newNoteName) throws BiblestudyException
-	{
-		if (oldNoteName != null)
-		{
-			Note noteInDB = getNoteDao().getNoteByName(oldNoteName);
-
-			noteInDB.setLastModified(new Date());
-			noteInDB.setName(newNoteName);
-
-			getNoteDao().saveNote(noteInDB);
-
-			List<Link> linksToOldNoteName = getLinkDao().getAllLinksThatLinkTo(oldNoteName);
-
-			for (Link link : linksToOldNoteName)
-			{
-				link.setLinkToNoteName(newNoteName);
-
-				getLinkDao().updateLink(link);
-			}
+	@Override
+	public List<Note> getAllNotes() {
+		try {
+			return Arrays.asList(entityManager.find(Note.class));
+		} catch (SQLException e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
 		}
 	}
 
-	private ILinkDao getLinkDao()
-	{
-		return new LinkDao();
+	@Override
+	public void openSelectedNote() {
+		noteViewLauncher.openNoteView(selectedNote.getName());
+	}
+
+	@Override
+	public void setSelectedNote(Note note) {
+		this.selectedNote = note;
+		notifyListeners(SELECTION);
+	}
+
+	@Override
+	public Note getSelectedNote() {
+		return selectedNote;
+	}
+
+	@Override
+	public void setNewNoteName(String newName) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void renameSelectedNote() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteSelectedNote() {
+		try {
+			entityManager.delete(selectedNote);
+		} catch (SQLException e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		}
+		notifyListeners(ALL_NOTES);
 	}
 }

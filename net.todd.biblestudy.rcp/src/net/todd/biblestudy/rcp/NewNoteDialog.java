@@ -1,6 +1,5 @@
 package net.todd.biblestudy.rcp;
 
-
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -32,9 +31,7 @@ public class NewNoteDialog extends TrayDialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		EntityManagerProvider entityManagerProvider = new EntityManagerProvider();
-		INewNoteDialogModel newNoteDialogModel = new NewNoteDialogModel(
-				entityManagerProvider.getEntityManager());
+		INewNoteDialogModel newNoteDialogModel = new NewNoteDialogModel(EntityManagerProvider.getEntityManager());
 		Composite composite = new Composite(parent, SWT.NONE);
 		newNoteDialogView = new NewNoteDialogView(composite, this);
 		new NewNoteDialogPresenter(newNoteDialogView, newNoteDialogModel);

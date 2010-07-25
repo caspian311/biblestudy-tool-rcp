@@ -1,0 +1,93 @@
+package net.todd.biblestudy.rcp;
+
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.UUID;
+
+import net.java.ao.EntityManager;
+import net.todd.biblestudy.common.IListener;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+public class OpenNoteModelTest {
+	@Mock
+	private INoteViewLauncher noteViewLauncher;
+	@Mock
+	private EntityManager entityManager;
+
+	private IOpenNoteModel testObject;
+
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+
+		testObject = new OpenNoteModel(entityManager, noteViewLauncher);
+	}
+
+	@Test
+	public void getterAndSetterForSelectedNoteWorks() {
+		Note note = mock(Note.class);
+		testObject.setSelectedNote(note);
+
+		assertSame(note, testObject.getSelectedNote());
+	}
+
+	@Test
+	public void settingSelectionNotifiesSelectionListeners() {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IOpenNoteModel.SELECTION);
+
+		testObject.setSelectedNote(mock(Note.class));
+
+		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void getAllNotesPullsFromEntityManager() throws SQLException {
+		Note note1 = mock(Note.class);
+		Note note2 = mock(Note.class);
+		doReturn(new Note[] { note1, note2 }).when(entityManager).find(Note.class);
+
+		assertEquals(Arrays.asList(note1, note2), testObject.getAllNotes());
+	}
+
+	@Test
+	public void openSelectedNotesGivesSelectedNoteToTheNoteViewLauncher() throws SQLException {
+		Note note = mock(Note.class);
+		String noteName = UUID.randomUUID().toString();
+		doReturn(noteName).when(note).getName();
+		testObject.setSelectedNote(note);
+
+		testObject.openSelectedNote();
+
+		verify(noteViewLauncher).openNoteView(noteName);
+	}
+
+	@Test
+	public void deleteSelectedNoteDeletesNoteFromTheEntityManagerAndNotifiesAllNotesListeners() throws SQLException {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IOpenNoteModel.ALL_NOTES);
+
+		Note note = mock(Note.class);
+		testObject.setSelectedNote(note);
+
+		testObject.deleteSelectedNote();
+
+		InOrder inOrder = inOrder(entityManager, listener);
+
+		inOrder.verify(entityManager).delete(note);
+		inOrder.verify(listener).handleEvent();
+	}
+}

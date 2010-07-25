@@ -9,29 +9,25 @@ public interface Link extends Entity {
 		int LINK_TO_REFERENCE = 2;
 	}
 
-	Integer getLinkId();
-
-	void setLinkId(Integer linkId);
-
-	Integer getContainingNoteId();
-
-	void setContainingNoteId(Integer containingNoteId);
-
 	String getLinkToNoteName();
 
 	void setLinkToNoteName(String linkToNoteName);
 
-	Integer getStart();
+	Integer getStartLocation();
 
-	void setStart(Integer start);
+	void setStartLocation(Integer start);
 
-	Integer getEnd();
+	Integer getEndLocation();
 
-	void setEnd(Integer end);
+	void setEndLocation(Integer end);
 
 	String getLinkToReference();
 
 	void setLinkToReference(String linkToReference);
 
 	int getType();
+
+	void setNote(Note newNote);
+
+	Note getNote();
 }

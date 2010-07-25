@@ -1,17 +1,27 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IListener;
+import java.util.List;
 
-public interface IOpenNoteDialogView {
+import net.todd.biblestudy.common.IMvpListener;
+
+public interface IOpenNoteDialogView extends IMvpListener {
+	enum Type {
+		OK_BUTTON, DELETE_BUTTON, RENAME_BUTTON, SELECTION, NOTE_RENAME
+	}
+
+	Type OK_BUTTON = Type.OK_BUTTON;
+	Type DELETE_BUTTON = Type.DELETE_BUTTON;
+	Type RENAME_BUTTON = Type.RENAME_BUTTON;
+	Type SELECTION = Type.SELECTION;
+	Type NOTE_RENAME = Type.NOTE_RENAME;
+
 	Note getSelectedNote();
 
-	void populateDropDown(Note[] notes);
+	void setAllNotes(List<Note> notes);
 
 	void makeSelectedNoteNameEditable();
 
 	String getRenamedNoteName();
-
-	void addOkPressedListener(IListener listener);
 
 	void okPressed();
 
@@ -21,11 +31,5 @@ public interface IOpenNoteDialogView {
 
 	void setDeleteButtonEnabled(boolean isEnabled);
 
-	void addRenamePressedListener(IListener listener);
-
-	void addDeletePressedListener(IListener listener);
-
-	void addSelectionMadeListener(IListener listener);
-
-	void addNoteRenameTextListener(IListener listener);
+	void setSelectedNote(Note note);
 }

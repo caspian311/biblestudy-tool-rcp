@@ -26,12 +26,10 @@ public class ImportNotesDialog extends Dialog {
 		Composite composite = new Composite(parent, SWT.NONE);
 
 		view = new ImportNotesDialogView(composite);
-		EntityManager entityManager = new EntityManagerProvider()
-				.getEntityManager();
+		EntityManager entityManager = EntityManagerProvider.getEntityManager();
 		ImportJobExecutor importJob = new ImportJobExecutor();
 		IImportNotesDialogModel model = new ImportNotesDialogModel(entityManager, importJob);
-		IImportFileDialogLauncher importFileDialog = new ImportFileDialogLauncher(
-				composite.getShell());
+		IImportFileDialogLauncher importFileDialog = new ImportFileDialogLauncher(composite.getShell());
 		new ImportNotesDialogPresenter(view, model, importFileDialog);
 
 		return composite;

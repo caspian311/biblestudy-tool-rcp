@@ -8,30 +8,25 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
-public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
-{
+public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	@Override
-	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer)
-	{
+	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
 		return new ApplicationWorkbenchWindowAdvisor(configurer);
 	}
 
 	@Override
-	public String getInitialWindowPerspectiveId()
-	{
+	public String getInitialWindowPerspectiveId() {
 		return MainPerspective.ID;
 	}
 
 	@Override
-	public void initialize(IWorkbenchConfigurer configurer)
-	{
+	public void initialize(IWorkbenchConfigurer configurer) {
 		// configurer.setSaveAndRestore(true);
 	}
 
 	@Override
-	public void eventLoopException(Throwable exception)
-	{
-		ExceptionHandlerFactory.getHandler().handle("An error occurred in the application", this,
-				exception, SeverityLevel.FATAL);
+	public void eventLoopException(Throwable exception) {
+		ExceptionHandlerFactory.getHandler().handle("An error occurred in the application", this, exception,
+				SeverityLevel.FATAL);
 	}
 }

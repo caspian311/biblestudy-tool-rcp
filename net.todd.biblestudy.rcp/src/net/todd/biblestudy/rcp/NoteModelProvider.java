@@ -10,8 +10,7 @@ public class NoteModelProvider {
 	}
 
 	public static void setCurrentNote(String noteName) {
-		EntityManager entityManager = new EntityManagerProvider()
-				.getEntityManager();
+		EntityManager entityManager = EntityManagerProvider.getEntityManager();
 		currentNoteModel = new NoteModel(entityManager);
 		currentNoteModel.populateNoteInfo(noteName);
 	}

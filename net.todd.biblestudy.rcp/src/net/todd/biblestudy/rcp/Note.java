@@ -6,10 +6,6 @@ import net.java.ao.Entity;
 import net.java.ao.OneToMany;
 
 public interface Note extends Entity {
-	int getNoteId();
-
-	void setNoteId(int noteId);
-
 	String getName();
 
 	void setName(String name);
@@ -28,7 +24,4 @@ public interface Note extends Entity {
 
 	@OneToMany
 	Link[] getLinks();
-
-	@OneToMany
-	void setLinks(Link[] links);
 }

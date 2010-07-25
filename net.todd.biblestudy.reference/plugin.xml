@@ -19,7 +19,7 @@
             label="Global Actions"
             visible="true">
          <action
-               class="net.todd.biblestudy.reference.actions.OpenReferenceAction"
+               class="net.todd.biblestudy.reference.OpenReferenceAction"
                icon="icons/docs.png"
                id="net.todd.biblestudy.reference.common.OpenReferenceAction"
                label="Open Reference"
@@ -38,7 +38,7 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.eclipse.ui.category.file"
-            defaultHandler="net.todd.biblestudy.reference.actions.OpenReferenceHandler"
+            defaultHandler="net.todd.biblestudy.reference.OpenReferenceHandler"
             id="net.todd.biblestudy.reference.openReferenceCommand"
             name="Open Reference">
       </command>

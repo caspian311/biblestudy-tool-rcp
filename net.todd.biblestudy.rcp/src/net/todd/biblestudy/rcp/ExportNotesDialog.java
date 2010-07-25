@@ -1,6 +1,5 @@
 package net.todd.biblestudy.rcp;
 
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -27,9 +26,8 @@ public class ExportNotesDialog extends Dialog {
 
 		view = new ExportNotesDialogView(composite);
 		IExportNoteLauncher exportNoteLauncher = new ExportNoteLauncher();
-		EntityManagerProvider entityManagerProvider = new EntityManagerProvider();
-		IExportNotesDialogModel model = new ExportNoteDialogsModel(
-				entityManagerProvider.getEntityManager(), exportNoteLauncher);
+		IExportNotesDialogModel model = new ExportNoteDialogsModel(EntityManagerProvider.getEntityManager(),
+				exportNoteLauncher);
 		IFileDialogLauncher fileDialogLauncher = new FileDialogLauncher();
 		new ExportNotesDialogPresenter(view, model, fileDialogLauncher);
 

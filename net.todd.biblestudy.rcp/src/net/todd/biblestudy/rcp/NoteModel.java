@@ -99,10 +99,10 @@ public class NoteModel implements INoteModel {
 			// start of link is at or before the end of request
 			// and
 			// end of request is at or after beginning of link
-			if (link.getStart() <= end && link.getEnd() >= start) {
-				int startPoint = link.getStart() >= start ? link.getStart()
+			if (link.getStartLocation() <= end && link.getEndLocation() >= start) {
+				int startPoint = link.getStartLocation() >= start ? link.getStartLocation()
 						: start;
-				int endPoint = link.getEnd() <= end ? link.getEnd() : end;
+				int endPoint = link.getEndLocation() <= end ? link.getEndLocation() : end;
 
 				styles.add(getUnderLineStyle(startPoint, endPoint - startPoint,
 						link.getType()));
@@ -132,8 +132,8 @@ public class NoteModel implements INoteModel {
 		Link link = createEmptyLink();
 		link.setContainingNoteId(getNote().getNoteId());
 		link.setLinkToNoteName(noteName);
-		link.setStart(start);
-		link.setEnd(stop);
+		link.setStartLocation(start);
+		link.setEndLocation(stop);
 		link.save();
 
 		addLink(link);
@@ -153,8 +153,8 @@ public class NoteModel implements INoteModel {
 		Link link = createEmptyLink();
 		link.setContainingNoteId(getNote().getNoteId());
 		link.setLinkToReference(reference.toString());
-		link.setStart(start);
-		link.setEnd(stop);
+		link.setStartLocation(start);
+		link.setEndLocation(stop);
 
 		addLink(link);
 	}
@@ -228,14 +228,14 @@ public class NoteModel implements INoteModel {
 				List<Link> linksToBeDeleted = new ArrayList<Link>();
 
 				for (Link link : links) {
-					if (location == link.getStart().intValue()
+					if (location == link.getStartLocation().intValue()
 							&& isDeleting == false) {
 						shiftLink(link, differenceLength);
-					} else if (location == link.getStart().intValue()
+					} else if (location == link.getStartLocation().intValue()
 							&& isDeleting) {
 						linksToBeDeleted.add(link);
-					} else if (location >= link.getStart().intValue()
-							&& location <= link.getEnd().intValue()) { // edit
+					} else if (location >= link.getStartLocation().intValue()
+							&& location <= link.getEndLocation().intValue()) { // edit
 																		// is in
 																		// text
 
@@ -244,7 +244,7 @@ public class NoteModel implements INoteModel {
 						// newContentText.length())
 						// { // is removing content
 						// }
-					} else if (location <= link.getStart().intValue()) {
+					} else if (location <= link.getStartLocation().intValue()) {
 						if (isDeleting) {
 							shiftLink(link, differenceLength * -1);
 						} else {
@@ -323,8 +323,8 @@ public class NoteModel implements INoteModel {
 	}
 
 	private void shiftLink(Link link, int i) {
-		link.setStart(new Integer(link.getStart() + i));
-		link.setEnd(new Integer(link.getEnd() + i));
+		link.setStartLocation(new Integer(link.getStartLocation() + i));
+		link.setEndLocation(new Integer(link.getEndLocation() + i));
 	}
 
 	protected int findLocationOfNewText(String newContentText) {
@@ -337,7 +337,7 @@ public class NoteModel implements INoteModel {
 		Link targetLink = null;
 
 		for (Link link : links) {
-			if (offset >= link.getStart() && offset <= link.getEnd()) {
+			if (offset >= link.getStartLocation() && offset <= link.getEndLocation()) {
 				targetLink = link;
 				break;
 			}
