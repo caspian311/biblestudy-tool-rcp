@@ -10,15 +10,15 @@ import net.todd.biblestudy.common.AbstractMvpListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class OpenNoteModel extends AbstractMvpListener implements IOpenNoteModel {
-	private static Log LOG = LogFactory.getLog(OpenNoteModel.class);
+public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNoteDialogModel {
+	private static Log LOG = LogFactory.getLog(OpenNoteDialogModel.class);
 
 	private final EntityManager entityManager;
 	private final INoteViewLauncher noteViewLauncher;
 
 	private Note selectedNote;
 
-	public OpenNoteModel(EntityManager entityManager, INoteViewLauncher noteViewLauncher) {
+	public OpenNoteDialogModel(EntityManager entityManager, INoteViewLauncher noteViewLauncher) {
 		this.entityManager = entityManager;
 		this.noteViewLauncher = noteViewLauncher;
 	}

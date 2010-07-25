@@ -1,56 +1,99 @@
 package net.todd.biblestudy.rcp;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.db.INoteDao;
-import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.db.NoteDaoAdapter;
+import java.util.UUID;
+
+import net.java.ao.EntityManager;
+import net.todd.biblestudy.common.IListener;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public class NewNoteDialogModelTest
-{
-	INewNoteDialogModel model = null;
-	private Note note;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+public class NewNoteDialogModelTest {
+	@Mock
+	private EntityManager entityManager;
+
+	private INewNoteDialogModel testObject;
 
 	@Before
-	public void setup()
-	{
-		model = new NewNoteDialogModel()
-		{
-			@Override
-			INoteDao getNoteDao()
-			{
-				return new NoteDaoAdapter()
-				{
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
 
-					@Override
-					public Note getNoteByName(String name) throws BiblestudyException
-					{
-						return note;
-					}
-
-					@Override
-					public Note createNote(String newNoteName) throws BiblestudyException
-					{
-						note = new Note();
-
-						return null;
-					}
-				};
-			}
-		};
+		testObject = new NewNoteDialogModel(entityManager);
 	}
 
 	@Test
-	public void testNoteAlreadyExists() throws Exception
-	{
-		assertFalse(model.noteAlreadyExists("whatever"));
+	public void ifNoNoteExistsWithTheGivenNameModelIsValid() throws Exception {
+		String givenNoteName = UUID.randomUUID().toString();
+		doReturn(new Note[] {}).when(entityManager).find(Note.class, "name = ?", givenNoteName);
 
-		model.createNewNote("whatever");
+		testObject.setNoteName(givenNoteName);
 
-		assertTrue(model.noteAlreadyExists("whatever"));
+		assertTrue(testObject.isValidState());
+	}
+
+	@Test
+	public void ifANoteWithTheGivenNameAlreadyExistsModelIsNotValid() throws Exception {
+		String givenNoteName = UUID.randomUUID().toString();
+		doReturn(new Note[] { mock(Note.class) }).when(entityManager).find(Note.class, "name = ?", givenNoteName);
+
+		testObject.setNoteName(givenNoteName);
+
+		assertFalse(testObject.isValidState());
+	}
+
+	@Test
+	public void validStateListenersAreNotifiedWhenNoteNameChangesOnTheModel() throws Exception {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, INewNoteDialogModel.VALID_STATE);
+
+		testObject.setNoteName(UUID.randomUUID().toString());
+
+		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void modelIsNotValidIfGivenNameIsNull() throws Exception {
+		doReturn(new Note[] {}).when(entityManager).find(eq(Note.class), anyString(), anyString());
+
+		testObject.setNoteName(null);
+
+		assertFalse(testObject.isValidState());
+	}
+
+	@Test
+	public void modelIsNotValidIfGivenNameIsEmpty() throws Exception {
+		doReturn(new Note[] {}).when(entityManager).find(eq(Note.class), anyString(), anyString());
+
+		testObject.setNoteName("");
+
+		assertFalse(testObject.isValidState());
+	}
+
+	@Test
+	public void createNewNoteSavesCreatesANewNoteWithTheGivenNameAndSavesIt() throws Exception {
+		String newNoteName = UUID.randomUUID().toString();
+		Note newlyCreatedNote = mock(Note.class);
+		doReturn(newlyCreatedNote).when(entityManager).create(Note.class);
+		testObject.setNoteName(newNoteName);
+
+		testObject.createNewNote();
+
+		InOrder inOrder = inOrder(entityManager, newlyCreatedNote);
+		inOrder.verify(entityManager).create(Note.class);
+		inOrder.verify(newlyCreatedNote).setName(newNoteName);
+		inOrder.verify(newlyCreatedNote).save();
 	}
 }

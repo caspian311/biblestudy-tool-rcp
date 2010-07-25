@@ -31,16 +31,23 @@ public class NewNoteDialog extends TrayDialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		INewNoteDialogModel newNoteDialogModel = new NewNoteDialogModel(EntityManagerProvider.getEntityManager());
 		Composite composite = new Composite(parent, SWT.NONE);
 		newNoteDialogView = new NewNoteDialogView(composite, this);
-		new NewNoteDialogPresenter(newNoteDialogView, newNoteDialogModel);
 
 		return composite;
 	}
 
 	@Override
-	public Button getButton(int id) {
-		return super.getButton(id);
+	protected Control createContents(Composite parent) {
+		Control createContents = super.createContents(parent);
+
+		INewNoteDialogModel newNoteDialogModel = new NewNoteDialogModel(EntityManagerProvider.getEntityManager());
+		new NewNoteDialogPresenter(newNoteDialogView, newNoteDialogModel);
+
+		return createContents;
+	}
+
+	public Button getOkButton() {
+		return getButton(OK);
 	}
 }

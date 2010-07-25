@@ -21,19 +21,19 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class OpenNoteModelTest {
+public class OpenNoteDialogModelTest {
 	@Mock
 	private INoteViewLauncher noteViewLauncher;
 	@Mock
 	private EntityManager entityManager;
 
-	private IOpenNoteModel testObject;
+	private IOpenNoteDialogModel testObject;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		testObject = new OpenNoteModel(entityManager, noteViewLauncher);
+		testObject = new OpenNoteDialogModel(entityManager, noteViewLauncher);
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class OpenNoteModelTest {
 	@Test
 	public void settingSelectionNotifiesSelectionListeners() {
 		IListener listener = mock(IListener.class);
-		testObject.addListener(listener, IOpenNoteModel.SELECTION);
+		testObject.addListener(listener, IOpenNoteDialogModel.SELECTION);
 
 		testObject.setSelectedNote(mock(Note.class));
 
@@ -78,7 +78,7 @@ public class OpenNoteModelTest {
 	@Test
 	public void deleteSelectedNoteDeletesNoteFromTheEntityManagerAndNotifiesAllNotesListeners() throws SQLException {
 		IListener listener = mock(IListener.class);
-		testObject.addListener(listener, IOpenNoteModel.ALL_NOTES);
+		testObject.addListener(listener, IOpenNoteDialogModel.ALL_NOTES);
 
 		Note note = mock(Note.class);
 		testObject.setSelectedNote(note);

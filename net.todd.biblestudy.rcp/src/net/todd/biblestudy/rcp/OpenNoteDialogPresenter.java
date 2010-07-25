@@ -3,7 +3,7 @@ package net.todd.biblestudy.rcp;
 import net.todd.biblestudy.common.IListener;
 
 public class OpenNoteDialogPresenter {
-	public static void create(final IOpenNoteDialogView view, final IOpenNoteModel model,
+	public static void create(final IOpenNoteDialogView view, final IOpenNoteDialogModel model,
 			final IDeleteConfirmationLauncher deleteConfirmationLauncher) {
 		view.setAllNotes(model.getAllNotes());
 		view.setDeleteButtonEnabled(model.getSelectedNote() != null);
@@ -30,14 +30,14 @@ public class OpenNoteDialogPresenter {
 				view.setDeleteButtonEnabled(model.getSelectedNote() != null);
 				view.setRenameButtonEnabled(model.getSelectedNote() != null);
 			}
-		}, IOpenNoteModel.SELECTION);
+		}, IOpenNoteDialogModel.SELECTION);
 
 		model.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				view.setAllNotes(model.getAllNotes());
 			}
-		}, IOpenNoteModel.ALL_NOTES);
+		}, IOpenNoteDialogModel.ALL_NOTES);
 
 		view.addListener(new IListener() {
 			@Override

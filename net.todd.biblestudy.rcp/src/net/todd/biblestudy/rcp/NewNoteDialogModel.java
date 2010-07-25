@@ -5,11 +5,11 @@ import java.sql.SQLException;
 import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.AbstractMvpListener;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class NewNoteDialogModel extends AbstractMvpListener implements
-		INewNoteDialogModel {
+public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteDialogModel {
 	private static final Log LOG = LogFactory.getLog(NewNoteDialogModel.class);
 
 	private final EntityManager entityManager;
@@ -22,7 +22,16 @@ public class NewNoteDialogModel extends AbstractMvpListener implements
 
 	@Override
 	public boolean isValidState() {
-		return noteExistswithName(newNoteName);
+		return isNoteNameUnique(newNoteName) && !StringUtils.isEmpty(newNoteName);
+	}
+
+	private boolean isNoteNameUnique(String newNoteName) {
+		try {
+			return entityManager.find(Note.class, "name = ?", newNoteName).length == 0;
+		} catch (SQLException e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -30,17 +39,6 @@ public class NewNoteDialogModel extends AbstractMvpListener implements
 		this.newNoteName = newNoteName;
 
 		notifyListeners(VALID_STATE);
-	}
-
-	private boolean noteExistswithName(String newNoteName) {
-		try {
-			Note[] notesByName = entityManager.find(Note.class, "name = ?",
-					newNoteName);
-			return notesByName.length != 0;
-		} catch (SQLException e) {
-			LOG.error(e);
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override

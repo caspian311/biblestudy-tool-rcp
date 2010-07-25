@@ -82,7 +82,7 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 
 				if (!StringUtils.isEmpty(filterString)) {
 					notesTableViewer.addFilter(new NoteFilter(filterString));
-					notesTableViewer.getTable().select(0);
+					// notesTableViewer.getTable().select(0);
 
 					notifyListeners(SELECTION);
 				}
@@ -287,6 +287,8 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 
 	@Override
 	public void setSelectedNote(Note note) {
-		notesTableViewer.setSelection(new StructuredSelection(note));
+		if (note != null) {
+			notesTableViewer.setSelection(new StructuredSelection(note));
+		}
 	}
 }

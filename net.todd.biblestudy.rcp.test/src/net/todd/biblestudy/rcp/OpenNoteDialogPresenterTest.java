@@ -14,7 +14,7 @@ import java.util.UUID;
 import net.todd.biblestudy.common.IListener;
 import net.todd.biblestudy.rcp.IDeleteConfirmationLauncher;
 import net.todd.biblestudy.rcp.IOpenNoteDialogView;
-import net.todd.biblestudy.rcp.IOpenNoteModel;
+import net.todd.biblestudy.rcp.IOpenNoteDialogModel;
 import net.todd.biblestudy.rcp.Note;
 import net.todd.biblestudy.rcp.OpenNoteDialogPresenter;
 
@@ -28,7 +28,7 @@ public class OpenNoteDialogPresenterTest {
 	@Mock
 	private IOpenNoteDialogView view;
 	@Mock
-	private IOpenNoteModel model;
+	private IOpenNoteDialogModel model;
 	@Mock
 	private IDeleteConfirmationLauncher deleteConfirmationLauncher;
 
@@ -47,7 +47,7 @@ public class OpenNoteDialogPresenterTest {
 		OpenNoteDialogPresenter.create(view, model, deleteConfirmationLauncher);
 
 		ArgumentCaptor<IListener> modelSelectionListenerCaptor = ArgumentCaptor.forClass(IListener.class);
-		verify(model).addListener(modelSelectionListenerCaptor.capture(), eq(IOpenNoteModel.SELECTION));
+		verify(model).addListener(modelSelectionListenerCaptor.capture(), eq(IOpenNoteDialogModel.SELECTION));
 		modelSelectionListener = modelSelectionListenerCaptor.getValue();
 
 		ArgumentCaptor<IListener> okButtonListenerCaptor = ArgumentCaptor.forClass(IListener.class);
@@ -71,7 +71,7 @@ public class OpenNoteDialogPresenterTest {
 		deleteButtonListener = deleteButtonListenerCaptor.getValue();
 
 		ArgumentCaptor<IListener> allNotesModelListenerCaptor = ArgumentCaptor.forClass(IListener.class);
-		verify(model).addListener(allNotesModelListenerCaptor.capture(), eq(IOpenNoteModel.ALL_NOTES));
+		verify(model).addListener(allNotesModelListenerCaptor.capture(), eq(IOpenNoteDialogModel.ALL_NOTES));
 		allNotesModelListener = allNotesModelListenerCaptor.getValue();
 
 		reset(view, model);

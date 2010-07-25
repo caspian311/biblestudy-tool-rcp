@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.todd.biblestudy.common.IMvpListener;
 
-public interface IOpenNoteModel extends IMvpListener {
+public interface IOpenNoteDialogModel extends IMvpListener {
 	enum Type {
 		SELECTION, ALL_NOTES
 	}
