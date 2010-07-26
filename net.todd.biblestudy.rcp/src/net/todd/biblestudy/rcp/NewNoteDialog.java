@@ -41,7 +41,8 @@ public class NewNoteDialog extends TrayDialog {
 	protected Control createContents(Composite parent) {
 		Control createContents = super.createContents(parent);
 
-		INewNoteDialogModel newNoteDialogModel = new NewNoteDialogModel(EntityManagerProvider.getEntityManager());
+		INewNoteDialogModel newNoteDialogModel = new NewNoteDialogModel(EntityManagerProvider.getEntityManager(),
+				NoteControllerProvider.getNoteController());
 		new NewNoteDialogPresenter(newNoteDialogView, newNoteDialogModel);
 
 		return createContents;

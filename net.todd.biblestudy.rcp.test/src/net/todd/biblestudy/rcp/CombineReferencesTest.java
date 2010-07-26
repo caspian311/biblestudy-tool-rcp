@@ -242,7 +242,7 @@ public class CombineReferencesTest
 		{
 		}
 
-		public void saveNoteAndLinks() throws BiblestudyException
+		public void save() throws BiblestudyException
 		{
 		}
 

@@ -24,6 +24,8 @@ import static org.mockito.Mockito.verify;
 public class NewNoteDialogModelTest {
 	@Mock
 	private EntityManager entityManager;
+	@Mock
+	private INoteController noteController;
 
 	private INewNoteDialogModel testObject;
 
@@ -31,7 +33,7 @@ public class NewNoteDialogModelTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 
-		testObject = new NewNoteDialogModel(entityManager);
+		testObject = new NewNoteDialogModel(entityManager, noteController);
 	}
 
 	@Test
@@ -83,7 +85,7 @@ public class NewNoteDialogModelTest {
 	}
 
 	@Test
-	public void createNewNoteSavesCreatesANewNoteWithTheGivenNameAndSavesIt() throws Exception {
+	public void createNewNoteSavesCreatesANewNoteWithTheGivenNameAndSavesItAndLaunchesIt() throws Exception {
 		String newNoteName = UUID.randomUUID().toString();
 		Note newlyCreatedNote = mock(Note.class);
 		doReturn(newlyCreatedNote).when(entityManager).create(Note.class);
@@ -91,9 +93,11 @@ public class NewNoteDialogModelTest {
 
 		testObject.createNewNote();
 
-		InOrder inOrder = inOrder(entityManager, newlyCreatedNote);
+		InOrder inOrder = inOrder(entityManager, noteController, newlyCreatedNote);
 		inOrder.verify(entityManager).create(Note.class);
 		inOrder.verify(newlyCreatedNote).setName(newNoteName);
 		inOrder.verify(newlyCreatedNote).save();
+		inOrder.verify(noteController).setCurrentNote(newNoteName);
+		inOrder.verify(noteController).openCurrentNote();
 	}
 }

@@ -79,7 +79,7 @@ public class NoteModelDocumentDirtyTest
 
 		noteModel.updateContent("something else");
 
-		noteModel.saveNoteAndLinks();
+		noteModel.save();
 
 		assertFalse(noteModel.isDocumentDirty());
 	}
@@ -91,7 +91,7 @@ public class NoteModelDocumentDirtyTest
 
 		noteModel.addLinkToNote("", 0, 100);
 
-		noteModel.saveNoteAndLinks();
+		noteModel.save();
 
 		assertFalse(noteModel.isDocumentDirty());
 	}

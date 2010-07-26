@@ -103,7 +103,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="true"
-            class="net.todd.biblestudy.rcp.NoteView"
+            class="net.todd.biblestudy.rcp.NoteViewPart"
             icon="icons/text_file.png"
             id="net.todd.biblestudy.rcp.NoteView"
             name="NoteView">

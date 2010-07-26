@@ -68,7 +68,7 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 		noteContentText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				notifyListeners(NOTE_CONTENT);
+				notifyListeners(CONTENT);
 			}
 		});
 		noteContentText.addMouseListener(new MouseAdapter() {

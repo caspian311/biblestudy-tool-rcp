@@ -233,7 +233,7 @@ public class CreateLinkPresenterTest
 		{
 		}
 
-		public void saveNoteAndLinks()
+		public void save()
 		{
 		}
 

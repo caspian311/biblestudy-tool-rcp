@@ -14,13 +14,13 @@ public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNot
 	private static Log LOG = LogFactory.getLog(OpenNoteDialogModel.class);
 
 	private final EntityManager entityManager;
-	private final INoteViewLauncher noteViewLauncher;
+	private final INoteController noteController;
 
 	private Note selectedNote;
 
-	public OpenNoteDialogModel(EntityManager entityManager, INoteViewLauncher noteViewLauncher) {
+	public OpenNoteDialogModel(EntityManager entityManager, INoteController noteController) {
 		this.entityManager = entityManager;
-		this.noteViewLauncher = noteViewLauncher;
+		this.noteController = noteController;
 	}
 
 	@Override
@@ -35,7 +35,8 @@ public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNot
 
 	@Override
 	public void openSelectedNote() {
-		noteViewLauncher.openNoteView(selectedNote.getName());
+		noteController.setCurrentNote(selectedNote.getName());
+		noteController.openCurrentNote();
 	}
 
 	@Override

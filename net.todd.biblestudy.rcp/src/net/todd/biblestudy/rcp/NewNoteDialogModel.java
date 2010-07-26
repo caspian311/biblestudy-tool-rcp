@@ -13,11 +13,13 @@ public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteD
 	private static final Log LOG = LogFactory.getLog(NewNoteDialogModel.class);
 
 	private final EntityManager entityManager;
+	private final INoteController noteController;
 
 	private String newNoteName;
 
-	public NewNoteDialogModel(EntityManager entityManager) {
+	public NewNoteDialogModel(EntityManager entityManager, INoteController noteController) {
 		this.entityManager = entityManager;
+		this.noteController = noteController;
 	}
 
 	@Override
@@ -51,5 +53,8 @@ public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteD
 			LOG.error(e);
 			throw new RuntimeException(e);
 		}
+
+		noteController.setCurrentNote(newNoteName);
+		noteController.openCurrentNote();
 	}
 }

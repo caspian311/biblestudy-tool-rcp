@@ -222,7 +222,7 @@ public class NotePresenterDeleteNoteTest
 		{
 		}
 
-		public void saveNoteAndLinks()
+		public void save()
 		{
 		}
 

@@ -712,7 +712,7 @@ public class NotePresenterHandleEventTest
 			return saveCalled;
 		}
 
-		public void saveNoteAndLinks()
+		public void save()
 		{
 			saveCalled = true;
 			documentIsDirty = false;

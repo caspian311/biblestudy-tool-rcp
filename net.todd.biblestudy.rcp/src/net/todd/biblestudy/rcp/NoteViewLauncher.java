@@ -12,8 +12,6 @@ public class NoteViewLauncher implements INoteViewLauncher {
 
 	@Override
 	public void openNoteView(String noteName) {
-		NoteControllerProvider.getNoteController().setCurrentNote(noteName);
-
 		try {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.showView(NoteViewPart.ID, noteName, IWorkbenchPage.VIEW_ACTIVATE);

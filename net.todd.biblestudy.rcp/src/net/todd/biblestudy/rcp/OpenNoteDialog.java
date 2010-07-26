@@ -29,9 +29,9 @@ public class OpenNoteDialog extends TrayDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.None);
 		view = new OpenNoteDialogView(composite, this);
-		INoteViewLauncher noteViewLauncher = new NoteViewLauncher();
+		INoteController noteController = NoteControllerProvider.getNoteController();
 		EntityManager entityManager = EntityManagerProvider.getEntityManager();
-		IOpenNoteDialogModel model = new OpenNoteDialogModel(entityManager, noteViewLauncher);
+		IOpenNoteDialogModel model = new OpenNoteDialogModel(entityManager, noteController);
 		IDeleteConfirmationLauncher deleteConfirmationLauncher = new DeleteConfirmationLauncher();
 		OpenNoteDialogPresenter.create(view, model, deleteConfirmationLauncher);
 

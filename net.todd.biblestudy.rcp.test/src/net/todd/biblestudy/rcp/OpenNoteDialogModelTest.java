@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 
 public class OpenNoteDialogModelTest {
 	@Mock
-	private INoteViewLauncher noteViewLauncher;
+	private INoteController noteController;
 	@Mock
 	private EntityManager entityManager;
 
@@ -33,7 +33,7 @@ public class OpenNoteDialogModelTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		testObject = new OpenNoteDialogModel(entityManager, noteViewLauncher);
+		testObject = new OpenNoteDialogModel(entityManager, noteController);
 	}
 
 	@Test
@@ -72,7 +72,10 @@ public class OpenNoteDialogModelTest {
 
 		testObject.openSelectedNote();
 
-		verify(noteViewLauncher).openNoteView(noteName);
+		InOrder inOrder = inOrder(noteController);
+
+		inOrder.verify(noteController).setCurrentNote(noteName);
+		inOrder.verify(noteController).openCurrentNote();
 	}
 
 	@Test

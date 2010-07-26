@@ -1,217 +1,106 @@
 package net.todd.biblestudy.rcp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import java.util.UUID;
 
-import java.util.Date;
-import java.util.List;
+import net.todd.biblestudy.common.IListener;
 
-import net.todd.biblestudy.db.Note;
-import net.todd.biblestudy.db.NoteStyle;
-import net.todd.biblestudy.rcp.models.INoteModel;
-import net.todd.biblestudy.rcp.views.INoteView;
-import net.todd.biblestudy.reference.BibleVerse;
-
-import org.eclipse.swt.graphics.Point;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public class NotePresenterTest
-{
-	private INoteModel noteModel;
-	private MockNoteView noteView;
+import static org.mockito.Matchers.eq;
+
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+
+public class NotePresenterTest {
+	@Mock
+	private INoteModel model;
+	@Mock
+	private INoteView view;
+	@Mock
+	private ICreateLinkToDialogLauncher createLinkToDialogLauncher;
+	@Mock
+	private IDeleteConfirmationLauncher deleteConfirmationDialogLauncher;
+	@Mock
+	private INoteController noteController;
+
+	private IListener modelChangedListener;
+	private IListener viewChangedListener;
 
 	@Before
-	public void setup() throws Exception
-	{
-		noteView = new MockNoteView();
-		noteModel = new NoteModelHarness()
-		{
-			@Override
-			protected Note getSampleNote()
-			{
-				Note note = new Note();
-				note.setName("Test");
-				note.setNoteId(new Integer(1));
-				note.setText("blah blah blah");
-				note.setLastModified(new Date());
-				return note;
-			}
-		};
+	public void setup() throws Exception {
+		MockitoAnnotations.initMocks(this);
 
-		noteModel.populateNoteInfo(null);
+		NotePresenter.create(view, model, createLinkToDialogLauncher, deleteConfirmationDialogLauncher, noteController);
+
+		ArgumentCaptor<IListener> modelChangedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(model).addListener(modelChangedListenerCaptor.capture(), eq(INoteModel.CHANGED));
+		modelChangedListener = modelChangedListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> viewChangedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(viewChangedListenerCaptor.capture(), eq(INoteView.CONTENT));
+		viewChangedListener = viewChangedListenerCaptor.getValue();
+
+		reset(model, view);
 	}
 
 	@Test
-	public void noteOpenedAndEverythingIsSetCorrectly()
-	{
-		assertNull(noteView.getNoteViewListener());
+	public void viewIsPopulatedFromDataInTheModelInitially() {
+		String content = UUID.randomUUID().toString();
+		doReturn(content).when(model).getContent();
 
-		NotePresenter presenter = new NotePresenter(noteView, noteModel);
+		String noteName = UUID.randomUUID().toString();
+		doReturn(noteName).when(model).getNoteName();
 
-		assertEquals("Test", noteView.getViewTitle());
-		assertEquals("blah blah blah", noteView.getContent());
+		NotePresenter.create(view, model, createLinkToDialogLauncher, deleteConfirmationDialogLauncher, noteController);
 
-		assertNotNull(noteView.getNoteViewListener());
-		assertTrue(presenter == noteView.getNoteViewListener());
+		verify(view).setContent(content);
+		verify(view).setTitle(noteName);
 	}
 
 	@Test
-	public void contentChangeMakesDocumentDirty() throws Exception
-	{
-		NotePresenter notePresenter = new NotePresenter(noteView, noteModel);
+	public void whenModelChangesAndModelSaysDocumentIsDirtyThenSetTheViewsTitleToTheNoteNameWithADirtySymbol() {
+		String noteName = UUID.randomUUID().toString();
+		doReturn(noteName).when(model).getNoteName();
+		doReturn(true).when(model).isDocumentDirty();
 
-		assertFalse(noteModel.isDocumentDirty());
-		assertEquals("Test", noteView.getViewTitle());
+		modelChangedListener.handleEvent();
 
-		Thread.sleep(1000);
-
-		noteView.setContent(noteView.getContent() + "asdf");
-		notePresenter.handleEvent(new ViewEvent(ViewEvent.NOTE_CONTENT_CHANGED));
-
-		assertTrue(noteModel.isDocumentDirty());
-		assertEquals("Test*", noteView.getViewTitle());
+		verify(view).setTitle(noteName + "*");
 	}
 
-	private class MockNoteView implements INoteView
-	{
-		private String viewTitle;
-		private String contentText;
-		private Point selectionPoint;
-		private String selectionText;
-		private boolean didPopupDeleteConfirmation;
-		private INoteViewListener noteListener;
+	@Test
+	public void whenModelChangesAndModelSaysDocumentIsNotDirtyThenSetTheViewsTitleToTheNoteName() {
+		String noteName = UUID.randomUUID().toString();
+		doReturn(noteName).when(model).getNoteName();
+		doReturn(false).when(model).isDocumentDirty();
 
-		public void addNoteViewListener(INoteViewListener noteListener)
-		{
-			this.noteListener = noteListener;
-		}
+		modelChangedListener.handleEvent();
 
-		public INoteViewListener getNoteViewListener()
-		{
-			return noteListener;
-		}
+		verify(view).setTitle(noteName);
+	}
 
-		public Point getLastClickedCoordinates()
-		{
-			return null;
-		}
+	@Test
+	public void whenModelChangesContentsArePulledFromModelAndGivenToTheView() {
+		String content = UUID.randomUUID().toString();
+		doReturn(content).when(model).getContent();
 
-		public void setSelectionText(String text)
-		{
-			selectionText = text;
-		}
+		modelChangedListener.handleEvent();
 
-		public String getSelectedContent()
-		{
-			return selectionText;
-		}
+		verify(view).setContent(content);
+	}
 
-		public void setSelectionPoint(int x, int y)
-		{
-			selectionPoint = new Point(x, y);
-		}
+	@Test
+	public void whenViewChangesContentsArePulledFromViewAndGivenToTheModel() {
+		String content = UUID.randomUUID().toString();
+		doReturn(content).when(view).getContent();
 
-		public Point getSelectionPoint()
-		{
-			return selectionPoint;
-		}
+		viewChangedListener.handleEvent();
 
-		public void removeNoteViewListener(INoteViewListener noteListener)
-		{
-		}
-
-		public String getContent()
-		{
-			return contentText;
-		}
-
-		public void setContent(String text)
-		{
-			contentText = text;
-		}
-
-		public String getViewTitle()
-		{
-			return viewTitle;
-		}
-
-		public void setViewTitle(String title)
-		{
-			viewTitle = title;
-		}
-
-		public void showRightClickPopup(int x, int y)
-		{
-		}
-
-		public void saveNote()
-		{
-		}
-
-		public void closeView(String secondardId)
-		{
-		}
-
-		public void deleteNote()
-		{
-		}
-
-		public void replaceNoteStyles(List<NoteStyle> list)
-		{
-		}
-
-		public void changeCursorToPointer()
-		{
-		}
-
-		public void changeCursorToText()
-		{
-		}
-
-		public int getCurrentCarretPosition()
-		{
-			return 0;
-		}
-
-		public List<BibleVerse> getDroppedVerses()
-		{
-			return null;
-		}
-
-		public void openDropReferenceOptions()
-		{
-		}
-
-		public Point getDropCoordinates()
-		{
-			return null;
-		}
-
-		public void showDropReferenceMenu(int x, int y)
-		{
-		}
-
-		public void removeNoteStyles()
-		{
-		}
-
-		public boolean didPopupDeleteConfirmation()
-		{
-			return didPopupDeleteConfirmation;
-		}
-
-		public int openDeleteConfirmationWindow()
-		{
-			didPopupDeleteConfirmation = true;
-			return 0;
-		}
-
-		public void changesToNoteTextFiresEvent(boolean makeChangesToNoteText)
-		{
-		}
+		verify(model).setContent(content);
 	}
 }
