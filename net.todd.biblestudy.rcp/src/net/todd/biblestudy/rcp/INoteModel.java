@@ -69,7 +69,5 @@ public interface INoteModel {
 
 	void updateContent(String newContentText) throws BiblestudyException;
 
-	void populateNoteInfo(String noteName);
-
-	void createNewNoteInfo(String noteName) throws BiblestudyException;
+	String getNoteName();
 }

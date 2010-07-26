@@ -18,17 +18,13 @@ public class NoteModel implements INoteModel {
 
 	private Note note;
 
-	private List<Link> links = new ArrayList<Link>();
+	private final List<Link> links = new ArrayList<Link>();
 	private Date timestampFromDB;
 
 	private final EntityManager entityManager;
 
-	public NoteModel(EntityManager entityManager) {
+	public NoteModel(EntityManager entityManager, String noteName) {
 		this.entityManager = entityManager;
-	}
-
-	@Override
-	public void populateNoteInfo(String noteName) {
 		Note note = findNoteByName(noteName);
 
 		if (note == null) {
@@ -38,9 +34,7 @@ public class NoteModel implements INoteModel {
 
 		this.note = note;
 
-		timestampFromDB = (Date) note.getLastModified().clone();
-
-		populateAllLinksForNoteInDB(note);
+		// timestampFromDB = (Date) note.getLastModified().clone();
 	}
 
 	private Note createEmptyNote() {
@@ -66,17 +60,6 @@ public class NoteModel implements INoteModel {
 		return note;
 	}
 
-	private void populateAllLinksForNoteInDB(Note note)
-			throws BiblestudyException {
-		if (note != null) {
-			links = getLinkDao().getAllLinksForNote(note.getNoteId());
-
-			if (links == null) {
-				links = new ArrayList<Link>();
-			}
-		}
-	}
-
 	@Override
 	public Note getNote() {
 		return note;
@@ -100,12 +83,10 @@ public class NoteModel implements INoteModel {
 			// and
 			// end of request is at or after beginning of link
 			if (link.getStartLocation() <= end && link.getEndLocation() >= start) {
-				int startPoint = link.getStartLocation() >= start ? link.getStartLocation()
-						: start;
+				int startPoint = link.getStartLocation() >= start ? link.getStartLocation() : start;
 				int endPoint = link.getEndLocation() <= end ? link.getEndLocation() : end;
 
-				styles.add(getUnderLineStyle(startPoint, endPoint - startPoint,
-						link.getType()));
+				styles.add(getUnderLineStyle(startPoint, endPoint - startPoint, link.getType()));
 			}
 		}
 
@@ -130,7 +111,7 @@ public class NoteModel implements INoteModel {
 	@Override
 	public void addLinkToNote(String noteName, int start, int stop) {
 		Link link = createEmptyLink();
-		link.setContainingNoteId(getNote().getNoteId());
+		link.setNote(note);
 		link.setLinkToNoteName(noteName);
 		link.setStartLocation(start);
 		link.setEndLocation(stop);
@@ -151,7 +132,7 @@ public class NoteModel implements INoteModel {
 	@Override
 	public void addLinkToReference(Reference reference, int start, int stop) {
 		Link link = createEmptyLink();
-		link.setContainingNoteId(getNote().getNoteId());
+		link.setNote(note);
 		link.setLinkToReference(reference.toString());
 		link.setStartLocation(start);
 		link.setEndLocation(stop);
@@ -163,18 +144,16 @@ public class NoteModel implements INoteModel {
 		links.add(link);
 		getNote().setLastModified(new Date());
 
-		fireEvent(new ModelEvent(ModelEvent.MODEL_LINK_ADDED));
+		// fireEvent(new ModelEvent(ModelEvent.MODEL_LINK_ADDED));
 	}
 
 	@Override
 	public void saveNoteAndLinks() throws BiblestudyException {
-		getNote().save();
-
-		getLinkDao().removeAllLinksForNote(getNote());
-
 		for (Link link : links) {
-			getLinkDao().createLink(link);
+			link.save();
 		}
+
+		note.save();
 
 		timestampFromDB = (Date) getNote().getLastModified().clone();
 	}
@@ -213,31 +192,27 @@ public class NoteModel implements INoteModel {
 	}
 
 	private void updateLinks(String newContentText) {
-		boolean isDeleting = newContentText.length() < getNote().getText()
-				.length();
+		boolean isDeleting = newContentText.length() < getNote().getText().length();
 
 		int differenceLength = findLengthOfDifferingText(newContentText);
 
 		if (differenceLength != 0) {
 			int location = findLocationOfNewText(newContentText);
 
-			if (differenceLength >= getNote().getText().length()
-					&& location == 0) {
+			if (differenceLength >= getNote().getText().length() && location == 0) {
 				removeAllLinksForNote();
 			} else {
 				List<Link> linksToBeDeleted = new ArrayList<Link>();
 
 				for (Link link : links) {
-					if (location == link.getStartLocation().intValue()
-							&& isDeleting == false) {
+					if (location == link.getStartLocation().intValue() && isDeleting == false) {
 						shiftLink(link, differenceLength);
-					} else if (location == link.getStartLocation().intValue()
-							&& isDeleting) {
+					} else if (location == link.getStartLocation().intValue() && isDeleting) {
 						linksToBeDeleted.add(link);
 					} else if (location >= link.getStartLocation().intValue()
 							&& location <= link.getEndLocation().intValue()) { // edit
-																		// is in
-																		// text
+						// is in
+						// text
 
 						linksToBeDeleted.add(link);
 						// if (getNote().getText().length() >
@@ -272,8 +247,7 @@ public class NoteModel implements INoteModel {
 		String oldContentText = getNote().getText();
 		String originalNewContentText = newContentText;
 
-		int lengthOfDifferingText = oldContentText.length()
-				- originalNewContentText.length();
+		int lengthOfDifferingText = oldContentText.length() - originalNewContentText.length();
 
 		if (lengthOfDifferingText < 0) {
 			lengthOfDifferingText *= -1;
@@ -328,8 +302,7 @@ public class NoteModel implements INoteModel {
 	}
 
 	protected int findLocationOfNewText(String newContentText) {
-		return StringUtils.indexOfDifference(getNote().getText(),
-				newContentText);
+		return StringUtils.indexOfDifference(getNote().getText(), newContentText);
 	}
 
 	@Override
@@ -347,11 +320,7 @@ public class NoteModel implements INoteModel {
 	}
 
 	@Override
-	public void createNewNoteInfo(String noteName) throws BiblestudyException {
-		note = noteDao.createNote(noteName);
-
-		timestampFromDB = (Date) note.getLastModified().clone();
-
-		populateAllLinksForNoteInDB(note);
+	public String getNoteName() {
+		return note.getName();
 	}
 }
