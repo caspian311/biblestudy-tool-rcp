@@ -6,11 +6,12 @@ import net.todd.biblestudy.common.IMvpListener;
 
 public interface IOpenNoteDialogModel extends IMvpListener {
 	enum Type {
-		SELECTION, ALL_NOTES
+		SELECTION, ALL_NOTES, FILTER
 	}
 
 	Type SELECTION = Type.SELECTION;
 	Type ALL_NOTES = Type.ALL_NOTES;
+	Type FILTER = Type.FILTER;
 
 	List<Note> getAllNotes();
 
@@ -25,4 +26,8 @@ public interface IOpenNoteDialogModel extends IMvpListener {
 	void renameSelectedNote();
 
 	void deleteSelectedNote();
+
+	void setFilterText(String filter);
+
+	String getFilterText();
 }

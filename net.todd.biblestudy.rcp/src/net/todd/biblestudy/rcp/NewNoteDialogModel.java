@@ -1,6 +1,7 @@
 package net.todd.biblestudy.rcp;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.AbstractMvpListener;
@@ -48,6 +49,8 @@ public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteD
 		try {
 			Note note = entityManager.create(Note.class);
 			note.setName(newNoteName);
+			note.setCreatedTimestamp(new Date());
+			note.setLastModified(new Date());
 			note.save();
 		} catch (SQLException e) {
 			LOG.error(e);

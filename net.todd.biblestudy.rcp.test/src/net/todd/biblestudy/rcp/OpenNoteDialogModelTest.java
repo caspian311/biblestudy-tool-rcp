@@ -1,5 +1,8 @@
 package net.todd.biblestudy.rcp;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.UUID;
@@ -12,14 +15,6 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class OpenNoteDialogModelTest {
 	@Mock
@@ -55,6 +50,21 @@ public class OpenNoteDialogModelTest {
 	}
 
 	@Test
+	public void settingSelectionOnlyNotifiesSelectionListenersWhenTheValueChanges() {
+		Note note = mock(Note.class);
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IOpenNoteDialogModel.SELECTION);
+
+		testObject.setSelectedNote(note);
+
+		reset(listener);
+
+		testObject.setSelectedNote(note);
+
+		verify(listener, never()).handleEvent();
+	}
+
+	@Test
 	public void getAllNotesPullsFromEntityManager() throws SQLException {
 		Note note1 = mock(Note.class);
 		Note note2 = mock(Note.class);
@@ -79,18 +89,42 @@ public class OpenNoteDialogModelTest {
 	}
 
 	@Test
-	public void deleteSelectedNoteDeletesNoteFromTheEntityManagerAndNotifiesAllNotesListeners() throws SQLException {
-		IListener listener = mock(IListener.class);
-		testObject.addListener(listener, IOpenNoteDialogModel.ALL_NOTES);
+	public void deleteSelectedNoteDeletesNoteFromTheEntityManagerAndNotifiesAllNotesListenersAndResetsItsSelection()
+			throws SQLException {
+		IListener allNotesListener = mock(IListener.class);
+		testObject.addListener(allNotesListener, IOpenNoteDialogModel.ALL_NOTES);
+		IListener selectionListener = mock(IListener.class);
+		testObject.addListener(selectionListener, IOpenNoteDialogModel.SELECTION);
 
 		Note note = mock(Note.class);
 		testObject.setSelectedNote(note);
 
 		testObject.deleteSelectedNote();
 
-		InOrder inOrder = inOrder(entityManager, listener);
+		InOrder inOrder = inOrder(entityManager, allNotesListener, selectionListener);
 
 		inOrder.verify(entityManager).delete(note);
-		inOrder.verify(listener).handleEvent();
+		inOrder.verify(allNotesListener).handleEvent();
+		inOrder.verify(selectionListener).handleEvent();
+
+		assertNull(testObject.getSelectedNote());
+	}
+
+	@Test
+	public void getterAndSettersWorkForFilterText() {
+		String filter = UUID.randomUUID().toString();
+		testObject.setFilterText(filter);
+
+		assertEquals(filter, testObject.getFilterText());
+	}
+
+	@Test
+	public void settingTheFilterTextNotifiesFilterListener() {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IOpenNoteDialogModel.FILTER);
+
+		testObject.setFilterText(UUID.randomUUID().toString());
+
+		verify(listener).handleEvent();
 	}
 }

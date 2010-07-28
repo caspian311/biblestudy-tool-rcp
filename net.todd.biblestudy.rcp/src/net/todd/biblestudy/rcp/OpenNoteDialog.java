@@ -29,6 +29,14 @@ public class OpenNoteDialog extends TrayDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.None);
 		view = new OpenNoteDialogView(composite, this);
+
+		return composite;
+	}
+
+	@Override
+	protected Control createContents(Composite parent) {
+		Control composite = super.createContents(parent);
+
 		INoteController noteController = NoteControllerProvider.getNoteController();
 		EntityManager entityManager = EntityManagerProvider.getEntityManager();
 		IOpenNoteDialogModel model = new OpenNoteDialogModel(entityManager, noteController);
@@ -38,9 +46,8 @@ public class OpenNoteDialog extends TrayDialog {
 		return composite;
 	}
 
-	@Override
-	public Button getButton(int id) {
-		return super.getButton(id);
+	public Button getOkButton() {
+		return super.getButton(OK);
 	}
 
 	@Override

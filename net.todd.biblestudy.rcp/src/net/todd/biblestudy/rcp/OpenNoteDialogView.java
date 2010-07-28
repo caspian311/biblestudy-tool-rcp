@@ -1,10 +1,12 @@
 package net.todd.biblestudy.rcp;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import net.todd.biblestudy.common.AbstractMvpListener;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -14,6 +16,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -76,17 +79,7 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 		filterText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				notesTableViewer.resetFilters();
-
-				String filterString = filterText.getText();
-
-				if (!StringUtils.isEmpty(filterString)) {
-					notesTableViewer.addFilter(new NoteFilter(filterString));
-					// notesTableViewer.getTable().select(0);
-
-					notifyListeners(SELECTION);
-				}
-
+				notifyListeners(FILTER_TEXT);
 			}
 		});
 
@@ -127,46 +120,38 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 				notifyListeners(SELECTION);
 			}
 		});
-		notesTableViewer.setSorter(new ViewerSorter());
+		notesTableViewer.setSorter(new ViewerSorter() {
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			@Override
+			public void sort(Viewer viewer, Object[] elements) {
+				Arrays.sort(elements, new Comparator() {
+					@Override
+					public int compare(Object element1, Object element2) {
+						if (element1 instanceof String) {
+							return ((String) element1).compareTo((String) element2);
+						} else if (element1 instanceof Date) {
+							return ((Date) element1).compareTo((Date) element2);
+						}
+						return 0;
+					}
+				});
+			}
+		});
 
 		noteNameColumn = new TableColumn(notesTable, SWT.LEFT);
 		noteNameColumn.setText(NOTE_NAME_COLUMN_HEADER);
 		noteNameColumn.setWidth(NOTE_NAME_COLUMN_WIDTH);
 		noteNameColumn.setResizable(true);
-		// noteNameColumn.addSelectionListener(new SelectionAdapter() {
-		// @Override
-		// public void widgetSelected(SelectionEvent e) {
-		// notesTable.setSortColumn(noteNameColumn);
-		// ((NoteViewerSorter) notesTableViewer.getSorter()).doSort(1);
-		// notesTableViewer.refresh();
-		// }
-		// });
 
 		lastModifiedColumn = new TableColumn(notesTable, SWT.LEFT);
 		lastModifiedColumn.setText(LAST_MODIFIED_COLUMN_HEADER);
 		lastModifiedColumn.setWidth(LAST_MODIFIED_COLUMN_WIDTH);
 		lastModifiedColumn.setResizable(true);
-		// lastModifiedColumn.addSelectionListener(new SelectionAdapter() {
-		// @Override
-		// public void widgetSelected(SelectionEvent e) {
-		// notesTable.setSortColumn(noteNameColumn);
-		// ((NoteViewerSorter) notesTableViewer.getSorter()).doSort(2);
-		// notesTableViewer.refresh();
-		// }
-		// });
 
 		createdColumn = new TableColumn(notesTable, SWT.LEFT);
 		createdColumn.setText(CREATED_COLUMN_HEADER);
 		createdColumn.setWidth(CREATED_COLUMN_WIDTH);
 		createdColumn.setResizable(true);
-		// createdColumn.addSelectionListener(new SelectionAdapter() {
-		// @Override
-		// public void widgetSelected(SelectionEvent e) {
-		// notesTable.setSortColumn(noteNameColumn);
-		// ((NoteViewerSorter) notesTableViewer.getSorter()).doSort(3);
-		// notesTableViewer.refresh();
-		// }
-		// });
 
 		Composite extraButtonsComposite = new Composite(composite, SWT.NONE);
 		GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).applyTo(extraButtonsComposite);
@@ -174,7 +159,8 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 
 		renameButton = new Button(extraButtonsComposite, SWT.PUSH);
 		renameButton.setText("Rename");
-		GridDataFactory.swtDefaults().grab(true, false).hint(200, SWT.DEFAULT).applyTo(renameButton);
+		GridDataFactory.swtDefaults().grab(true, false).align(SWT.END, SWT.CENTER)
+				.hint(ViewerUtils.getButtonWidth(renameButton), SWT.DEFAULT).applyTo(renameButton);
 		renameButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -184,7 +170,7 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 
 		deleteButton = new Button(extraButtonsComposite, SWT.PUSH);
 		deleteButton.setText("Delete");
-		GridDataFactory.swtDefaults().hint(200, SWT.DEFAULT).applyTo(renameButton);
+		GridDataFactory.swtDefaults().hint(ViewerUtils.getButtonWidth(renameButton), SWT.DEFAULT).applyTo(deleteButton);
 		deleteButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -194,8 +180,28 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 	}
 
 	@Override
+	public String getFilterText() {
+		return filterText.getText();
+	}
+
+	@Override
+	public void resetFilter() {
+		notesTableViewer.resetFilters();
+	}
+
+	@Override
+	public void applyFilter(final String filter) {
+		notesTableViewer.addFilter(new NoteFilter(filter));
+	}
+
+	@Override
+	public void selectFirstNote() {
+		ViewerUtils.setSelection(notesTableViewer, notesTableViewer.getElementAt(0));
+	}
+
+	@Override
 	public void setOkButtonEnabled(boolean isEnabled) {
-		openNoteDialog.getButton(OpenNoteDialog.OK).setEnabled(isEnabled);
+		openNoteDialog.getOkButton().setEnabled(isEnabled);
 	}
 
 	@Override

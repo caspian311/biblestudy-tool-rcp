@@ -18,6 +18,8 @@ public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNot
 
 	private Note selectedNote;
 
+	private String filter;
+
 	public OpenNoteDialogModel(EntityManager entityManager, INoteController noteController) {
 		this.entityManager = entityManager;
 		this.noteController = noteController;
@@ -41,8 +43,10 @@ public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNot
 
 	@Override
 	public void setSelectedNote(Note note) {
-		this.selectedNote = note;
-		notifyListeners(SELECTION);
+		if (note != selectedNote) {
+			this.selectedNote = note;
+			notifyListeners(SELECTION);
+		}
 	}
 
 	@Override
@@ -53,13 +57,11 @@ public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNot
 	@Override
 	public void setNewNoteName(String newName) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void renameSelectedNote() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -70,6 +72,19 @@ public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNot
 			LOG.error(e);
 			throw new RuntimeException(e);
 		}
+		selectedNote = null;
 		notifyListeners(ALL_NOTES);
+		notifyListeners(SELECTION);
+	}
+
+	@Override
+	public void setFilterText(String filter) {
+		this.filter = filter;
+		notifyListeners(FILTER);
+	}
+
+	@Override
+	public String getFilterText() {
+		return filter;
 	}
 }

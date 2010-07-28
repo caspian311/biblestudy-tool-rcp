@@ -1,26 +1,18 @@
 package net.todd.biblestudy.rcp;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.rcp.IDeleteConfirmationLauncher;
-import net.todd.biblestudy.rcp.IOpenNoteDialogView;
-import net.todd.biblestudy.rcp.IOpenNoteDialogModel;
-import net.todd.biblestudy.rcp.Note;
-import net.todd.biblestudy.rcp.OpenNoteDialogPresenter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -39,6 +31,8 @@ public class OpenNoteDialogPresenterTest {
 	private IListener renameButtonListener;
 	private IListener deleteButtonListener;
 	private IListener allNotesModelListener;
+	private IListener filterTextListener;
+	private IListener modelFilterListener;
 
 	@Before
 	public void setUp() throws Exception {
@@ -74,6 +68,14 @@ public class OpenNoteDialogPresenterTest {
 		verify(model).addListener(allNotesModelListenerCaptor.capture(), eq(IOpenNoteDialogModel.ALL_NOTES));
 		allNotesModelListener = allNotesModelListenerCaptor.getValue();
 
+		ArgumentCaptor<IListener> modelFilterListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(model).addListener(modelFilterListenerCaptor.capture(), eq(IOpenNoteDialogModel.FILTER));
+		modelFilterListener = modelFilterListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> filterTextListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(filterTextListenerCaptor.capture(), eq(IOpenNoteDialogView.FILTER_TEXT));
+		filterTextListener = filterTextListenerCaptor.getValue();
+
 		reset(view, model);
 	}
 
@@ -95,6 +97,7 @@ public class OpenNoteDialogPresenterTest {
 
 		verify(view).setDeleteButtonEnabled(false);
 		verify(view).setRenameButtonEnabled(false);
+		verify(view).setOkButtonEnabled(false);
 	}
 
 	@Test
@@ -105,6 +108,7 @@ public class OpenNoteDialogPresenterTest {
 
 		verify(view).setDeleteButtonEnabled(true);
 		verify(view).setRenameButtonEnabled(true);
+		verify(view).setOkButtonEnabled(true);
 	}
 
 	@Test
@@ -142,6 +146,7 @@ public class OpenNoteDialogPresenterTest {
 
 		verify(view).setRenameButtonEnabled(false);
 		verify(view).setDeleteButtonEnabled(false);
+		verify(view).setOkButtonEnabled(false);
 	}
 
 	@Test
@@ -153,6 +158,7 @@ public class OpenNoteDialogPresenterTest {
 
 		verify(view).setRenameButtonEnabled(true);
 		verify(view).setDeleteButtonEnabled(true);
+		verify(view).setOkButtonEnabled(true);
 	}
 
 	@Test
@@ -198,5 +204,51 @@ public class OpenNoteDialogPresenterTest {
 		allNotesModelListener.handleEvent();
 
 		verify(view).setAllNotes(notes);
+	}
+
+	@Test
+	public void setFilterOnModelWhenTheFilterTextChangesOnTheView() {
+		String filter = UUID.randomUUID().toString();
+		doReturn(filter).when(view).getFilterText();
+
+		filterTextListener.handleEvent();
+
+		verify(model).setFilterText(filter);
+	}
+
+	@Test
+	public void applyFilterOnViewWhenModelChangesAndTheFilterTextOnTheModelIsNotNull() {
+		String filter = UUID.randomUUID().toString();
+		doReturn(filter).when(model).getFilterText();
+
+		modelFilterListener.handleEvent();
+
+		InOrder inOrder = inOrder(view);
+
+		inOrder.verify(view).applyFilter(filter);
+		inOrder.verify(view).selectFirstNote();
+		verify(view, never()).resetFilter();
+	}
+
+	@Test
+	public void doNotApplyFilterOnViewWhenModelChangesAndTheFilterTextOnTheModelIsNull() {
+		doReturn(null).when(model).getFilterText();
+
+		modelFilterListener.handleEvent();
+
+		verify(view, never()).applyFilter(anyString());
+		verify(view, never()).selectFirstNote();
+		verify(view).resetFilter();
+	}
+
+	@Test
+	public void doNotApplyFilterOnViewWhenModelChangesAndTheFilterTextOnTheModelIsEmpty() {
+		doReturn("").when(model).getFilterText();
+
+		modelFilterListener.handleEvent();
+
+		verify(view, never()).applyFilter(anyString());
+		verify(view, never()).selectFirstNote();
+		verify(view).resetFilter();
 	}
 }

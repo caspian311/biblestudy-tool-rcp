@@ -3,6 +3,7 @@ package net.todd.biblestudy.rcp;
 import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.AbstractMvpListener;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -265,8 +266,10 @@ public class NoteModel extends AbstractMvpListener implements INoteModel {
 
 	@Override
 	public void setContent(String content) {
-		note.setText(content);
-		contentHasChanged = true;
-		notifyListeners(CHANGED);
+		if (!StringUtils.equals(note.getText(), content)) {
+			note.setText(content);
+			contentHasChanged = true;
+			notifyListeners(CHANGED);
+		}
 	}
 }

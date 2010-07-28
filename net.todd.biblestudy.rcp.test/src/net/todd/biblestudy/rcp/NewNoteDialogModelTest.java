@@ -1,5 +1,6 @@
 package net.todd.biblestudy.rcp;
 
+import java.util.Date;
 import java.util.UUID;
 
 import net.java.ao.EntityManager;
@@ -7,10 +8,12 @@ import net.todd.biblestudy.common.IListener;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
@@ -96,8 +99,20 @@ public class NewNoteDialogModelTest {
 		InOrder inOrder = inOrder(entityManager, noteController, newlyCreatedNote);
 		inOrder.verify(entityManager).create(Note.class);
 		inOrder.verify(newlyCreatedNote).setName(newNoteName);
+
+		ArgumentCaptor<Date> createdTimestampCaptor = ArgumentCaptor.forClass(Date.class);
+		inOrder.verify(newlyCreatedNote).setCreatedTimestamp(createdTimestampCaptor.capture());
+		Date createdTimestamp = createdTimestampCaptor.getValue();
+
+		ArgumentCaptor<Date> lastModifiedCaptor = ArgumentCaptor.forClass(Date.class);
+		inOrder.verify(newlyCreatedNote).setLastModified(lastModifiedCaptor.capture());
+		Date lastModified = lastModifiedCaptor.getValue();
+
 		inOrder.verify(newlyCreatedNote).save();
 		inOrder.verify(noteController).setCurrentNote(newNoteName);
 		inOrder.verify(noteController).openCurrentNote();
+
+		assertEquals(new Date().getTime(), lastModified.getTime(), 1000);
+		assertEquals(new Date().getTime(), createdTimestamp.getTime(), 1000);
 	}
 }

@@ -6,7 +6,7 @@ import net.todd.biblestudy.common.IMvpListener;
 
 public interface IOpenNoteDialogView extends IMvpListener {
 	enum Type {
-		OK_BUTTON, DELETE_BUTTON, RENAME_BUTTON, SELECTION, NOTE_RENAME
+		OK_BUTTON, DELETE_BUTTON, RENAME_BUTTON, SELECTION, NOTE_RENAME, FILTER_TEXT
 	}
 
 	Type OK_BUTTON = Type.OK_BUTTON;
@@ -14,6 +14,7 @@ public interface IOpenNoteDialogView extends IMvpListener {
 	Type RENAME_BUTTON = Type.RENAME_BUTTON;
 	Type SELECTION = Type.SELECTION;
 	Type NOTE_RENAME = Type.NOTE_RENAME;
+	Type FILTER_TEXT = Type.FILTER_TEXT;
 
 	Note getSelectedNote();
 
@@ -32,4 +33,12 @@ public interface IOpenNoteDialogView extends IMvpListener {
 	void setDeleteButtonEnabled(boolean isEnabled);
 
 	void setSelectedNote(Note note);
+
+	void applyFilter(String filter);
+
+	String getFilterText();
+
+	void selectFirstNote();
+
+	void resetFilter();
 }

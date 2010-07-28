@@ -19,6 +19,7 @@ import static org.mockito.Matchers.eq;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
@@ -67,6 +68,19 @@ public class NoteModelTest {
 		testObject.setContent(content);
 
 		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void modelOnlyNotifiesListenersWhenContentChangesToSomethingDifferentThanItWasBefore() {
+		String content = UUID.randomUUID().toString();
+		doReturn(content).when(note).getText();
+
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, INoteModel.CHANGED);
+
+		testObject.setContent(content);
+
+		verify(listener, never()).handleEvent();
 	}
 
 	@Test
