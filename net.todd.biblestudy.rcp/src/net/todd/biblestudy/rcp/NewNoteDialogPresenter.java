@@ -3,20 +3,14 @@ package net.todd.biblestudy.rcp;
 import net.todd.biblestudy.common.IListener;
 
 public class NewNoteDialogPresenter {
-	public NewNoteDialogPresenter(final INewNoteDialogView view,
-			final INewNoteDialogModel model) {
+	public static void create(final INewNoteDialogView view, final INewNoteDialogModel model) {
 		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.setNoteName(view.getNewNoteName());
 			}
 		}, INewNoteDialogView.NEW_NOTE_NAME);
-		model.addListener(new IListener() {
-			@Override
-			public void handleEvent() {
-				view.setEnableOkButton(model.isValidState());
-			}
-		}, INewNoteDialogModel.VALID_STATE);
+
 		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
@@ -24,6 +18,20 @@ public class NewNoteDialogPresenter {
 			}
 		}, INewNoteDialogView.OK);
 
-		view.setEnableOkButton(model.isValidState());
+		model.addListener(new IListener() {
+			@Override
+			public void handleEvent() {
+				boolean isValidState = model.isValidState();
+				view.setEnableOkButton(isValidState);
+				if (isValidState) {
+					view.hideErrorMessage();
+				} else {
+					view.showErrorMessage(model.getErrorMessage());
+				}
+			}
+		}, INewNoteDialogModel.VALID_STATE);
+
+		view.setEnableOkButton(false);
+		view.hideErrorMessage();
 	}
 }

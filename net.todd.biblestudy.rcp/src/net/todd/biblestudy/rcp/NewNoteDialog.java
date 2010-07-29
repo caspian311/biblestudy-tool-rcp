@@ -1,13 +1,13 @@
 package net.todd.biblestudy.rcp;
 
-import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-public class NewNoteDialog extends TrayDialog {
+public class NewNoteDialog extends Dialog {
 	private INewNoteDialogView newNoteDialogView;
 
 	public NewNoteDialog(Shell shell) {
@@ -43,7 +43,7 @@ public class NewNoteDialog extends TrayDialog {
 
 		INewNoteDialogModel newNoteDialogModel = new NewNoteDialogModel(EntityManagerProvider.getEntityManager(),
 				NoteControllerProvider.getNoteController());
-		new NewNoteDialogPresenter(newNoteDialogView, newNoteDialogModel);
+		NewNoteDialogPresenter.create(newNoteDialogView, newNoteDialogModel);
 
 		return createContents;
 	}

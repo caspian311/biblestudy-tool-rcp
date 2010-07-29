@@ -14,4 +14,6 @@ public interface INewNoteDialogModel extends IMvpListener {
 	boolean isValidState();
 
 	void setNoteName(String newNoteName);
+
+	String getErrorMessage();
 }

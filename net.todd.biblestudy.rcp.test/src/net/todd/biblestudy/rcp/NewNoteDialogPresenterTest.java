@@ -1,233 +1,115 @@
 package net.todd.biblestudy.rcp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import net.todd.biblestudy.rcp.models.INewNoteDialogModel;
-import net.todd.biblestudy.rcp.models.INoteModel;
-import net.todd.biblestudy.rcp.views.INewNoteDialogView;
-import net.todd.biblestudy.rcp.views.INoteView;
-import net.todd.biblestudy.rcp.views.IViewer;
-import net.todd.biblestudy.rcp.views.ViewerFactory;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.UUID;
+
+import net.todd.biblestudy.common.IListener;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public class NewNoteDialogPresenterTest
-{
-	private String newlyCreatedNote;
+public class NewNoteDialogPresenterTest {
+	@Mock
+	private INewNoteDialogView view;
+	@Mock
+	private INewNoteDialogModel model;
 
-	private MockNewNoteDialog view;
-	private MockViewer mockViewer;
+	private IListener modelValidStateListener;
+	private IListener okPressedListener;
+	private IListener viewNoteNameChangedListener;
 
 	@Before
-	public void setUp() throws Exception
-	{
-		mockViewer = new MockViewer();
-		ViewerFactory.setViewer(mockViewer);
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
 
-		view = new MockNewNoteDialog();
+		NewNoteDialogPresenter.create(view, model);
+
+		ArgumentCaptor<IListener> modelValidStateListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(model).addListener(modelValidStateListenerCaptor.capture(), eq(INewNoteDialogModel.VALID_STATE));
+		modelValidStateListener = modelValidStateListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> okPressedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(okPressedListenerCaptor.capture(), eq(INewNoteDialogView.OK));
+		okPressedListener = okPressedListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> viewNoteNameChangedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(viewNoteNameChangedListenerCaptor.capture(), eq(INewNoteDialogView.NEW_NOTE_NAME));
+		viewNoteNameChangedListener = viewNoteNameChangedListenerCaptor.getValue();
+
+		reset(view, model);
 	}
 
 	@Test
-	public void testCreateNewNoteDialogPresenter() throws Exception
-	{
-		new NewNoteDialogPresenter(view);
-		assertTrue(view.openDialogWasCalled());
+	public void initiallyOkButtonIsNotEnabled() {
+		NewNoteDialogPresenter.create(view, model);
+
+		verify(view).setEnableOkButton(false);
 	}
 
 	@Test
-	public void testHandleNoteDialogOpened() throws Exception
-	{
-		NewNoteDialogPresenter presenter = new NewNoteDialogPresenter(view);
-		presenter.handleEvent(new ViewEvent(ViewEvent.NEW_NOTE_OPENED));
-		assertTrue(view.isOkButtonDisabled());
+	public void initiallyErrorMessageIsHidden() {
+		NewNoteDialogPresenter.create(view, model);
+
+		verify(view).hideErrorMessage();
 	}
 
 	@Test
-	public void testHandleOkPressed() throws Exception
-	{
-		NewNoteDialogPresenter presenter = new NewNoteDialogPresenter(view)
-		{
-			@Override
-			INewNoteDialogModel getModel()
-			{
-				return new INewNoteDialogModel()
-				{
+	public void ifModelIsValidStateEnableOkButton() {
+		doReturn(true).when(model).isValidState();
 
-					public void createNewNote(String newNoteName)
-					{
-						newlyCreatedNote = newNoteName;
-					}
+		modelValidStateListener.handleEvent();
 
-					public boolean noteAlreadyExists(String newNoteName)
-					{
-						return false;
-					}
-				};
-			}
-		};
-		view.setNewNoteName("testNoteName");
-		presenter.handleEvent(new ViewEvent(ViewEvent.NEW_NOTE_OK_PRESSED));
-		assertTrue(view.dialogWasClosed());
-		assertEquals("testNoteName", newlyCreatedNote);
-		assertEquals("testNoteName", mockViewer.getOpenedNote());
+		verify(view).setEnableOkButton(true);
 	}
 
 	@Test
-	public void testHandleCancelPressed() throws Exception
-	{
-		NewNoteDialogPresenter presenter = new NewNoteDialogPresenter(view);
-		presenter.handleEvent(new ViewEvent(ViewEvent.NEW_NOTE_CANCEL_PRESSED));
-		assertTrue(view.dialogWasClosed());
+	public void ifModelIsInvalidStateEnableOkButton() {
+		doReturn(false).when(model).isValidState();
+
+		modelValidStateListener.handleEvent();
+
+		verify(view).setEnableOkButton(false);
 	}
 
 	@Test
-	public void testHandleKeyPressed() throws Exception
-	{
-		NewNoteDialogPresenter presenter = new NewNoteDialogPresenter(view)
-		{
-			@Override
-			INewNoteDialogModel getModel()
-			{
-				return new INewNoteDialogModel()
-				{
-					public void createNewNote(String newNoteName)
-					{
-					}
+	public void ifModelIsValidStateHideTheErrorMessage() {
+		doReturn(true).when(model).isValidState();
 
-					public boolean noteAlreadyExists(String newNoteName)
-					{
-						return newNoteName.equals("test");
-					}
-				};
-			}
-		};
-		presenter.handleEvent(new ViewEvent(ViewEvent.NEW_NOTE_KEY_PRESSED));
-		assertTrue(view.isOkButtonDisabled());
+		modelValidStateListener.handleEvent();
 
-		view.setNewNoteName("woot");
-		presenter.handleEvent(new ViewEvent(ViewEvent.NEW_NOTE_KEY_PRESSED));
-		assertFalse(view.wasErrorShown());
-		assertFalse(view.isOkButtonDisabled());
-
-		view.setNewNoteName("test");
-		presenter.handleEvent(new ViewEvent(ViewEvent.NEW_NOTE_KEY_PRESSED));
-		assertTrue(view.wasErrorShown());
-		assertTrue(view.isOkButtonDisabled());
+		verify(view).hideErrorMessage();
 	}
 
-	private class MockNewNoteDialog implements INewNoteDialogView
-	{
-		boolean openDialogCalled = false;
-		boolean isOkButtonDisabled = false;
-		boolean dialogClosed = false;
+	@Test
+	public void ifModelIsInvalidStateHideTheErrorMessage() {
+		String errorMessage = UUID.randomUUID().toString();
+		doReturn(errorMessage).when(model).getErrorMessage();
+		doReturn(false).when(model).isValidState();
 
-		public void addNewNoteDialogListener(INewNoteDialogListener listener)
-		{
-		}
+		modelValidStateListener.handleEvent();
 
-		public void closeDialog()
-		{
-			dialogClosed = true;
-		}
-
-		public boolean dialogWasClosed()
-		{
-			return dialogClosed;
-		}
-
-		public void disableOkButton()
-		{
-			isOkButtonDisabled = true;
-		}
-
-		public boolean isOkButtonDisabled()
-		{
-			return isOkButtonDisabled;
-		}
-
-		public void enableOkButton()
-		{
-			isOkButtonDisabled = false;
-		}
-
-		private String newNoteName;
-
-		public void setNewNoteName(String s)
-		{
-			newNoteName = s;
-		}
-
-		public String getNewNoteName()
-		{
-			return newNoteName;
-		}
-
-		public void hideErrorMessage()
-		{
-			errorShown = false;
-		}
-
-		public void openDialog()
-		{
-			openDialogCalled = true;
-		}
-
-		public boolean openDialogWasCalled()
-		{
-			return openDialogCalled;
-		}
-
-		public void removeAllListeners()
-		{
-		}
-
-		private boolean errorShown = false;
-
-		public void showErrorMessage()
-		{
-			errorShown = true;
-		}
-
-		public boolean wasErrorShown()
-		{
-			return errorShown;
-		}
+		verify(view).showErrorMessage(errorMessage);
 	}
 
-	private class MockViewer implements IViewer
-	{
-		private String openedNote;
+	@Test
+	public void whenOkPressedCreateNewNote() {
+		okPressedListener.handleEvent();
 
-		public void closeNoteView(String noteName)
-		{
-		}
+		verify(model).createNewNote();
+	}
 
-		public void openNewNoteDialog()
-		{
-		}
+	@Test
+	public void whenNoteNameChangesOnViewUpdateModel() {
+		String newNoteName = UUID.randomUUID().toString();
+		doReturn(newNoteName).when(view).getNewNoteName();
 
-		public void openNoteDialog()
-		{
-		}
+		viewNoteNameChangedListener.handleEvent();
 
-		public void openNoteView(String noteName)
-		{
-			openedNote = noteName;
-		}
-
-		public String getOpenedNote()
-		{
-			return openedNote;
-		}
-
-		public void openCreateLinkDialog(INoteView noteView, INoteModel noteModel)
-		{
-		}
-
-		public void openCreateLinkToReferenceDialog(INoteView noteView, INoteModel noteModel)
-		{
-		}
+		verify(model).setNoteName(newNoteName);
 	}
 }

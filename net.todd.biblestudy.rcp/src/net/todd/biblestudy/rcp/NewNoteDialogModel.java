@@ -13,6 +13,9 @@ import org.apache.commons.logging.LogFactory;
 public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteDialogModel {
 	private static final Log LOG = LogFactory.getLog(NewNoteDialogModel.class);
 
+	public static final String NAME_CANNOT_BE_EMPTY = "Note name cannot be empty.";
+	public static final String NAME_MUST_BE_UNIQUE = "Note name must be unique";
+
 	private final EntityManager entityManager;
 	private final INoteController noteController;
 
@@ -25,10 +28,14 @@ public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteD
 
 	@Override
 	public boolean isValidState() {
-		return isNoteNameUnique(newNoteName) && !StringUtils.isEmpty(newNoteName);
+		return isNoteNameUnique() && isNoteNameNotEmpty();
 	}
 
-	private boolean isNoteNameUnique(String newNoteName) {
+	private boolean isNoteNameNotEmpty() {
+		return !StringUtils.isEmpty(newNoteName);
+	}
+
+	private boolean isNoteNameUnique() {
 		try {
 			return entityManager.find(Note.class, "name = ?", newNoteName).length == 0;
 		} catch (SQLException e) {
@@ -59,5 +66,18 @@ public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteD
 
 		noteController.setCurrentNote(newNoteName);
 		noteController.openCurrentNote();
+	}
+
+	@Override
+	public String getErrorMessage() {
+		String errorMessage = "";
+
+		if (!isNoteNameNotEmpty()) {
+			errorMessage = NAME_CANNOT_BE_EMPTY;
+		} else if (!isNoteNameUnique()) {
+			errorMessage = NAME_MUST_BE_UNIQUE;
+		}
+
+		return errorMessage;
 	}
 }

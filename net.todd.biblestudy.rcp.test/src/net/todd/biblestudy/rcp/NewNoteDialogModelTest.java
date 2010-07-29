@@ -1,5 +1,9 @@
 package net.todd.biblestudy.rcp;
 
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,17 +16,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class NewNoteDialogModelTest {
 	@Mock
@@ -114,5 +107,44 @@ public class NewNoteDialogModelTest {
 
 		assertEquals(new Date().getTime(), lastModified.getTime(), 1000);
 		assertEquals(new Date().getTime(), createdTimestamp.getTime(), 1000);
+	}
+
+	@Test
+	public void ifNoNoteNameIsGivenErrorMessageIsNoteNameCannotBeEmpty() {
+		assertEquals(NewNoteDialogModel.NAME_CANNOT_BE_EMPTY, testObject.getErrorMessage());
+	}
+
+	@Test
+	public void ifNullNoteNameIsGivenErrorMessageIsNoteNameCannotBeEmpty() {
+		testObject.setNoteName(null);
+
+		assertEquals(NewNoteDialogModel.NAME_CANNOT_BE_EMPTY, testObject.getErrorMessage());
+	}
+
+	@Test
+	public void ifEmptyNoteNameIsGivenErrorMessageIsNoteNameCannotBeEmpty() {
+		testObject.setNoteName("");
+
+		assertEquals(NewNoteDialogModel.NAME_CANNOT_BE_EMPTY, testObject.getErrorMessage());
+	}
+
+	@Test
+	public void ifNoteNameIsNotUniqueErrorMessageIsNoteNameMustBeUnique() throws Exception {
+		String newNoteName = UUID.randomUUID().toString();
+		doReturn(new Note[] { mock(Note.class) }).when(entityManager).find(Note.class, "name = ?", newNoteName);
+
+		testObject.setNoteName(newNoteName);
+
+		assertEquals(NewNoteDialogModel.NAME_MUST_BE_UNIQUE, testObject.getErrorMessage());
+	}
+
+	@Test
+	public void ifNoteNameIsUniqueAndNameIsNotEmptyErrorMessageIsEmpty() throws Exception {
+		String newNoteName = UUID.randomUUID().toString();
+		doReturn(new Note[] {}).when(entityManager).find(Note.class, "name = ?", newNoteName);
+
+		testObject.setNoteName(newNoteName);
+
+		assertEquals("", testObject.getErrorMessage());
 	}
 }

@@ -12,11 +12,11 @@ public interface INewNoteDialogView extends IMvpListener {
 
 	String getNewNoteName();
 
-	void showErrorMessage();
-
 	void hideErrorMessage();
 
 	void okPressed();
 
 	void setEnableOkButton(boolean isEnabled);
+
+	void showErrorMessage(String errorMessage);
 }
