@@ -3,12 +3,6 @@ package net.todd.biblestudy.rcp;
 import net.todd.biblestudy.common.IListener;
 
 public class NotePresenter {
-	// private final INoteView noteView;
-	// private final INoteModel noteModel;
-	// private final ICreateLinkToDialogLauncher createLinkToDialogLauncher;
-	// private final IDeleteConfirmationLauncher deleteConfirmationLauncher;
-	// private final INoteViewLauncher noteViewLauncher;
-
 	public static void create(final INoteView view, final INoteModel model,
 			final ICreateLinkToDialogLauncher createLinkToDialogLauncher,
 			final IDeleteConfirmationLauncher deleteConfirmationDialogLauncher, final INoteController noteController) {
@@ -24,13 +18,14 @@ public class NotePresenter {
 				} else {
 					view.setTitle(noteName);
 				}
-				view.setContent(model.getContent());
 			}
 		}, INoteModel.CHANGED);
+
 		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
 				model.setContent(view.getContent());
+				model.setCurrentCarretPosition(view.getCurrentCarretPosition());
 			}
 		}, INoteView.CONTENT);
 	}

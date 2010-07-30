@@ -1,5 +1,8 @@
 package net.todd.biblestudy.rcp;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -9,12 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertEquals;
-
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class NoteControllerTest {
 	@Mock
@@ -63,5 +60,20 @@ public class NoteControllerTest {
 		INoteModel noteModel = testObject.getCurrentNoteModel();
 
 		assertEquals(noteName, noteModel.getNoteName());
+	}
+
+	@Test
+	public void currentNoteModelReturnsTheSameObjectEachTimeItsCalled() throws SQLException {
+		String noteName = UUID.randomUUID().toString();
+		Note note = mock(Note.class);
+		doReturn(noteName).when(note).getName();
+		doReturn(new Note[] { note }).when(entityManager).find(Note.class, "name = ?", noteName);
+
+		testObject.setCurrentNote(noteName);
+
+		INoteModel firstNoteModel = testObject.getCurrentNoteModel();
+		INoteModel secondNoteModel = testObject.getCurrentNoteModel();
+
+		assertSame(firstNoteModel, secondNoteModel);
 	}
 }

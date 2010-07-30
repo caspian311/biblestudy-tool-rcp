@@ -72,4 +72,8 @@ public interface INoteModel extends IMvpListener {
 	String getContent();
 
 	void setContent(String content);
+
+	int getCurrentCarretPosition();
+
+	void setCurrentCarretPosition(int offset);
 }

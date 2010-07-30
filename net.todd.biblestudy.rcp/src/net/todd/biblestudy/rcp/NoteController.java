@@ -8,6 +8,9 @@ public class NoteController implements INoteController {
 
 	private String currentNoteName;
 
+	// private final Map<String, INoteModel> noteModels = new HashMap<String,
+	// INoteModel>();
+
 	public NoteController(EntityManager entityManager, INoteViewLauncher noteViewLauncher) {
 		this.entityManager = entityManager;
 		this.noteViewLauncher = noteViewLauncher;
@@ -15,7 +18,12 @@ public class NoteController implements INoteController {
 
 	@Override
 	public INoteModel getCurrentNoteModel() {
-		return new NoteModel(entityManager, currentNoteName);
+		INoteModel currentNote;// = noteModels.get(currentNoteName);
+		// if (currentNote == null) {
+		currentNote = new NoteModel(entityManager, currentNoteName);
+		// noteModels.put(currentNoteName, currentNote);
+		// }
+		return currentNote;
 	}
 
 	@Override

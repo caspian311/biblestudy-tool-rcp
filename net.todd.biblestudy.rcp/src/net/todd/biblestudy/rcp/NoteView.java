@@ -61,10 +61,8 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
 
-		noteContentText = new StyledText(parent, SWT.BORDER | SWT.MULTI
-				| SWT.V_SCROLL | SWT.H_SCROLL);
-		GridDataFactory.fillDefaults().grab(true, true)
-				.applyTo(noteContentText);
+		noteContentText = new StyledText(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(noteContentText);
 		noteContentText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
@@ -89,9 +87,14 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 				notifyListeners(MOUSE_HOVER);
 			}
 		});
+		// noteContentText.addKeyListener(new KeyAdapter() {
+		// @Override
+		// public void keyReleased(KeyEvent e) {
+		// notifyListeners(CONTENT);
+		// }
+		// });
 		DropTarget dropTarget = new DropTarget(noteContentText, DND.DROP_MOVE);
-		dropTarget
-				.setTransfer(new Transfer[] { ReferenceTransfer.getInstance() });
+		dropTarget.setTransfer(new Transfer[] { ReferenceTransfer.getInstance() });
 		dropTarget.addDropListener(new DropTargetAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -116,8 +119,7 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 			}
 		});
 
-		MenuItem createLinkToReference = new MenuItem(rightClickTextMenu,
-				SWT.POP_UP);
+		MenuItem createLinkToReference = new MenuItem(rightClickTextMenu, SWT.POP_UP);
 		createLinkToReference.setText("Create Link to Reference");
 		createLinkToReference.setEnabled(true);
 		createLinkToReference.addSelectionListener(new SelectionAdapter() {
@@ -130,8 +132,7 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 		dropReferenceOptionsMenu = new Menu(parent);
 		dropReferenceOptionsMenu.setVisible(false);
 
-		MenuItem dropReferenceLink = new MenuItem(dropReferenceOptionsMenu,
-				SWT.POP_UP);
+		MenuItem dropReferenceLink = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
 		dropReferenceLink.setText("Insert Link to Reference");
 		dropReferenceLink.setEnabled(true);
 		dropReferenceLink.addSelectionListener(new SelectionAdapter() {
@@ -141,8 +142,7 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 			}
 		});
 
-		MenuItem dropReferenceText = new MenuItem(dropReferenceOptionsMenu,
-				SWT.POP_UP);
+		MenuItem dropReferenceText = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
 		dropReferenceText.setText("Insert Text");
 		dropReferenceText.setEnabled(true);
 		dropReferenceText.addSelectionListener(new SelectionAdapter() {
@@ -152,8 +152,7 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 			}
 		});
 
-		MenuItem dropReferenceAndText = new MenuItem(dropReferenceOptionsMenu,
-				SWT.POP_UP);
+		MenuItem dropReferenceAndText = new MenuItem(dropReferenceOptionsMenu, SWT.POP_UP);
 		dropReferenceAndText.setText("Insert Reference with Text");
 		dropReferenceAndText.setEnabled(true);
 		dropReferenceAndText.addSelectionListener(new SelectionAdapter() {
@@ -193,6 +192,11 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 	@Override
 	public int getCurrentCarretPosition() {
 		return noteContentText.getCaretOffset();
+	}
+
+	@Override
+	public void setCurrentCarretPosition(int offset) {
+		noteContentText.setCaretOffset(offset);
 	}
 
 	@Override

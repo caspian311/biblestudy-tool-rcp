@@ -1,5 +1,10 @@
 package net.todd.biblestudy.rcp;
 
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Random;
 import java.util.UUID;
 
 import net.java.ao.EntityManager;
@@ -9,19 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 
 public class NoteModelTest {
 	@Mock
@@ -136,5 +128,23 @@ public class NoteModelTest {
 		testObject.save();
 
 		verify(note).save();
+	}
+
+	@Test
+	public void savingModelNotifiesChangeListeners() {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, INoteModel.CHANGED);
+
+		testObject.save();
+
+		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void getterAndSetterForCurrentCarretPositionWork() {
+		int offset = new Random().nextInt();
+		testObject.setCurrentCarretPosition(offset);
+
+		assertEquals(offset, testObject.getCurrentCarretPosition());
 	}
 }

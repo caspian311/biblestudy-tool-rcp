@@ -52,4 +52,6 @@ public interface INoteView extends IMvpListener {
 	Point getCurrentMouseLocation();
 
 	void setTitle(String title);
+
+	void setCurrentCarretPosition(int offset);
 }

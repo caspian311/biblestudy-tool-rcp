@@ -16,6 +16,8 @@ public class NoteModel extends AbstractMvpListener implements INoteModel {
 
 	private boolean contentHasChanged;
 
+	private int currentCarretPosition;
+
 	public NoteModel(EntityManager entityManager, String noteName) {
 		try {
 			note = entityManager.find(Note.class, "name = ?", noteName)[0];
@@ -28,6 +30,16 @@ public class NoteModel extends AbstractMvpListener implements INoteModel {
 	@Override
 	public boolean isDocumentDirty() {
 		return contentHasChanged;
+	}
+
+	@Override
+	public void save() {
+		// for (Link link : links) {
+		// link.save();
+		// }
+		note.save();
+		contentHasChanged = false;
+		notifyListeners(CHANGED);
 	}
 
 	// private boolean isLatestFromDBSameAsCurrent() {
@@ -111,16 +123,6 @@ public class NoteModel extends AbstractMvpListener implements INoteModel {
 	//
 	// // fireEvent(new ModelEvent(ModelEvent.MODEL_LINK_ADDED));
 	// }
-
-	@Override
-	public void save() {
-		// for (Link link : links) {
-		// link.save();
-		// }
-		note.save();
-		contentHasChanged = false;
-	}
-
 	//
 	// @Override
 	// public void deleteNoteAndLinks() throws BiblestudyException {
@@ -269,6 +271,19 @@ public class NoteModel extends AbstractMvpListener implements INoteModel {
 		if (!StringUtils.equals(note.getText(), content)) {
 			note.setText(content);
 			contentHasChanged = true;
+			notifyListeners(CHANGED);
+		}
+	}
+
+	@Override
+	public int getCurrentCarretPosition() {
+		return currentCarretPosition;
+	}
+
+	@Override
+	public void setCurrentCarretPosition(int offset) {
+		if (currentCarretPosition != offset) {
+			this.currentCarretPosition = offset;
 			notifyListeners(CHANGED);
 		}
 	}

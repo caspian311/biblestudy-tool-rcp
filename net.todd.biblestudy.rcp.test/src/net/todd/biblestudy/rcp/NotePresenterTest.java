@@ -1,5 +1,9 @@
 package net.todd.biblestudy.rcp;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Random;
 import java.util.UUID;
 
 import net.todd.biblestudy.common.IListener;
@@ -9,12 +13,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.mockito.Matchers.eq;
-
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 
 public class NotePresenterTest {
 	@Mock
@@ -52,14 +50,13 @@ public class NotePresenterTest {
 	public void viewIsPopulatedFromDataInTheModelInitially() {
 		String content = UUID.randomUUID().toString();
 		doReturn(content).when(model).getContent();
-
 		String noteName = UUID.randomUUID().toString();
 		doReturn(noteName).when(model).getNoteName();
 
 		NotePresenter.create(view, model, createLinkToDialogLauncher, deleteConfirmationDialogLauncher, noteController);
 
-		verify(view).setContent(content);
 		verify(view).setTitle(noteName);
+		verify(view).setContent(content);
 	}
 
 	@Test
@@ -85,22 +82,15 @@ public class NotePresenterTest {
 	}
 
 	@Test
-	public void whenModelChangesContentsArePulledFromModelAndGivenToTheView() {
-		String content = UUID.randomUUID().toString();
-		doReturn(content).when(model).getContent();
-
-		modelChangedListener.handleEvent();
-
-		verify(view).setContent(content);
-	}
-
-	@Test
 	public void whenViewChangesContentsArePulledFromViewAndGivenToTheModel() {
 		String content = UUID.randomUUID().toString();
 		doReturn(content).when(view).getContent();
+		int offset = new Random().nextInt();
+		doReturn(offset).when(view).getCurrentCarretPosition();
 
 		viewChangedListener.handleEvent();
 
 		verify(model).setContent(content);
+		verify(model).setCurrentCarretPosition(offset);
 	}
 }
