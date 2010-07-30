@@ -55,11 +55,10 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 	private final Table notesTable;
 	private final Button renameButton;
 	private final Button deleteButton;
-	private Note selectedNote;
 	private final TableEditor notesTableEditor;
 	private String renamedNoteName;
 
-	public OpenNoteDialogView(Composite composite, OpenNoteDialog openNoteDialog) {
+	public OpenNoteDialogView(Composite composite, final OpenNoteDialog openNoteDialog) {
 		this.openNoteDialog = openNoteDialog;
 
 		GridData compositeLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -104,19 +103,14 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 		notesTableViewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
-				StructuredSelection selection = (StructuredSelection) notesTableViewer.getSelection();
-				selectedNote = (Note) selection.getFirstElement();
-
 				notifyListeners(SELECTION);
 				notifyListeners(OK_BUTTON);
+				openNoteDialog.close();
 			}
 		});
 		notesTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				StructuredSelection selection = (StructuredSelection) notesTableViewer.getSelection();
-				selectedNote = (Note) selection.getFirstElement();
-
 				notifyListeners(SELECTION);
 			}
 		});
@@ -221,6 +215,8 @@ public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNote
 
 	@Override
 	public Note getSelectedNote() {
+		StructuredSelection selection = (StructuredSelection) notesTableViewer.getSelection();
+		Note selectedNote = (Note) selection.getFirstElement();
 		return selectedNote;
 	}
 

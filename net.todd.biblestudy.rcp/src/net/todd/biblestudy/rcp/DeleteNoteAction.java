@@ -2,6 +2,8 @@ package net.todd.biblestudy.rcp;
 
 import java.sql.SQLException;
 
+import net.java.ao.EntityManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.IAction;
@@ -21,9 +23,10 @@ public class DeleteNoteAction implements IViewActionDelegate {
 		try {
 			if (new DeleteConfirmationLauncher().openDeleteConfirmationDialog()) {
 				String noteName = NoteControllerProvider.getNoteController().getCurrentNoteModel().getNoteName();
-				Note[] notesByThatName = EntityManagerProvider.getEntityManager()
-						.find(Note.class, "name = ?", noteName);
-				EntityManagerProvider.getEntityManager().delete(notesByThatName);
+				EntityManager entityManager = EntityManagerProvider.getEntityManager();
+				Note[] notesByThatName = entityManager.find(Note.class, "name = ?", noteName);
+				entityManager.delete(notesByThatName);
+				NoteControllerProvider.getNoteController().closeCurrentNote();
 			}
 		} catch (SQLException e) {
 			LOG.error(e);

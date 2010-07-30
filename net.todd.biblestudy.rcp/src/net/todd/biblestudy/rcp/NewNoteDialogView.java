@@ -22,14 +22,14 @@ public class NewNoteDialogView extends AbstractMvpListener implements INewNoteDi
 	public NewNoteDialogView(Composite composite, NewNoteDialog parentDialog) {
 		this.parentDialog = parentDialog;
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
-		GridLayoutFactory.fillDefaults().numColumns(2).margins(4, 4).applyTo(composite);
+		GridLayoutFactory.fillDefaults().margins(4, 4).applyTo(composite);
 
 		Label newNoteNameLabel = new Label(composite, SWT.NONE);
 		GridDataFactory.fillDefaults().applyTo(newNoteNameLabel);
 		newNoteNameLabel.setText("New Note Name:");
 
 		newNoteNameField = new Text(composite, SWT.BORDER);
-		GridDataFactory.swtDefaults().grab(true, false).hint(200, SWT.DEFAULT).applyTo(newNoteNameField);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(newNoteNameField);
 		newNoteNameField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -46,7 +46,7 @@ public class NewNoteDialogView extends AbstractMvpListener implements INewNoteDi
 			}
 		});
 		errorMessageLabel.setForeground(red);
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(errorMessageLabel);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(errorMessageLabel);
 	}
 
 	@Override
