@@ -168,14 +168,16 @@ public class OpenNoteDialogPresenterTest {
 
 		noteRenameListener.handleEvent();
 
-		verify(model).setNewNoteName(newName);
+		InOrder inOrder = inOrder(model);
+		inOrder.verify(model).setNewNoteName(newName);
+		inOrder.verify(model).renameSelectedNote();
 	}
 
 	@Test
 	public void whenRenameButtonPressedModelRenamesSelectedNote() {
 		renameButtonListener.handleEvent();
 
-		verify(model).renameSelectedNote();
+		verify(view).makeSelectedNoteNameEditable();
 	}
 
 	@Test

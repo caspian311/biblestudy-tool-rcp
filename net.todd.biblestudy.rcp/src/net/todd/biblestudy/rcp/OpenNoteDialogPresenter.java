@@ -46,13 +46,6 @@ public class OpenNoteDialogPresenter {
 		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
-				model.setNewNoteName(view.getRenamedNoteName());
-			}
-		}, IOpenNoteDialogView.NOTE_RENAME);
-
-		view.addListener(new IListener() {
-			@Override
-			public void handleEvent() {
 				if (deleteConfirmationLauncher.openDeleteConfirmationDialog()) {
 					model.deleteSelectedNote();
 				}
@@ -62,7 +55,15 @@ public class OpenNoteDialogPresenter {
 		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
+				model.setNewNoteName(view.getRenamedNoteName());
 				model.renameSelectedNote();
+			}
+		}, IOpenNoteDialogView.NOTE_RENAME);
+
+		view.addListener(new IListener() {
+			@Override
+			public void handleEvent() {
+				view.makeSelectedNoteNameEditable();
 			}
 		}, IOpenNoteDialogView.RENAME_BUTTON);
 

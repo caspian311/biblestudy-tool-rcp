@@ -24,8 +24,6 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -61,20 +59,11 @@ public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteD
 	public OpenNoteDialogView(Composite composite, final OpenNoteDialog openNoteDialog) {
 		this.openNoteDialog = openNoteDialog;
 
-		GridData compositeLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		compositeLayoutData.widthHint = 450;
-		compositeLayoutData.heightHint = 200;
-		composite.setLayoutData(compositeLayoutData);
-
-		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.marginTop = 2;
-		gridLayout.marginBottom = 2;
-		gridLayout.marginLeft = 2;
-		gridLayout.marginRight = 2;
-		composite.setLayout(gridLayout);
+		GridDataFactory.fillDefaults().grab(true, true).hint(450, 200).applyTo(composite);
+		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
 
 		filterText = new Text(composite, SWT.BORDER);
-		filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(filterText);
 		filterText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -92,7 +81,7 @@ public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteD
 		notesTableViewer.setSorter(new ViewerSorter());
 
 		notesTable = notesTableViewer.getTable();
-		notesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(notesTable);
 		notesTable.setHeaderVisible(true);
 		notesTable.setLinesVisible(true);
 
@@ -227,59 +216,37 @@ public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteD
 
 	@Override
 	public void makeSelectedNoteNameEditable() {
-		TableItem[] tableItems = notesTable.getSelection();
+		final TableItem selection = notesTable.getSelection()[0];
+		final Text text = new Text(notesTable, SWT.NONE);
+		text.setText(selection.getText(0));
+		text.setFocus();
+		text.selectAll();
+		text.addListener(SWT.FocusOut, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				String newNoteName = text.getText();
+				selection.setText(0, newNoteName);
+				text.dispose();
+			}
+		});
+		text.addListener(SWT.Traverse, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				if (e.detail == SWT.TRAVERSE_RETURN) {
+					renamedNoteName = text.getText();
+					selection.setText(0, renamedNoteName);
+					text.dispose();
 
-		if (tableItems != null && tableItems.length > 0) {
-			final TableItem selection = tableItems[0];
-
-			String noteName = selection.getText(0);
-
-			final Text text = new Text(notesTable, SWT.NONE);
-
-			Listener textListener = new Listener() {
-				@Override
-				public void handleEvent(Event e) {
-					if (e.type == SWT.FocusOut) {
-						makeNoteNameEditable(selection, text);
-					} else if (e.type == SWT.Traverse) {
-						if (e.detail == SWT.TRAVERSE_RETURN) {
-							changeNoteName(selection, text);
-							removeEditabilityOfNoteName(text);
-						} else if (e.detail == SWT.TRAVERSE_ESCAPE) {
-							removeEditabilityOfNoteName(text);
-							e.doit = false;
-						}
-					}
+					notifyListeners(NOTE_RENAME);
+				} else if (e.detail == SWT.TRAVERSE_ESCAPE) {
+					text.dispose();
+					e.doit = false;
 				}
-			};
+			}
+		});
 
-			text.addListener(SWT.FocusOut, textListener);
-			text.addListener(SWT.Traverse, textListener);
-			text.setText(noteName);
-			text.setFocus();
-			text.selectAll();
-
-			notesTableEditor.setEditor(text, selection, 0);
-
-			notesTable.getShell().setDefaultButton(null);
-		}
-	}
-
-	private void removeEditabilityOfNoteName(final Text text) {
-		text.dispose();
-	}
-
-	private void makeNoteNameEditable(final TableItem selection, final Text text) {
-		String newNoteName = text.getText();
-		selection.setText(0, newNoteName);
-		text.dispose();
-	}
-
-	private void changeNoteName(final TableItem selection, final Text text) {
-		renamedNoteName = text.getText();
-		selection.setText(0, renamedNoteName);
-
-		notifyListeners(NOTE_RENAME);
+		notesTableEditor.setEditor(text, selection, 0);
+		notesTable.getShell().setDefaultButton(null);
 	}
 
 	@Override

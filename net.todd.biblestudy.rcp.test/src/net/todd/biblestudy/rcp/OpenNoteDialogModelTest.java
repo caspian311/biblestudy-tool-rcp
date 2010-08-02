@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 import net.java.ao.EntityManager;
@@ -12,6 +13,7 @@ import net.todd.biblestudy.common.IListener;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -126,5 +128,43 @@ public class OpenNoteDialogModelTest {
 		testObject.setFilterText(UUID.randomUUID().toString());
 
 		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void renameNoteSetsNewNameOnSelectedNote() {
+		Note note = mock(Note.class);
+		testObject.setSelectedNote(note);
+
+		String newName = UUID.randomUUID().toString();
+		testObject.setNewNoteName(newName);
+
+		verify(note, never()).setName(newName);
+
+		testObject.renameSelectedNote();
+
+		InOrder inOrder = inOrder(note);
+		inOrder.verify(note).setName(newName);
+		ArgumentCaptor<Date> dateCaptor = ArgumentCaptor.forClass(Date.class);
+		inOrder.verify(note).setLastModified(dateCaptor.capture());
+		inOrder.verify(note).save();
+
+		assertEquals(new Date().getTime(), dateCaptor.getValue().getTime(), 1000);
+	}
+
+	@Test
+	public void renameNoteNotifiesAllNotesHaveChanged() {
+		IListener allNotesListener = mock(IListener.class);
+		testObject.addListener(allNotesListener, IOpenNoteDialogModel.ALL_NOTES);
+		IListener selectedNoteListener = mock(IListener.class);
+		testObject.addListener(selectedNoteListener, IOpenNoteDialogModel.SELECTION);
+		Note note = mock(Note.class);
+		testObject.setSelectedNote(note);
+
+		testObject.renameSelectedNote();
+
+		InOrder inOrder = inOrder(note, allNotesListener, selectedNoteListener);
+		inOrder.verify(note).save();
+		inOrder.verify(allNotesListener).handleEvent();
+		inOrder.verify(selectedNoteListener).handleEvent();
 	}
 }

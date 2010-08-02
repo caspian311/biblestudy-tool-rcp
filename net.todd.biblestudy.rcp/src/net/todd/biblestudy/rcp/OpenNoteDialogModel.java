@@ -2,6 +2,7 @@ package net.todd.biblestudy.rcp;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import net.java.ao.EntityManager;
@@ -19,6 +20,8 @@ public class OpenNoteDialogModel extends AbstractMvpEventer implements IOpenNote
 	private Note selectedNote;
 
 	private String filter;
+
+	private String newNoteName;
 
 	public OpenNoteDialogModel(EntityManager entityManager, INoteController noteController) {
 		this.entityManager = entityManager;
@@ -55,13 +58,17 @@ public class OpenNoteDialogModel extends AbstractMvpEventer implements IOpenNote
 	}
 
 	@Override
-	public void setNewNoteName(String newName) {
-		// TODO Auto-generated method stub
+	public void setNewNoteName(String newNoteName) {
+		this.newNoteName = newNoteName;
 	}
 
 	@Override
 	public void renameSelectedNote() {
-		// TODO Auto-generated method stub
+		selectedNote.setName(newNoteName);
+		selectedNote.setLastModified(new Date());
+		selectedNote.save();
+		notifyListeners(ALL_NOTES);
+		notifyListeners(SELECTION);
 	}
 
 	@Override
