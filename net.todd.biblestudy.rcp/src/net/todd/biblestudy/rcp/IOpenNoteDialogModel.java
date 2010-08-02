@@ -2,9 +2,9 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface IOpenNoteDialogModel extends IMvpListener {
+public interface IOpenNoteDialogModel extends IMvpEventer {
 	enum Type {
 		SELECTION, ALL_NOTES, FILTER
 	}

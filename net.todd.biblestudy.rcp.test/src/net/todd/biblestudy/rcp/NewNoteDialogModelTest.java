@@ -102,7 +102,7 @@ public class NewNoteDialogModelTest {
 		Date lastModified = lastModifiedCaptor.getValue();
 
 		inOrder.verify(newlyCreatedNote).save();
-		inOrder.verify(noteController).setCurrentNote(newNoteName);
+		inOrder.verify(noteController).setCurrentNoteName(newNoteName);
 		inOrder.verify(noteController).openCurrentNote();
 
 		assertEquals(new Date().getTime(), lastModified.getTime(), 1000);

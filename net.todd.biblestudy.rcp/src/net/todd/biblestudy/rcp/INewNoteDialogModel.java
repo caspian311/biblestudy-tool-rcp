@@ -1,8 +1,8 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface INewNoteDialogModel extends IMvpListener {
+public interface INewNoteDialogModel extends IMvpEventer {
 	enum Type {
 		VALID_STATE
 	}

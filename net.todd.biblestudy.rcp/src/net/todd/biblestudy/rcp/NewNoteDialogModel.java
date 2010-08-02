@@ -4,13 +4,13 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import net.java.ao.EntityManager;
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteDialogModel {
+public class NewNoteDialogModel extends AbstractMvpEventer implements INewNoteDialogModel {
 	private static final Log LOG = LogFactory.getLog(NewNoteDialogModel.class);
 
 	public static final String NAME_CANNOT_BE_EMPTY = "Note name cannot be empty.";
@@ -64,7 +64,7 @@ public class NewNoteDialogModel extends AbstractMvpListener implements INewNoteD
 			throw new RuntimeException(e);
 		}
 
-		noteController.setCurrentNote(newNoteName);
+		noteController.setCurrentNoteName(newNoteName);
 		noteController.openCurrentNote();
 	}
 

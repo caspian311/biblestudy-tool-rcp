@@ -1,54 +1,37 @@
 package net.todd.biblestudy.rcp;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
-import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.IListener;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class NoteModelTest {
 	@Mock
-	private EntityManager entityManager;
-
-	private String noteName;
+	private Note note;
 
 	private INoteModel testObject;
 
-	@Mock
-	private Note note;
+	private String noteName;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		noteName = UUID.randomUUID().toString();
-
-		doReturn(new Note[] { note }).when(entityManager).find(Note.class, "name = ?", noteName);
 		doReturn(noteName).when(note).getName();
 
-		testObject = new NoteModel(entityManager, noteName);
-	}
-
-	@Test
-	public void ifTryingToOpenNoteThatDoesntExistThenBlowUpRealBig() throws Exception {
-		reset(entityManager);
-
-		doReturn(new Note[] {}).when(entityManager).find(eq(Note.class), anyString(), anyString());
-
-		try {
-			testObject = new NoteModel(entityManager, noteName);
-			fail("Should have blown up real big");
-		} catch (Exception e) {
-		}
+		testObject = new NoteModel(note);
 	}
 
 	@Test
@@ -124,10 +107,17 @@ public class NoteModelTest {
 	}
 
 	@Test
-	public void savingModelSavesTheUnderlyingNote() {
+	public void savingModelSetsTheLastModifiedTimestampToCurrentTimeThenSavesTheUnderlyingNote() {
 		testObject.save();
 
-		verify(note).save();
+		InOrder inOrder = inOrder(note);
+
+		ArgumentCaptor<Date> lastModifiedCaptor = ArgumentCaptor.forClass(Date.class);
+		inOrder.verify(note).setLastModified(lastModifiedCaptor.capture());
+		Date lastModified = lastModifiedCaptor.getValue();
+		inOrder.verify(note).save();
+
+		assertEquals(new Date().getTime(), lastModified.getTime(), 1000);
 	}
 
 	@Test

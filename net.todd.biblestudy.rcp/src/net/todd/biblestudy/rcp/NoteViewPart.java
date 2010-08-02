@@ -25,7 +25,7 @@ public class NoteViewPart extends ViewPart {
 
 	@Override
 	public void setFocus() {
-		NoteControllerProvider.getNoteController().setCurrentNote(noteModel.getNoteName());
+		NoteControllerProvider.getNoteController().setCurrentNoteName(noteModel.getNoteName());
 	}
 
 	@Override

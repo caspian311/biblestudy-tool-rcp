@@ -2,9 +2,9 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface IOpenNoteDialogView extends IMvpListener {
+public interface IOpenNoteDialogView extends IMvpEventer {
 	enum Type {
 		OK_BUTTON, DELETE_BUTTON, RENAME_BUTTON, SELECTION, NOTE_RENAME, FILTER_TEXT
 	}

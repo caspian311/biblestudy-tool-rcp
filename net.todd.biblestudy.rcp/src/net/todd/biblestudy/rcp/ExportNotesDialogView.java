@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class ExportNotesDialogView extends AbstractMvpListener implements
+public class ExportNotesDialogView extends AbstractMvpEventer implements
 		IExportNotesDialogView {
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(
 			"MM/dd/yyyy");

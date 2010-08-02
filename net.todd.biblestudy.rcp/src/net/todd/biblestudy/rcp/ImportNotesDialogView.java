@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-public class ImportNotesDialogView extends AbstractMvpListener implements
+public class ImportNotesDialogView extends AbstractMvpEventer implements
 		IImportNotesDialogView {
 	private static final String NOTE_NAME_COLUMN_HEADER = "Note";
 	private static final String LAST_MODIFIED_COLUMN_HEADER = "Last modified";

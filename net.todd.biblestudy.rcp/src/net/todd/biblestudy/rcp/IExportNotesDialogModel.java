@@ -2,9 +2,9 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface IExportNotesDialogModel extends IMvpListener {
+public interface IExportNotesDialogModel extends IMvpEventer {
 	enum Type {
 		EXPORT_FILE_LOCATION
 	}

@@ -1,8 +1,8 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface ICreateLinkToDialogModel extends IMvpListener {
+public interface ICreateLinkToDialogModel extends IMvpEventer {
 	public enum Type {
 		VALID_STATE
 	}

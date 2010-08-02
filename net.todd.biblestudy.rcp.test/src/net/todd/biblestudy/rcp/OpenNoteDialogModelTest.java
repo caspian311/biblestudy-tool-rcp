@@ -84,7 +84,7 @@ public class OpenNoteDialogModelTest {
 
 		InOrder inOrder = inOrder(noteController);
 
-		inOrder.verify(noteController).setCurrentNote(noteName);
+		inOrder.verify(noteController).setCurrentNoteName(noteName);
 		inOrder.verify(noteController).openCurrentNote();
 	}
 

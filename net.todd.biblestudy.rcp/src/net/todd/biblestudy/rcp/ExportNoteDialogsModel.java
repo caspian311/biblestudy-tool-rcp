@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.java.ao.EntityManager;
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ExportNoteDialogsModel extends AbstractMvpListener implements
+public class ExportNoteDialogsModel extends AbstractMvpEventer implements
 		IExportNotesDialogModel {
 	private static final Log LOG = LogFactory
 			.getLog(ExportNoteDialogsModel.class);

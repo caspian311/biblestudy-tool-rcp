@@ -3,9 +3,9 @@ package net.todd.biblestudy.rcp;
 import java.util.List;
 
 import net.java.ao.EntityManager;
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
-public class ImportNotesDialogModel extends AbstractMvpListener implements
+public class ImportNotesDialogModel extends AbstractMvpEventer implements
 		IImportNotesDialogModel {
 	private List<Note> selectedNotes;
 	private final ImportJobExecutor importJob;

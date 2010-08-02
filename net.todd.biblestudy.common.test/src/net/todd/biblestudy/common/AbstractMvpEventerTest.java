@@ -1,16 +1,16 @@
 package net.todd.biblestudy.common;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class MvpListenerTest {
-	private IMvpListener testObject;
+public class AbstractMvpEventerTest {
+	private IMvpEventer testObject;
 
 	@Before
 	public void setUp() {
-		testObject = new AbstractMvpListener() {
+		testObject = new AbstractMvpEventer() {
 		};
 	}
 
@@ -98,6 +98,33 @@ public class MvpListenerTest {
 		assertEquals(2, listener1.getCallCount());
 		assertEquals(1, listener2.getCallCount());
 		assertEquals(1, listener3.getCallCount());
+	}
+
+	@Test
+	public void listenersAreNotNotifiedIfTheyWereRemoved() {
+		CallCountListener listener1 = new CallCountListener();
+		CallCountListener listener2 = new CallCountListener();
+		CallCountListener listener3 = new CallCountListener();
+		testObject.addListener(listener1, Types.TYPE1);
+		testObject.addListener(listener2, Types.TYPE2);
+		testObject.addListener(listener3);
+
+		testObject.removeListener(listener2);
+
+		testObject.notifyListeners(Types.TYPE1);
+		testObject.notifyListeners(Types.TYPE2);
+		testObject.notifyListeners();
+
+		assertEquals(1, listener1.getCallCount());
+		assertEquals(0, listener2.getCallCount());
+		assertEquals(1, listener3.getCallCount());
+	}
+
+	@Test
+	public void removingListenersThatWereNeverAddedDoesntHurtAnything() {
+		CallCountListener listener = new CallCountListener();
+
+		testObject.removeListener(listener);
 	}
 
 	private static class CallCountListener implements IListener {

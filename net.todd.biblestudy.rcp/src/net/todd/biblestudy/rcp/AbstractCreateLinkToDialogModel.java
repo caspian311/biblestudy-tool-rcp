@@ -1,9 +1,9 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 public abstract class AbstractCreateLinkToDialogModel extends
-		AbstractMvpListener implements ICreateLinkToDialogModel {
+		AbstractMvpEventer implements ICreateLinkToDialogModel {
 	private String linkText;
 
 	@Override

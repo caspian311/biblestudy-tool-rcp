@@ -2,9 +2,9 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface IExportNotesDialogView extends IMvpListener {
+public interface IExportNotesDialogView extends IMvpEventer {
 	enum Type {
 		TABLE_SELECTION, EXPORT_FILE_LOCATION, FILE_BROWSE_BUTTON, OK_BUTTON
 	}

@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class OpenNoteDialogView extends AbstractMvpListener implements IOpenNoteDialogView {
+public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteDialogView {
 	private final OpenNoteDialog openNoteDialog;
 
 	public static final String NOTE_NAME_COLUMN_HEADER = "Note";

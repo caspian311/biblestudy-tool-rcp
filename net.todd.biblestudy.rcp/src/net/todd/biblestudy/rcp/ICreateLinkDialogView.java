@@ -1,8 +1,8 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface ICreateLinkDialogView extends IMvpListener {
+public interface ICreateLinkDialogView extends IMvpEventer {
 	enum Type {
 		LINKED_TEXT, OK_PRESSED
 	}

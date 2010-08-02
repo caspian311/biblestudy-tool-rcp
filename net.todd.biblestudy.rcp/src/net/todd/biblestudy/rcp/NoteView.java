@@ -2,7 +2,7 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpView;
 import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.ReferenceTransfer;
 
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-public class NoteView extends AbstractMvpListener implements INoteView {
+public class NoteView extends AbstractMvpView implements INoteView {
 	private final Menu rightClickTextMenu;
 	private final Menu dropReferenceOptionsMenu;
 
@@ -54,6 +54,7 @@ public class NoteView extends AbstractMvpListener implements INoteView {
 	private final NoteViewPart parentViewPart;
 
 	public NoteView(Composite parent, NoteViewPart parentViewPart) {
+		super(parent);
 		this.parent = parent;
 		this.parentViewPart = parentViewPart;
 

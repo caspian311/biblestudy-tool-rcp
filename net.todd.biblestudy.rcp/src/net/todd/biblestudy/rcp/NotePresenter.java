@@ -9,7 +9,7 @@ public class NotePresenter {
 		view.setContent(model.getContent());
 		view.setTitle(model.getNoteName());
 
-		model.addListener(new IListener() {
+		final IListener modelListener = new IListener() {
 			@Override
 			public void handleEvent() {
 				String noteName = model.getNoteName();
@@ -19,7 +19,15 @@ public class NotePresenter {
 					view.setTitle(noteName);
 				}
 			}
-		}, INoteModel.CHANGED);
+		};
+
+		model.addListener(modelListener, INoteModel.CHANGED);
+		view.addDisposeListener(new IListener() {
+			@Override
+			public void handleEvent() {
+				model.removeListener(modelListener);
+			}
+		});
 
 		view.addListener(new IListener() {
 			@Override

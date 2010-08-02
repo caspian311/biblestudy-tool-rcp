@@ -2,12 +2,12 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpView;
 import net.todd.biblestudy.reference.BibleVerse;
 
 import org.eclipse.swt.graphics.Point;
 
-public interface INoteView extends IMvpListener {
+public interface INoteView extends IMvpView {
 	enum Type {
 		CONTENT, CREATE_LINK, CREATE_REFERENCE, RIGHT_CLICK, LEFT_CLICK, MOUSE_HOVER, CONTENT_DROPPED, INSERT_LINK_TO_REFERENCE, DROP_REFERENCE_OPTION, DROP_REFERENCE_OPTION_WITH_TEXT
 	}

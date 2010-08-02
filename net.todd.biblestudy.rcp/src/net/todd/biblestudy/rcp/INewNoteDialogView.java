@@ -1,8 +1,8 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface INewNoteDialogView extends IMvpListener {
+public interface INewNoteDialogView extends IMvpEventer {
 	enum Type {
 		NEW_NOTE_NAME, OK
 	}

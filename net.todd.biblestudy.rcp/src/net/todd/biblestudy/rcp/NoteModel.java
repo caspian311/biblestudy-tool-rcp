@@ -1,15 +1,12 @@
 package net.todd.biblestudy.rcp;
 
-import net.java.ao.EntityManager;
-import net.todd.biblestudy.common.AbstractMvpListener;
+import java.util.Date;
+
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-public class NoteModel extends AbstractMvpListener implements INoteModel {
-	private static final Log LOG = LogFactory.getLog(NoteModel.class);
-
+public class NoteModel extends AbstractMvpEventer implements INoteModel {
 	private final Note note;
 
 	// private final List<Link> links = new ArrayList<Link>();
@@ -18,13 +15,8 @@ public class NoteModel extends AbstractMvpListener implements INoteModel {
 
 	private int currentCarretPosition;
 
-	public NoteModel(EntityManager entityManager, String noteName) {
-		try {
-			note = entityManager.find(Note.class, "name = ?", noteName)[0];
-		} catch (Exception e) {
-			LOG.error(e);
-			throw new RuntimeException(e);
-		}
+	public NoteModel(Note note) {
+		this.note = note;
 	}
 
 	@Override
@@ -37,6 +29,7 @@ public class NoteModel extends AbstractMvpListener implements INoteModel {
 		// for (Link link : links) {
 		// link.save();
 		// }
+		note.setLastModified(new Date());
 		note.save();
 		contentHasChanged = false;
 		notifyListeners(CHANGED);

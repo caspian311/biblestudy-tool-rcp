@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.java.ao.EntityManager;
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNoteDialogModel {
+public class OpenNoteDialogModel extends AbstractMvpEventer implements IOpenNoteDialogModel {
 	private static Log LOG = LogFactory.getLog(OpenNoteDialogModel.class);
 
 	private final EntityManager entityManager;
@@ -37,7 +37,7 @@ public class OpenNoteDialogModel extends AbstractMvpListener implements IOpenNot
 
 	@Override
 	public void openSelectedNote() {
-		noteController.setCurrentNote(selectedNote.getName());
+		noteController.setCurrentNoteName(selectedNote.getName());
 		noteController.openCurrentNote();
 	}
 

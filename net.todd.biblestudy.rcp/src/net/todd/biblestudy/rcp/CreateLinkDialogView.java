@@ -1,6 +1,6 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class CreateLinkDialogView extends AbstractMvpListener implements
+public class CreateLinkDialogView extends AbstractMvpEventer implements
 		ICreateLinkDialogView {
 	private final Text linkTextField;
 	private final Label errorLabel;

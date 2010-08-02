@@ -1,9 +1,9 @@
 package net.todd.biblestudy.rcp;
 
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface INoteModel extends IMvpListener {
+public interface INoteModel extends IMvpEventer {
 	enum Type {
 		CHANGED
 	}

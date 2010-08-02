@@ -2,9 +2,9 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.IMvpListener;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface IImportNotesDialogView extends IMvpListener {
+public interface IImportNotesDialogView extends IMvpEventer {
 	enum Type {
 		OK, SELECTION, SELECT_ALL_BUTTON, SELECT_NONE_BUTTON, SELECT_INVERSE_BUTTON, IMPORT_FILE, BROWSE_BUTTON
 	}

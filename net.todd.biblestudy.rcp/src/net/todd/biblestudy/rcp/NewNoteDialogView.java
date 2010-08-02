@@ -1,6 +1,6 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.AbstractMvpListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class NewNoteDialogView extends AbstractMvpListener implements INewNoteDialogView {
+public class NewNoteDialogView extends AbstractMvpEventer implements INewNoteDialogView {
 	private final Text newNoteNameField;
 	private final Label errorMessageLabel;
 	private final NewNoteDialog parentDialog;

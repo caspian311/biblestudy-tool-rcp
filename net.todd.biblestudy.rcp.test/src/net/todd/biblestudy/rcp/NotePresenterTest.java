@@ -28,6 +28,7 @@ public class NotePresenterTest {
 
 	private IListener modelChangedListener;
 	private IListener viewChangedListener;
+	private IListener disposeListener;
 
 	@Before
 	public void setup() throws Exception {
@@ -43,7 +44,18 @@ public class NotePresenterTest {
 		verify(view).addListener(viewChangedListenerCaptor.capture(), eq(INoteView.CONTENT));
 		viewChangedListener = viewChangedListenerCaptor.getValue();
 
+		ArgumentCaptor<IListener> disposeListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addDisposeListener(disposeListenerCaptor.capture());
+		disposeListener = disposeListenerCaptor.getValue();
+
 		reset(model, view);
+	}
+
+	@Test
+	public void whenViewDisposesPresenterStopsListenerToModel() {
+		disposeListener.handleEvent();
+
+		verify(model).removeListener(modelChangedListener);
 	}
 
 	@Test

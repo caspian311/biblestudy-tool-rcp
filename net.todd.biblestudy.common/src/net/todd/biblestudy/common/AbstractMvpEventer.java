@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractMvpListener implements IMvpListener {
+public abstract class AbstractMvpEventer implements IMvpEventer {
 	private final Map<Enum<?>, List<IListener>> listenersByType = new HashMap<Enum<?>, List<IListener>>();
 
 	private static enum InternalTypes {
@@ -46,5 +46,23 @@ public abstract class AbstractMvpListener implements IMvpListener {
 		for (IListener listener : getListenersByType(type)) {
 			listener.handleEvent();
 		}
+	}
+
+	@Override
+	public void removeListener(IListener listener) {
+		Enum<?> type = getTypeForListener(listener);
+		getListenersByType(type).remove(listener);
+	}
+
+	private Enum<?> getTypeForListener(IListener listenerToRemove) {
+		Enum<?> targetType = null;
+		for (Enum<?> type : listenersByType.keySet()) {
+			List<IListener> listeners = getListenersByType(type);
+			if (listeners.contains(listenerToRemove)) {
+				targetType = type;
+				break;
+			}
+		}
+		return targetType;
 	}
 }
