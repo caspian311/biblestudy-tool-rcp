@@ -3,6 +3,7 @@ package net.todd.biblestudy.rcp;
 import java.sql.SQLException;
 
 import net.java.ao.EntityManager;
+import net.todd.biblestudy.db.EntityManagerProvider;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

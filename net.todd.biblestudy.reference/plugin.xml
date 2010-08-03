@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="dbScripts" name="DB Scripts" schema="schema/dbScripts.exsd"/>
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -28,12 +27,6 @@
          </action>
       </actionSet>
    </extension>
-   <extension
-         point="org.eclipse.ui.startup">
-      <startup
-            class="net.todd.biblestudy.reference.Startup">
-      </startup>
-   </extension>
 <extension
          point="org.eclipse.ui.commands">
       <command
@@ -50,5 +43,14 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             contextId="net.todd.biblestudy.rcp.context"
             sequence="M1+R" />
+   </extension>
+   <extension
+         point="net.todd.biblestudy.db.DataObject">
+      <dataObject
+            class="net.todd.biblestudy.reference.Verse">
+         <sqlFile
+               file="resources/data.sql">
+         </sqlFile>
+      </dataObject>
    </extension>
 </plugin>

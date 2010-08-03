@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import net.todd.biblestudy.common.AbstractMvpEventer;
+import net.todd.biblestudy.common.ViewerUtils;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;

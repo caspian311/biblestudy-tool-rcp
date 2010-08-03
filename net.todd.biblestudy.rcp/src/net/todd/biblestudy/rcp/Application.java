@@ -1,6 +1,7 @@
 package net.todd.biblestudy.rcp;
 
 import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.db.DatabaseSetup;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;

@@ -3,8 +3,7 @@ package net.todd.biblestudy.reference;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.todd.biblestudy.common.IListener;
-import net.todd.biblestudy.common.ListenerManager;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -28,7 +27,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -40,19 +38,13 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class ReferenceView implements IReferenceView {
+public class ReferenceView extends AbstractMvpEventer implements IReferenceView {
 	protected static final String ID = "net.todd.biblestudy.reference.common.ReferenceView";
 
 	private static final int TEXT_COLUMN_WIDTH = 200;
 	private static final String TEXT_COLUMN_HEADER = "Text";
 	private static final String REFERENCE_COLUMN_HEADER = "Reference";
 	private static final int REFERENCE_COLUMN_WIDTH = 100;
-
-	private final ListenerManager lookupButtonPressedListenerManager = new ListenerManager();
-	private final ListenerManager createLinkToNoteListenerManager = new ListenerManager();
-	private final ListenerManager rightClickListenerManager = new ListenerManager();
-
-	private Combo referenceCombo;
 
 	private Text lookupText;
 
@@ -75,7 +67,10 @@ public class ReferenceView implements IReferenceView {
 
 	private TableItem[] currentSelection;
 
-	public ReferenceView(Composite composite) {
+	private final ReferenceViewPart referenceViewPart;
+
+	public ReferenceView(Composite composite, ReferenceViewPart referenceViewPart) {
+		this.referenceViewPart = referenceViewPart;
 		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
 
 		createControls(composite);
@@ -87,26 +82,25 @@ public class ReferenceView implements IReferenceView {
 		rightClickMenu = new Menu(parent);
 		rightClickMenu.setVisible(false);
 
-		MenuItem createLinkToNote = new MenuItem(rightClickMenu, SWT.POP_UP);
-		createLinkToNote.setText("Show Entire Chapter");
-		createLinkToNote.setEnabled(true);
-		createLinkToNote.addSelectionListener(new SelectionAdapter() {
+		MenuItem showEntireChapterMenuItem = new MenuItem(rightClickMenu, SWT.POP_UP);
+		showEntireChapterMenuItem.setText("Show Entire Chapter");
+		showEntireChapterMenuItem.setEnabled(true);
+		showEntireChapterMenuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				createLinkToNoteListenerManager.notifyListeners();
+				notifyListeners(SHOW_ENTIRE_CHAPTER);
 			}
 		});
 	}
 
 	private void createResultsArea(Composite parent) {
-		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL
-				| SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION | SWT.MULTI);
+		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | SWT.SHADOW_ETCHED_IN
+				| SWT.FULL_SELECTION | SWT.MULTI);
 		resultsTableViewer.setLabelProvider(new ResultsTableLabelProvider());
 		resultsTableViewer.setContentProvider(new ArrayContentProvider());
 
 		resultsTable = resultsTableViewer.getTable();
-		resultsTable
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		resultsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		resultsTable.setHeaderVisible(true);
 		resultsTable.setLinesVisible(true);
 
@@ -116,7 +110,7 @@ public class ReferenceView implements IReferenceView {
 				if (isRightClick(e) || isMacRightClick(e)) {
 					lastRightClickPosition = new Point(e.x, e.y);
 
-					rightClickListenerManager.notifyListeners();
+					notifyListeners(RIGHT_CLICK);
 				}
 			}
 
@@ -166,8 +160,7 @@ public class ReferenceView implements IReferenceView {
 					Point size = event.gc.textExtent(text);
 					yOffset = Math.max(0, (event.height - size.y) / 2);
 				}
-				event.gc.drawText(text, event.x + TEXT_MARGIN, event.y
-						+ yOffset, true);
+				event.gc.drawText(text, event.x + TEXT_MARGIN, event.y + yOffset, true);
 			}
 		});
 		resultsTable.addControlListener(new ControlListener() {
@@ -202,11 +195,11 @@ public class ReferenceView implements IReferenceView {
 	}
 
 	@Override
-	public BibleVerse getSelectedVerse() {
-		BibleVerse selectedVerse = null;
+	public Verse getSelectedVerse() {
+		Verse selectedVerse = null;
 
 		if (currentSelection != null && currentSelection.length > 0) {
-			selectedVerse = (BibleVerse) currentSelection[0].getData();
+			selectedVerse = (Verse) currentSelection[0].getData();
 		}
 
 		return selectedVerse;
@@ -223,8 +216,7 @@ public class ReferenceView implements IReferenceView {
 
 			int maxCharactersPerLine = TEXT_COLUMN_WIDTH / averageCharWidth;
 
-			String newColumnText = ScriptureTextUtil.addNewLines(columnText,
-					maxCharactersPerLine);
+			String newColumnText = ScriptureTextUtil.addNewLines(columnText, maxCharactersPerLine);
 
 			item.setText(1, newColumnText);
 		}
@@ -233,23 +225,19 @@ public class ReferenceView implements IReferenceView {
 	}
 
 	private void makeDragable() {
-		DragSource dragSource = new DragSource(resultsTableViewer.getTable(),
-				DND.DROP_MOVE);
-		dragSource
-				.setTransfer(new Transfer[] { ReferenceTransfer.getInstance() });
+		DragSource dragSource = new DragSource(resultsTableViewer.getTable(), DND.DROP_MOVE);
+		dragSource.setTransfer(new Transfer[] { ReferenceTransfer.getInstance() });
 		dragSource.addDragListener(new DragSourceAdapter() {
 			@Override
 			public void dragSetData(DragSourceEvent event) {
-				if (ReferenceTransfer.getInstance().isSupportedType(
-						event.dataType)) {
-					List<BibleVerse> verses = new ArrayList<BibleVerse>();
+				if (ReferenceTransfer.getInstance().isSupportedType(event.dataType)) {
+					List<Verse> verses = new ArrayList<Verse>();
 
 					TableItem[] selectionList = getCurrentSelection();
 
 					if (selectionList != null) {
 						for (TableItem selectedItem : selectionList) {
-							BibleVerse verse = (BibleVerse) selectedItem
-									.getData();
+							Verse verse = (Verse) selectedItem.getData();
 
 							verses.add(verse);
 						}
@@ -261,27 +249,12 @@ public class ReferenceView implements IReferenceView {
 		});
 	}
 
-	@Override
-	public void addLookupButtonPressedListener(IListener listener) {
-		lookupButtonPressedListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addCreateLinkToNoteListener(IListener listener) {
-		createLinkToNoteListenerManager.addListener(listener);
-	}
-
-	@Override
-	public void addRightClickListener(IListener listener) {
-		rightClickListenerManager.addListener(listener);
-	}
-
 	private TableItem[] getCurrentSelection() {
 		return currentSelection;
 	}
 
 	@Override
-	public void setResults(final BibleVerse[] results) {
+	public void setResults(final Verse[] results) {
 		resultsTableViewer.setInput(results);
 
 		redoTheText();
@@ -300,15 +273,14 @@ public class ReferenceView implements IReferenceView {
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
 		lookupText = new Text(composite, SWT.BORDER);
-		lookupText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false,
-				3, 1));
+		lookupText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
 
 		lookupButton = new Button(composite, SWT.PUSH);
 		lookupButton.setText("Search");
 		lookupButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				lookupButtonPressedListenerManager.notifyListeners();
+				notifyListeners(LOOKUP_BUTTON);
 			}
 		});
 
@@ -332,27 +304,8 @@ public class ReferenceView implements IReferenceView {
 			}
 		});
 
-		referenceCombo = new Combo(composite, SWT.BORDER | SWT.DROP_DOWN);
-		referenceCombo.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false,
-				false, 2, 1));
-
 		resultsMessage = new Label(composite, SWT.NORMAL);
-		resultsMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING,
-				true, false, 4, 1));
-	}
-
-	@Override
-	public void setDataSourcesInDropDown(List<String> sourceIds) {
-		for (String version : sourceIds) {
-			referenceCombo.add(version);
-		}
-
-		referenceCombo.select(0);
-	}
-
-	@Override
-	public String getReferenceSourceId() {
-		return referenceCombo.getText();
+		resultsMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 4, 1));
 	}
 
 	@Override
@@ -367,8 +320,7 @@ public class ReferenceView implements IReferenceView {
 
 	@Override
 	public void displayLimitResultsMessage(final int totalSize) {
-		resultsMessage.setText("Only displaying 100 of " + totalSize
-				+ " results.");
+		resultsMessage.setText("Only displaying 100 of " + totalSize + " results.");
 	}
 
 	@Override
@@ -395,5 +347,10 @@ public class ReferenceView implements IReferenceView {
 
 		rightClickMenu.setLocation(point);
 		rightClickMenu.setVisible(true);
+	}
+
+	@Override
+	public void setViewTitle(String title) {
+		referenceViewPart.setPartName(title);
 	}
 }

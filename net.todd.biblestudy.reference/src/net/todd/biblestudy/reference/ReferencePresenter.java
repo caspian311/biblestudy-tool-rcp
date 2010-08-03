@@ -1,10 +1,7 @@
 package net.todd.biblestudy.reference;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.todd.biblestudy.common.BiblestudyException;
 
@@ -15,8 +12,7 @@ public class ReferencePresenter {
 	private final IReferenceView referenceView;
 	private final IReferenceModel referenceModel;
 
-	public ReferencePresenter(IReferenceView referenceView,
-			IReferenceModel referenceModel) {
+	public ReferencePresenter(IReferenceView referenceView, IReferenceModel referenceModel) {
 		this.referenceView = referenceView;
 		this.referenceModel = referenceModel;
 	}
@@ -51,14 +47,12 @@ public class ReferencePresenter {
 	// }
 
 	private void handleShowEntireChapter() throws BiblestudyException {
-		BibleVerse selectedVerse = referenceView.getSelectedVerse();
+		Verse selectedVerse = referenceView.getSelectedVerse();
 
-		String searchText = selectedVerse.getBook() + " "
-				+ selectedVerse.getChapter();
+		String searchText = selectedVerse.getBook() + " " + selectedVerse.getChapter();
 
 		try {
-			doSearch(searchText, referenceView.getReferenceSourceId(),
-					"reference");
+			doSearch(searchText, referenceView.getReferenceSourceId(), "reference");
 		} catch (InvalidReferenceException e) {
 			referenceView.displayErrorMessage(e.getMessage());
 		}
@@ -68,8 +62,7 @@ public class ReferencePresenter {
 		referenceView.showRightClickMenu();
 	}
 
-	private void handlePopulateReferece(Reference reference)
-			throws BiblestudyException {
+	private void handlePopulateReferece(Reference reference) throws BiblestudyException {
 		referenceView.setLookupText(reference.toString());
 		handleSearch();
 	}
@@ -79,8 +72,7 @@ public class ReferencePresenter {
 		String referenceShortName = referenceView.getReferenceSourceId();
 		String keywordOrReference = referenceView.getKeywordOrReference();
 
-		if (StringUtils.isEmpty(searchText)
-				|| StringUtils.isEmpty(referenceShortName)) {
+		if (StringUtils.isEmpty(searchText) || StringUtils.isEmpty(referenceShortName)) {
 			referenceView.displayErrorMessage(ERROR_NO_SEARCH_INFO_GIVEN);
 		} else {
 			try {
@@ -91,32 +83,29 @@ public class ReferencePresenter {
 		}
 	}
 
-	protected void doSearch(String searchText, String referenceShortName,
-			String keywordOrReference) throws BiblestudyException,
-			InvalidReferenceException {
+	protected void doSearch(String searchText, String referenceShortName, String keywordOrReference)
+			throws BiblestudyException, InvalidReferenceException {
 		String typeOfSearch = StringUtils.capitalize(keywordOrReference);
 
 		referenceView.setViewTitle(typeOfSearch + ": " + searchText);
 
-		List<BibleVerse> results = null;
+		List<Verse> results = null;
 
 		if ("reference".equals(keywordOrReference)) {
-			results = referenceModel.performSearchOnReference(searchText,
-					referenceShortName);
+			results = referenceModel.performSearchOnReference(searchText, referenceShortName);
 		} else if ("keyword".equals(keywordOrReference)) {
-			results = referenceModel.performSearchOnKeyword(searchText,
-					referenceShortName);
+			results = referenceModel.performSearchOnKeyword(searchText, referenceShortName);
 		}
 
 		if (results != null) {
 			int totalSize = results.size();
 
-			List<BibleVerse> tempResults = new ArrayList<BibleVerse>();
+			List<Verse> tempResults = new ArrayList<Verse>();
 
 			if (results.size() > 100) {
 				for (int i = 0; i < 100; i++) {
-					BibleVerse bibleVerse = results.get(i);
-					tempResults.add(bibleVerse);
+					Verse Verse = results.get(i);
+					tempResults.add(Verse);
 				}
 
 				results = tempResults;
@@ -126,29 +115,12 @@ public class ReferencePresenter {
 				referenceView.hideLimitResultsMessage();
 			}
 
-			BibleVerse[] resultsArray = new BibleVerse[results.size()];
+			Verse[] resultsArray = new Verse[results.size()];
 			results.toArray(resultsArray);
 
 			referenceView.setResults(resultsArray);
 		} else {
 			referenceView.setResults(null);
 		}
-	}
-
-	private void handleViewOpened() throws BiblestudyException {
-		Set<String> versions = new HashSet<String>();
-
-		List<String> allVersions = referenceModel.getAllBibleVersions();
-
-		if (referenceModel.getAllBibleVersions() != null) {
-			for (String bibleVersion : allVersions) {
-				versions.add(bibleVersion);
-			}
-		}
-
-		List<String> sortedList = new ArrayList<String>(versions);
-		Collections.sort(sortedList);
-
-		referenceView.setDataSourcesInDropDown(sortedList);
 	}
 }

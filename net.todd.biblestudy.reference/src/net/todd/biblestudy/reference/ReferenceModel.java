@@ -3,18 +3,23 @@ package net.todd.biblestudy.reference;
 import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
-import net.todd.biblestudy.reference.db.IBibleDao;
 
 public class ReferenceModel implements IReferenceModel {
+	private final SearchEngine searchEngine;
+	private final ReferenceFactory referenceFactory;
+
+	public ReferenceModel(SearchEngine searchEngine, ReferenceFactory referenceFactory) {
+		this.searchEngine = searchEngine;
+		this.referenceFactory = referenceFactory;
+	}
+
 	@Override
-	public List<BibleVerse> performSearchOnReference(String searchText,
-			String referenceShortName) throws BiblestudyException,
-			InvalidReferenceException {
-		List<BibleVerse> search = null;
+	public List<Verse> performSearchOnReference(String searchText, String referenceShortName)
+			throws BiblestudyException, InvalidReferenceException {
+		List<Verse> search = null;
 
 		try {
-			search = getBibleDao().referenceLookup(
-					new ReferenceFactory().getReference(searchText));
+			search = searchEngine.referenceLookup(referenceFactory.getReference(searchText));
 		} catch (InvalidReferenceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -25,19 +30,7 @@ public class ReferenceModel implements IReferenceModel {
 	}
 
 	@Override
-	public List<BibleVerse> performSearchOnKeyword(String searchText,
-			String referenceShortName) throws BiblestudyException {
-		List<BibleVerse> search = getBibleDao().keywordLookup(searchText);
-
-		return search;
-	}
-
-	private IBibleDao getBibleDao() {
-		return null;
-	}
-
-	@Override
-	public List<String> getAllBibleVersions() throws BiblestudyException {
-		return getBibleDao().listAllVersions();
+	public List<Verse> performSearchOnKeyword(String searchText, String referenceShortName) throws BiblestudyException {
+		return searchEngine.keywordLookup(searchText);
 	}
 }

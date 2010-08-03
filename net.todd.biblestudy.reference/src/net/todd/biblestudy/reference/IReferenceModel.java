@@ -4,8 +4,7 @@ import java.util.List;
 
 import net.todd.biblestudy.common.BiblestudyException;
 
-public interface IReferenceModel
-{
+public interface IReferenceModel {
 	/**
 	 * search for verses in a given version given a string that is a reference
 	 * 
@@ -17,7 +16,7 @@ public interface IReferenceModel
 	 * @throws BiblestudyException
 	 * @throws InvalidReferenceException
 	 */
-	public List<BibleVerse> performSearchOnReference(String searchText, String referenceShortName)
+	public List<Verse> performSearchOnReference(String searchText, String referenceShortName)
 			throws BiblestudyException, InvalidReferenceException;
 
 	/**
@@ -29,14 +28,5 @@ public interface IReferenceModel
 	 * @return
 	 * @throws BiblestudyException
 	 */
-	public List<BibleVerse> performSearchOnKeyword(String searchText, String referenceShortName)
-			throws BiblestudyException;
-
-	/**
-	 * get all versions made available by extension
-	 * 
-	 * @return
-	 * @throws BiblestudyException
-	 */
-	public List<String> getAllBibleVersions() throws BiblestudyException;
+	public List<Verse> performSearchOnKeyword(String searchText, String referenceShortName) throws BiblestudyException;
 }

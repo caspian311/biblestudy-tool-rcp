@@ -3,8 +3,8 @@ package net.todd.biblestudy.rcp;
 import java.util.List;
 
 import net.todd.biblestudy.common.AbstractMvpView;
-import net.todd.biblestudy.reference.BibleVerse;
 import net.todd.biblestudy.reference.ReferenceTransfer;
+import net.todd.biblestudy.reference.Verse;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -50,7 +50,7 @@ public class NoteView extends AbstractMvpView implements INoteView {
 	private final Color greenColor;
 	private final Color blackColor;
 
-	private List<BibleVerse> droppedVerses;
+	private List<Verse> droppedVerses;
 	private final NoteViewPart parentViewPart;
 
 	public NoteView(Composite parent, NoteViewPart parentViewPart) {
@@ -101,7 +101,7 @@ public class NoteView extends AbstractMvpView implements INoteView {
 			@Override
 			public void drop(DropTargetEvent event) {
 				dropCoordinates = new Point(event.x, event.y);
-				droppedVerses = (List<BibleVerse>) event.data;
+				droppedVerses = (List<Verse>) event.data;
 
 				notifyListeners(CONTENT_DROPPED);
 			}
@@ -290,7 +290,7 @@ public class NoteView extends AbstractMvpView implements INoteView {
 	}
 
 	@Override
-	public List<BibleVerse> getDroppedVerses() {
+	public List<Verse> getDroppedVerses() {
 		return droppedVerses;
 	}
 

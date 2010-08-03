@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-
    <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
@@ -174,5 +173,13 @@
             sequence="M1+W">
       </key>
    </extension>
-
+   <extension
+         point="net.todd.biblestudy.db.DataObject">
+      <dataObject
+            class="net.todd.biblestudy.rcp.Note">
+      </dataObject>
+      <dataObject
+            class="net.todd.biblestudy.rcp.Link">
+      </dataObject>
+   </extension>
 </plugin>

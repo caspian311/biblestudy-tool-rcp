@@ -1,19 +1,21 @@
 package net.todd.biblestudy.reference;
 
-import java.util.List;
+import net.todd.biblestudy.common.IMvpEventer;
 
-import net.todd.biblestudy.common.IListener;
+public interface IReferenceView extends IMvpEventer {
+	enum Type {
+		RIGHT_CLICK, LOOKUP_BUTTON, SHOW_ENTIRE_CHAPTER
+	}
 
-public interface IReferenceView {
-	void setDataSourcesInDropDown(List<String> ids);
-
-	String getReferenceSourceId();
+	Type RIGHT_CLICK = Type.RIGHT_CLICK;
+	Type LOOKUP_BUTTON = Type.LOOKUP_BUTTON;
+	Type SHOW_ENTIRE_CHAPTER = Type.SHOW_ENTIRE_CHAPTER;
 
 	String getLookupText();
 
 	void setLookupText(String lookupText);
 
-	void setResults(BibleVerse[] results);
+	void setResults(Verse[] results);
 
 	void displayErrorMessage(final String message);
 
@@ -23,13 +25,9 @@ public interface IReferenceView {
 
 	String getKeywordOrReference();
 
-	BibleVerse getSelectedVerse();
+	Verse getSelectedVerse();
 
 	void showRightClickMenu();
 
-	void addCreateLinkToNoteListener(IListener listener);
-
-	void addLookupButtonPressedListener(IListener listener);
-
-	void addRightClickListener(IListener listener);
+	void setViewTitle(String title);
 }

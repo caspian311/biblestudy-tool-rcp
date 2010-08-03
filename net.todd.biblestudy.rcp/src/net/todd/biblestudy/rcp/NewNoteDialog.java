@@ -1,5 +1,7 @@
 package net.todd.biblestudy.rcp;
 
+import net.todd.biblestudy.db.EntityManagerProvider;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;

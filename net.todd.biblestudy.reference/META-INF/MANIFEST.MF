@@ -8,7 +8,8 @@ Require-Bundle: org.eclipse.ui,
  net.todd.biblestudy.common,
  org.apache.commons.lang;bundle-version="2.4.0",
  org.apache.commons.logging;bundle-version="1.0.4",
- net.java.ao;bundle-version="0.8.2"
+ net.java.ao;bundle-version="0.8.2",
+ net.todd.biblestudy.db;bundle-version="1.0.0"
 Eclipse-LazyStart: false
 Export-Package: net.todd.biblestudy.reference
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

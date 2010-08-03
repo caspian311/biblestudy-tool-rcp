@@ -1,6 +1,7 @@
 package net.todd.biblestudy.rcp;
 
 import net.java.ao.EntityManager;
+import net.todd.biblestudy.db.EntityManagerProvider;
 
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;

@@ -3,7 +3,7 @@ package net.todd.biblestudy.rcp;
 import java.util.List;
 
 import net.todd.biblestudy.common.IMvpView;
-import net.todd.biblestudy.reference.BibleVerse;
+import net.todd.biblestudy.reference.Verse;
 
 import org.eclipse.swt.graphics.Point;
 
@@ -47,7 +47,7 @@ public interface INoteView extends IMvpView {
 
 	Point getDropCoordinates();
 
-	List<BibleVerse> getDroppedVerses();
+	List<Verse> getDroppedVerses();
 
 	Point getCurrentMouseLocation();
 

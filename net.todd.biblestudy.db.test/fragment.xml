@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<fragment>
+   <extension
+         point="net.todd.biblestudy.db.DataObject">
+      <dataObject
+            class="net.todd.biblestudy.db.Car">
+      </dataObject>
+      <dataObject
+            class="net.todd.biblestudy.db.Driver">
+      </dataObject>
+   </extension>
+
+</fragment>

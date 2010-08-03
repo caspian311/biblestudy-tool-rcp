@@ -1,98 +1,73 @@
 package net.todd.biblestudy.reference;
 
-public class Reference
-{
+public class Reference {
 	private String book;
 	private Integer[] chapters;
 	private Integer[] verses;
 
-	public String getBook()
-	{
+	public String getBook() {
 		return book;
 	}
 
-	public void setBook(String book)
-	{
+	public void setBook(String book) {
 		this.book = book;
 	}
 
-	public Integer[] getChapters()
-	{
+	public Integer[] getChapters() {
 		return chapters;
 	}
 
-	public void setChapters(Integer[] chapters)
-	{
+	public void setChapters(Integer[] chapters) {
 		this.chapters = chapters;
 	}
 
-	public Integer[] getVerses()
-	{
+	public Integer[] getVerses() {
 		return verses;
 	}
 
-	public void setVerses(Integer[] verses)
-	{
+	public void setVerses(Integer[] verses) {
 		this.verses = verses;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		String s = book;
 
-		if (chapters != null && verses != null)
-		{
+		if (chapters != null && verses != null) {
 			s += " " + chaptersToString() + ":" + versesToString();
-		}
-		else if (chapters != null && verses == null)
-		{
+		} else if (chapters != null && verses == null) {
 			s += " " + chaptersToString();
 		}
 
 		return s;
 	}
 
-	private String versesToString()
-	{
+	private String versesToString() {
 		String s = "";
 
-		if (verses.length == 1)
-		{
+		if (verses.length == 1) {
 			s = "" + verses[0];
-		}
-		else
-		{
+		} else {
 			StringBuffer sb = new StringBuffer();
 
 			boolean inSequence = false;
 			Integer previousVerse = null;
-			for (int i = 0; i < verses.length; i++)
-			{
+			for (int i = 0; i < verses.length; i++) {
 				Integer verse = verses[i];
 
-				if (previousVerse == null)
-				{
+				if (previousVerse == null) {
 					sb.append(verse);
-				}
-				else
-				{
-					if (verse.equals(new Integer(previousVerse.intValue() + 1)))
-					{
-						if (inSequence == false)
-						{
+				} else {
+					if (verse.equals(new Integer(previousVerse.intValue() + 1))) {
+						if (inSequence == false) {
 							sb.append("-");
 						}
-						if (i == verses.length - 1)
-						{
+						if (i == verses.length - 1) {
 							sb.append(verses[verses.length - 1]);
 						}
 						inSequence = true;
-					}
-					else
-					{
-						if (inSequence)
-						{
+					} else {
+						if (inSequence) {
 							sb.append(previousVerse);
 						}
 
@@ -107,16 +82,12 @@ public class Reference
 		return s;
 	}
 
-	private String chaptersToString()
-	{
+	private String chaptersToString() {
 		String s = "";
 
-		if (chapters.length == 1)
-		{
+		if (chapters.length == 1) {
 			s = "" + chapters[0];
-		}
-		else
-		{
+		} else {
 			s = chapters[0] + "-" + chapters[chapters.length - 1];
 		}
 		return s;
