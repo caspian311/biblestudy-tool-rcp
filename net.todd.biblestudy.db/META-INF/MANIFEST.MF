@@ -9,3 +9,4 @@ Require-Bundle: net.java.ao;bundle-version="0.8.2",
  net.todd.biblestudy.common;bundle-version="0.0.1",
  org.eclipse.core.runtime;bundle-version="3.3.100",
  derby;bundle-version="10.6.1000000"
+Export-Package: net.todd.biblestudy.db

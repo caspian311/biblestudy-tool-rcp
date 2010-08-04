@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.common.AbstractMvpEventer;
+import net.todd.biblestudy.common.ViewerUtils;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -25,7 +27,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -52,12 +53,10 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 	private Table resultsTable;
 	private Label resultsMessage;
 	private Button lookupButton;
-	private Button referenceSearchButton;
-	private Button keywordSearchButton;
 
 	private TableColumn textColumn;
 
-	private String keywordOrReference = "reference";
+	private final String keywordOrReference = "reference";
 
 	private static final int TEXT_MARGIN = 3;
 
@@ -71,7 +70,9 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 
 	public ReferenceView(Composite composite, ReferenceViewPart referenceViewPart) {
 		this.referenceViewPart = referenceViewPart;
-		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
+
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
+		GridLayoutFactory.fillDefaults().numColumns(2).margins(2, 2).applyTo(composite);
 
 		createControls(composite);
 		createResultsArea(composite);
@@ -260,23 +261,14 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 		redoTheText();
 	}
 
-	private void createControls(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-
-		GridLayout layout = new GridLayout(4, false);
-		layout.marginBottom = 2;
-		layout.marginTop = 2;
-		layout.marginLeft = 2;
-		layout.marginRight = 2;
-
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-
+	private void createControls(Composite composite) {
 		lookupText = new Text(composite, SWT.BORDER);
-		lookupText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(lookupText);
 
 		lookupButton = new Button(composite, SWT.PUSH);
 		lookupButton.setText("Search");
+		GridDataFactory.swtDefaults().grab(false, false).hint(ViewerUtils.getButtonWidth(lookupButton), SWT.DEFAULT)
+				.applyTo(lookupButton);
 		lookupButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -286,26 +278,8 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 
 		composite.getShell().setDefaultButton(lookupButton);
 
-		referenceSearchButton = new Button(composite, SWT.RADIO);
-		referenceSearchButton.setText("Reference");
-		referenceSearchButton.setSelection(true);
-		referenceSearchButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				keywordOrReference = "reference";
-			}
-		});
-		keywordSearchButton = new Button(composite, SWT.RADIO);
-		keywordSearchButton.setText("Keyword");
-		keywordSearchButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				keywordOrReference = "keyword";
-			}
-		});
-
 		resultsMessage = new Label(composite, SWT.NORMAL);
-		resultsMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 4, 1));
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(composite);
 	}
 
 	@Override

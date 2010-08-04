@@ -1,5 +1,7 @@
 package net.todd.biblestudy.reference;
 
+import net.todd.biblestudy.db.EntityManagerProvider;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -11,8 +13,9 @@ public class ReferenceViewPart extends ViewPart {
 	public void createPartControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		IReferenceView referenceView = new ReferenceView(composite, this);
-		IReferenceModel referenceModel = new ReferenceModel();
-		new ReferencePresenter(referenceView, referenceModel);
+		IReferenceModel referenceModel = new ReferenceModel(new SearchEngine(EntityManagerProvider.getEntityManager()),
+				new ReferenceFactory());
+		ReferencePresenter.create(referenceView, referenceModel);
 	}
 
 	@Override

@@ -49,7 +49,7 @@
       <dataObject
             class="net.todd.biblestudy.reference.Verse">
          <sqlFile
-               file="resources/data.sql">
+               file="resources/nasb.sql">
          </sqlFile>
       </dataObject>
    </extension>

@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.todd.biblestudy.common.BiblestudyException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -47,10 +45,9 @@ public class DataInitializer {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource));
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
-				if (line.startsWith("--") == false) {
-					String newLine = fixTicks(line);
-
-					textBuffer.append(newLine).append("\n");
+				if (!line.startsWith("--")) {
+					// String newLine = fixTicks(line);
+					textBuffer.append(line).append("\n");
 				}
 			}
 		} finally {
@@ -60,24 +57,24 @@ public class DataInitializer {
 		return textBuffer.toString();
 	}
 
-	private String fixTicks(String line) {
-		int first = line.indexOf("'");
-		int second = line.indexOf("'", first + 1);
-		int third = line.indexOf("'", second + 1);
-		int fourth = line.indexOf("'", third + 1);
-		int fifth = line.indexOf("'", fourth + 1);
-		int last = line.lastIndexOf("'");
-
-		String text = line.substring(fifth + 1, last);
-
-		String prefix = line.substring(0, fifth + 1);
-		String suffix = line.substring(last);
-
-		String middle = text.replaceAll("\'", "\'\'");
-
-		String newLine = prefix + middle + suffix;
-		return newLine;
-	}
+	// private String fixTicks(String line) {
+	// int first = line.indexOf("'");
+	// int second = line.indexOf("'", first + 1);
+	// int third = line.indexOf("'", second + 1);
+	// int fourth = line.indexOf("'", third + 1);
+	// int fifth = line.indexOf("'", fourth + 1);
+	// int last = line.lastIndexOf("'");
+	//
+	// String text = line.substring(fifth + 1, last);
+	//
+	// String prefix = line.substring(0, fifth + 1);
+	// String suffix = line.substring(last);
+	//
+	// String middle = text.replaceAll("\'", "\'\'");
+	//
+	// String newLine = prefix + middle + suffix;
+	// return newLine;
+	// }
 
 	private void doSQL(List<String> batchQueries) throws Exception {
 		try {
@@ -98,10 +95,12 @@ public class DataInitializer {
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				throw new BiblestudyException(e.getMessage(), e);
+				LOG.error(e1);
+				throw new RuntimeException(e);
 			}
 
-			throw new BiblestudyException(e.getMessage(), e);
+			LOG.error(e);
+			throw new RuntimeException(e);
 		}
 	}
 

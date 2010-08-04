@@ -24,6 +24,21 @@ public class DatabaseSetupTest {
 	}
 
 	@Test
+	public void viewingExistingData() throws Exception {
+		try {
+			Car[] cars = entityManager.find(Car.class);
+
+			assertEquals(1, cars.length);
+			assertEquals("Viper", cars[0].getName());
+			assertEquals(1, cars[0].getDrivers().length);
+			assertEquals("Matt", cars[0].getDrivers()[0].getName());
+		} finally {
+			entityManager.delete(entityManager.find(Driver.class));
+			entityManager.delete(entityManager.find(Car.class));
+		}
+	}
+
+	@Test
 	public void addingAndRemovingCars() throws Exception {
 		String carName = UUID.randomUUID().toString();
 		Car newCar = entityManager.create(Car.class);

@@ -1,0 +1,1 @@
+insert into car values (1, 'Viper');

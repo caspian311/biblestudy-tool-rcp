@@ -1,6 +1,7 @@
 package net.todd.biblestudy.db;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +35,11 @@ public class DataObjectProvider {
 				IConfigurationElement[] sqlFiles = configurationElement.getChildren();
 				for (IConfigurationElement sqlFile : sqlFiles) {
 					String filename = sqlFile.getAttribute("file");
-					URL fileURL = FileLocator.find(bundle, new Path(filename), null);
-					dataObject.addSqlFile(new File(fileURL.toURI()));
+					URL bundleURL = FileLocator.find(bundle, new Path(filename), null);
+					URL sqlFileURL = FileLocator.toFileURL(bundleURL);
+					URI uri = sqlFileURL.toURI();
+					File resource = new File(uri);
+					dataObject.addSqlFile(resource);
 				}
 				dataObjects.add(dataObject);
 			}
