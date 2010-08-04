@@ -26,7 +26,6 @@ import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -94,14 +93,17 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 		});
 	}
 
-	private void createResultsArea(Composite parent) {
-		resultsTableViewer = new TableViewer(parent, SWT.BORDER | SWT.V_SCROLL | SWT.SHADOW_ETCHED_IN
+	private void createResultsArea(Composite composite) {
+		resultsMessage = new Label(composite, SWT.NORMAL);
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(composite);
+
+		resultsTableViewer = new TableViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.SHADOW_ETCHED_IN
 				| SWT.FULL_SELECTION | SWT.MULTI);
 		resultsTableViewer.setLabelProvider(new ResultsTableLabelProvider());
 		resultsTableViewer.setContentProvider(new ArrayContentProvider());
 
 		resultsTable = resultsTableViewer.getTable();
-		resultsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(resultsTable);
 		resultsTable.setHeaderVisible(true);
 		resultsTable.setLinesVisible(true);
 
@@ -277,9 +279,6 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 		});
 
 		composite.getShell().setDefaultButton(lookupButton);
-
-		resultsMessage = new Label(composite, SWT.NORMAL);
-		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(composite);
 	}
 
 	@Override
