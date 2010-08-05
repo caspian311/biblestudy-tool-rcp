@@ -1,118 +1,90 @@
 package net.todd.biblestudy.reference;
 
-import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+
+import net.todd.biblestudy.common.IListener;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class ReferencePresenterTest {
-	private ReferencePresenter presenter;
-	private boolean searchWasPerformed;
-	private final List<String> bibleVersions = new ArrayList<String>();
-
 	@Mock
-	private IReferenceView referenceView;
+	private IReferenceView view;
+	@Mock
+	private IReferenceModel model;
+
+	private IListener viewSearchTextListener;
+	private IListener modelSearchTextListener;
+	private IListener modelResultsChangedListener;
+	private IListener viewLookUpButtonListener;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+
+		ReferencePresenter.create(view, model);
+
+		ArgumentCaptor<IListener> viewSearchTextListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(viewSearchTextListenerCaptor.capture(), eq(IReferenceView.SEARCH_TEXT));
+		viewSearchTextListener = viewSearchTextListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> modelSearchTextListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(model).addListener(modelSearchTextListenerCaptor.capture(), eq(IReferenceModel.SEARCH_TEXT));
+		modelSearchTextListener = modelSearchTextListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> modelResultsChangedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(model).addListener(modelResultsChangedListenerCaptor.capture(), eq(IReferenceModel.RESULTS_CHANGED));
+		modelResultsChangedListener = modelResultsChangedListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> viewLoookUpButtonListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(viewLoookUpButtonListenerCaptor.capture(), eq(IReferenceView.LOOK_UP_BUTTON));
+		viewLookUpButtonListener = viewLoookUpButtonListenerCaptor.getValue();
+
+		reset(view, model);
 	}
 
 	@Test
-	public void testSearchingForKeywordSetsViewsTitleToMeaningfulText() throws Exception {
-		referenceView.setLookupText("test");
-		referenceView.setKeywordOrReference("keyword");
-		referenceView.setReferenceSourceId("asdf");
+	public void whenSearchTextChangesOnViewUpdateModel() {
+		String searchText = UUID.randomUUID().toString();
+		doReturn(searchText).when(view).getLookupText();
 
-		ReferencePresenter presenter = new ReferencePresenter(referenceView);
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SEARCH));
+		viewSearchTextListener.handleEvent();
 
-		assertEquals("Keyword: test", referenceView.getTitle());
+		verify(model).setSearchText(searchText);
 	}
 
 	@Test
-	public void testSearchingForReferenceSetsViewsTitleToMeaningfulText() throws Exception {
-		referenceView.setLookupText("john 3:16");
-		referenceView.setKeywordOrReference("reference");
-		referenceView.setReferenceSourceId("asdf");
+	public void whenSearchTextChangesOnModelUpdateView() {
+		String searchText = UUID.randomUUID().toString();
+		doReturn(searchText).when(model).getLookupText();
 
-		ReferencePresenter presenter = new ReferencePresenter(referenceView);
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SEARCH));
+		modelSearchTextListener.handleEvent();
 
-		assertEquals("Reference: john 3:16", referenceView.getTitle());
+		verify(view).setSearchText(searchText);
 	}
 
 	@Test
-	public void testDoingShowEntireChapterSetsViewsTitleToMeaningfulText() throws Exception {
-		Verse Verse = new Verse();
-		Verse.setBook("John");
-		Verse.setChapter(12);
-		referenceView.setSelectedVerse(Verse);
+	public void whenModelGetsResultsUpdateView() {
+		List<Verse> results = Arrays.asList(mock(Verse.class));
+		doReturn(results).when(model).getSearchResults();
 
-		ReferencePresenter presenter = new ReferencePresenter(referenceView);
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SHOW_ENTIRE_CHAPTER));
+		modelResultsChangedListener.handleEvent();
 
-		assertEquals("Reference: John 12", referenceView.getTitle());
+		verify(view).setSearchResults(results);
 	}
 
 	@Test
-	public void testReferenceViewOpened() throws Exception {
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_OPENED));
+	public void whenLookUpButtonPressedOnViewModelPerformsSearch() {
+		viewLookUpButtonListener.handleEvent();
 
-		List<String> dataSourcesInDorpDown = referenceView.getDataSourcesInDorpDown();
-
-		assertNotNull(dataSourcesInDorpDown);
-		assertTrue(dataSourcesInDorpDown.isEmpty());
-
-		bibleVersions.add("NASB");
-
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_OPENED));
-
-		dataSourcesInDorpDown = referenceView.getDataSourcesInDorpDown();
-
-		assertNotNull(dataSourcesInDorpDown);
-		assertFalse(dataSourcesInDorpDown.isEmpty());
-		assertEquals("NASB", dataSourcesInDorpDown.get(0));
-	}
-
-	@Test
-	public void testReferenceViewDisposed() throws Exception {
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_DISPOSED));
-
-		assertTrue(referenceView.wasRemovedReferenceViewListenerWasCalled());
-	}
-
-	@Test
-	public void testSearchWhenNothingIsSetResultInError() throws Exception {
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SEARCH));
-
-		assertTrue(referenceView.wasErrorMessagePoppedUp());
-		assertFalse(searchWasPerformed);
-	}
-
-	@Test
-	public void testSearchWhenDefaultsAreStillSetResultInError() throws Exception {
-		referenceView.setLookupText(null);
-
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SEARCH));
-
-		assertTrue(referenceView.wasErrorMessagePoppedUp());
-		assertFalse(searchWasPerformed);
-	}
-
-	@Test
-	public void testSearchWhenRealInfoGivenResultInNoError() throws Exception {
-		referenceView.setLookupText("blah");
-		referenceView.setReferenceSourceId("woot");
-
-		presenter.handleEvent(new ReferenceViewEvent(ReferenceViewEvent.REFERENCE_VIEW_SEARCH));
-
-		assertFalse(referenceView.wasErrorMessagePoppedUp());
-		assertTrue(searchWasPerformed);
+		verify(model).performSearch();
 	}
 }

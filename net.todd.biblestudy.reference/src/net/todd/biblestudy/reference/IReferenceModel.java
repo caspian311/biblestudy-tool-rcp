@@ -2,31 +2,21 @@ package net.todd.biblestudy.reference;
 
 import java.util.List;
 
-import net.todd.biblestudy.common.BiblestudyException;
+import net.todd.biblestudy.common.IMvpEventer;
 
-public interface IReferenceModel {
-	/**
-	 * search for verses in a given version given a string that is a reference
-	 * 
-	 * @param searchText
-	 *            reference text (ie. "John 3:16")
-	 * @param referenceShortName
-	 *            of version of the Bible (ie. NASB)
-	 * @return
-	 * @throws BiblestudyException
-	 * @throws InvalidReferenceException
-	 */
-	public List<Verse> performSearchOnReference(String searchText, String referenceShortName)
-			throws BiblestudyException, InvalidReferenceException;
+public interface IReferenceModel extends IMvpEventer {
+	enum Type {
+		SEARCH_TEXT, RESULTS_CHANGED
+	}
 
-	/**
-	 * search for a given word of phrase in a given version
-	 * 
-	 * @param searchText
-	 * @param referenceShortName
-	 *            of version of the Bible (ie. NASB)
-	 * @return
-	 * @throws BiblestudyException
-	 */
-	public List<Verse> performSearchOnKeyword(String searchText, String referenceShortName) throws BiblestudyException;
+	Type SEARCH_TEXT = Type.SEARCH_TEXT;
+	Type RESULTS_CHANGED = Type.RESULTS_CHANGED;
+
+	public void setSearchText(String searchText);
+
+	public String getLookupText();
+
+	public List<Verse> getSearchResults();
+
+	void performSearch();
 }
