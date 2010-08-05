@@ -282,7 +282,7 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 	}
 
 	@Override
-	public void setLookupText(String lookupString) {
+	public void setSearchText(String lookupString) {
 		lookupText.setText(lookupString);
 	}
 

@@ -17,7 +17,7 @@ public interface IReferenceView extends IMvpEventer {
 
 	String getLookupText();
 
-	void setLookupText(String lookupText);
+	void setSearchText(String lookupText);
 
 	void setSearchResults(List<Verse> results);
 
@@ -36,4 +36,6 @@ public interface IReferenceView extends IMvpEventer {
 	void setViewTitle(String title);
 
 	void setSearchText(String searchText);
+
+	void setLookupButtonEnabled(boolean enabled);
 }

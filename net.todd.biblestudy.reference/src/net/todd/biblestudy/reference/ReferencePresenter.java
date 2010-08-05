@@ -21,7 +21,8 @@ public class ReferencePresenter {
 		model.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
-				view.setSearchText(model.getLookupText());
+				view.setSearchText(model.getSearchText());
+				view.setLookupButtonEnabled(model.getSearchText() != null);
 			}
 		}, IReferenceModel.SEARCH_TEXT);
 
@@ -31,5 +32,9 @@ public class ReferencePresenter {
 				view.setSearchResults(model.getSearchResults());
 			}
 		}, IReferenceModel.RESULTS_CHANGED);
+
+		view.setLookupButtonEnabled(model.getSearchText() != null);
+		view.setSearchResults(model.getSearchResults());
+		view.setSearchText(model.getSearchText());
 	}
 }

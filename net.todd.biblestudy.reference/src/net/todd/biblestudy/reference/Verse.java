@@ -11,11 +11,11 @@ public interface Verse extends Entity {
 
 	void setBook(String book);
 
-	String getChapter();
+	int getChapter();
 
 	void setChapter(String chapter);
 
-	String getVerse();
+	int getVerse();
 
 	void setVerse(String verse);
 

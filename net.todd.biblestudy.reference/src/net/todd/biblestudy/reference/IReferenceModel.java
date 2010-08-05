@@ -14,7 +14,7 @@ public interface IReferenceModel extends IMvpEventer {
 
 	public void setSearchText(String searchText);
 
-	public String getLookupText();
+	public String getSearchText();
 
 	public List<Verse> getSearchResults();
 

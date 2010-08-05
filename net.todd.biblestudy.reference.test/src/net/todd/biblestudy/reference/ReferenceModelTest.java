@@ -3,6 +3,8 @@ package net.todd.biblestudy.reference;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import net.todd.biblestudy.common.IListener;
@@ -33,7 +35,7 @@ public class ReferenceModelTest {
 
 		testObject.setSearchText(searchText);
 
-		assertEquals(searchText, testObject.getLookupText());
+		assertEquals(searchText, testObject.getSearchText());
 	}
 
 	@Test
@@ -44,6 +46,49 @@ public class ReferenceModelTest {
 		String searchText = UUID.randomUUID().toString();
 		testObject.setSearchText(searchText);
 		testObject.setSearchText(searchText);
+
+		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void whenSearchTextIsAValidReferenceThenAReferenceSearchIsPerformedAndSearchResultsAreReturned()
+			throws InvalidReferenceException {
+		String searchText = UUID.randomUUID().toString();
+		testObject.setSearchText(searchText);
+
+		Reference reference = mock(Reference.class);
+		doReturn(reference).when(referenceFactory).getReference(searchText);
+
+		List<Verse> searchResults = Arrays.asList(mock(Verse.class));
+		doReturn(searchResults).when(searchEngine).referenceLookup(reference);
+
+		testObject.performSearch();
+
+		assertSame(searchResults, testObject.getSearchResults());
+	}
+
+	@Test
+	public void whenSearchTextIsNotAValidReferenceThenAKeywordSearchIsPerformedAndSearchResultsAreReturned()
+			throws InvalidReferenceException {
+		String searchText = UUID.randomUUID().toString();
+		testObject.setSearchText(searchText);
+
+		doThrow(new InvalidReferenceException("")).when(referenceFactory).getReference(searchText);
+
+		List<Verse> searchResults = Arrays.asList(mock(Verse.class));
+		doReturn(searchResults).when(searchEngine).keywordLookup(searchText);
+
+		testObject.performSearch();
+
+		assertSame(searchResults, testObject.getSearchResults());
+	}
+
+	@Test
+	public void whenSearchIsPerformedResultsChangedListenersAreNotified() {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IReferenceModel.RESULTS_CHANGED);
+
+		testObject.performSearch();
 
 		verify(listener).handleEvent();
 	}

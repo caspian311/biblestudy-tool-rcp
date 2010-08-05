@@ -64,7 +64,7 @@ public class ReferencePresenterTest {
 	@Test
 	public void whenSearchTextChangesOnModelUpdateView() {
 		String searchText = UUID.randomUUID().toString();
-		doReturn(searchText).when(model).getLookupText();
+		doReturn(searchText).when(model).getSearchText();
 
 		modelSearchTextListener.handleEvent();
 
@@ -82,9 +82,83 @@ public class ReferencePresenterTest {
 	}
 
 	@Test
+	public void initiallyViewUpdatesResultsFromModel() {
+		List<Verse> results = Arrays.asList(mock(Verse.class));
+		doReturn(results).when(model).getSearchResults();
+
+		ReferencePresenter.create(view, model);
+
+		verify(view).setSearchResults(results);
+	}
+
+	@Test
+	public void initiallyViewUpdatesSearchTextFromModel() {
+		String searchText = UUID.randomUUID().toString();
+		doReturn(searchText).when(model).getSearchText();
+
+		ReferencePresenter.create(view, model);
+
+		verify(view).setSearchText(searchText);
+	}
+
+	@Test
 	public void whenLookUpButtonPressedOnViewModelPerformsSearch() {
 		viewLookUpButtonListener.handleEvent();
 
 		verify(model).performSearch();
+	}
+
+	@Test
+	public void whenSearchTextChangesAndSearchTextIsNullThenDisableLookupButton() {
+		doReturn(null).when(model).getSearchText();
+
+		modelSearchTextListener.handleEvent();
+
+		verify(view).setLookupButtonEnabled(false);
+	}
+
+	@Test
+	public void whenSearchTextChangesAndSearchTextIsEmptyThenDisableLookupButton() {
+		doReturn(null).when(model).getSearchText();
+
+		modelSearchTextListener.handleEvent();
+
+		verify(view).setLookupButtonEnabled(false);
+	}
+
+	@Test
+	public void whenSearchTextChangesAndSearchTextIsNotEmptyThenEnableLookupButton() {
+		doReturn("asdf").when(model).getSearchText();
+
+		modelSearchTextListener.handleEvent();
+
+		verify(view).setLookupButtonEnabled(true);
+	}
+
+	@Test
+	public void ifInitiallySearchTextIsNullThenDisableLookupButton() {
+		doReturn(null).when(model).getSearchText();
+
+		ReferencePresenter.create(view, model);
+
+		verify(view).setLookupButtonEnabled(false);
+	}
+
+	@Test
+	public void ifInitiallySearchTextIsEmptyThenDisableLookupButton() {
+		doReturn(null).when(model).getSearchText();
+
+		ReferencePresenter.create(view, model);
+
+		verify(view).setLookupButtonEnabled(false);
+	}
+
+	@Test
+	public void ifInitiallySearchTextIsNotEmptyThenEnableLookupButton() {
+		doReturn("asdf").when(model).getSearchText();
+
+		ReferencePresenter.create(view, model);
+
+		verify(view).setLookupButtonEnabled(true);
 	}
 }

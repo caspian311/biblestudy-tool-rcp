@@ -1,20 +1,35 @@
 package net.todd.biblestudy.reference;
 
-import static org.junit.Assert.assertEquals;
-import net.java.ao.EntityManager;
+import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+
+import net.java.ao.EntityManager;
+import net.todd.biblestudy.db.DatabaseSetup;
+import net.todd.biblestudy.db.EntityManagerProvider;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class VerseTest {
-	@Test
-	public void test() throws Exception {
-		EntityManager manager = new EntityManager(
-				"jdbc:mysql://localhost/test", "root", "root");
+	@BeforeClass
+	public static void setupDatabase() {
+		new DatabaseSetup().setupDatabase();
+	}
 
-		Verse[] verses = manager.find(Verse.class, "book LIKE '%?%'", "Gen");
-		assertEquals(100, verses.length);
-		for (Verse verse : verses) {
-			assertEquals("Genesis", verse.getBook());
-		}
+	private EntityManager entityManager;
+
+	@Before
+	public void setUp() {
+		entityManager = EntityManagerProvider.getEntityManager();
+	}
+
+	@Test
+	public void john316() throws SQLException {
+		Verse[] lookup = entityManager.find(Verse.class, "where book = ? and chapter = ? and verse = ?", "john", 3, 16);
+
+		assertEquals(1, lookup.length);
+		assertTrue(lookup[0].getText().startsWith("For God so loved the world"));
 	}
 }
