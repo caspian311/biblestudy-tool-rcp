@@ -2,6 +2,8 @@ package net.todd.biblestudy.reference;
 
 import net.todd.biblestudy.common.IListener;
 
+import org.apache.commons.lang.StringUtils;
+
 public class ReferencePresenter {
 	public static void create(final IReferenceView view, final IReferenceModel model) {
 		view.addListener(new IListener() {
@@ -22,7 +24,13 @@ public class ReferencePresenter {
 			@Override
 			public void handleEvent() {
 				view.setSearchText(model.getSearchText());
-				view.setLookupButtonEnabled(model.getSearchText() != null);
+				if (StringUtils.isEmpty(model.getSearchText())) {
+					view.setViewTitle("Reference Search");
+					view.setLookupButtonEnabled(false);
+				} else {
+					view.setViewTitle(model.getSearchText());
+					view.setLookupButtonEnabled(true);
+				}
 			}
 		}, IReferenceModel.SEARCH_TEXT);
 
@@ -33,8 +41,14 @@ public class ReferencePresenter {
 			}
 		}, IReferenceModel.RESULTS_CHANGED);
 
-		view.setLookupButtonEnabled(model.getSearchText() != null);
 		view.setSearchResults(model.getSearchResults());
+		if (StringUtils.isEmpty(model.getSearchText())) {
+			view.setViewTitle("Reference Search");
+			view.setLookupButtonEnabled(false);
+		} else {
+			view.setViewTitle(model.getSearchText());
+			view.setLookupButtonEnabled(true);
+		}
 		view.setSearchText(model.getSearchText());
 	}
 }

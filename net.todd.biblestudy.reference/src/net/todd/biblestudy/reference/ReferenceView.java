@@ -55,8 +55,6 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 
 	private TableColumn textColumn;
 
-	private final String keywordOrReference = "reference";
-
 	private static final int TEXT_MARGIN = 3;
 
 	private Menu rightClickMenu;
@@ -257,7 +255,12 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 	}
 
 	@Override
-	public void setResults(final Verse[] results) {
+	public void setLookupButtonEnabled(boolean enabled) {
+		lookupButton.setEnabled(enabled);
+	}
+
+	@Override
+	public void setSearchResults(List<Verse> results) {
 		resultsTableViewer.setInput(results);
 
 		redoTheText();
@@ -265,6 +268,12 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 
 	private void createControls(Composite composite) {
 		lookupText = new Text(composite, SWT.BORDER);
+		lookupText.addListener(SWT.Modify, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				notifyListeners(SEARCH_TEXT);
+			}
+		});
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(lookupText);
 
 		lookupButton = new Button(composite, SWT.PUSH);
@@ -304,11 +313,6 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 	@Override
 	public void hideLimitResultsMessage() {
 		resultsMessage.setText("");
-	}
-
-	@Override
-	public String getKeywordOrReference() {
-		return keywordOrReference;
 	}
 
 	@Override

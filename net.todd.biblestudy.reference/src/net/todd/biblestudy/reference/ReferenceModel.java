@@ -4,6 +4,8 @@ import java.util.List;
 
 import net.todd.biblestudy.common.AbstractMvpEventer;
 
+import org.apache.commons.lang.ObjectUtils;
+
 public class ReferenceModel extends AbstractMvpEventer implements IReferenceModel {
 	private String searchText;
 	private List<Verse> searchResults;
@@ -29,7 +31,7 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 
 	@Override
 	public void setSearchText(String searchText) {
-		if (this.searchText != searchText) {
+		if (!ObjectUtils.equals(this.searchText, searchText)) {
 			this.searchText = searchText;
 			notifyListeners(SEARCH_TEXT);
 		}
@@ -37,7 +39,7 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 
 	@Override
 	public String getSearchText() {
-		return searchText;
+		return searchText == null ? "" : searchText;
 	}
 
 	@Override

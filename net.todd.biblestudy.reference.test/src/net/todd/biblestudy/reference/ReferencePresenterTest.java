@@ -69,6 +69,16 @@ public class ReferencePresenterTest {
 		modelSearchTextListener.handleEvent();
 
 		verify(view).setSearchText(searchText);
+		verify(view).setViewTitle(searchText);
+	}
+
+	@Test
+	public void whenSearchTextOnModelIsEmptyChangeViewTitleToReferenceSearch() {
+		doReturn("").when(model).getSearchText();
+
+		modelSearchTextListener.handleEvent();
+
+		verify(view).setViewTitle("Reference Search");
 	}
 
 	@Test
@@ -102,6 +112,15 @@ public class ReferencePresenterTest {
 	}
 
 	@Test
+	public void initiallyIfSearchTextOnModelIsEmptyChangeViewTitleToReferenceSearch() {
+		doReturn("").when(model).getSearchText();
+
+		ReferencePresenter.create(view, model);
+
+		verify(view).setViewTitle("Reference Search");
+	}
+
+	@Test
 	public void whenLookUpButtonPressedOnViewModelPerformsSearch() {
 		viewLookUpButtonListener.handleEvent();
 
@@ -119,7 +138,7 @@ public class ReferencePresenterTest {
 
 	@Test
 	public void whenSearchTextChangesAndSearchTextIsEmptyThenDisableLookupButton() {
-		doReturn(null).when(model).getSearchText();
+		doReturn("").when(model).getSearchText();
 
 		modelSearchTextListener.handleEvent();
 
@@ -146,7 +165,7 @@ public class ReferencePresenterTest {
 
 	@Test
 	public void ifInitiallySearchTextIsEmptyThenDisableLookupButton() {
-		doReturn(null).when(model).getSearchText();
+		doReturn("").when(model).getSearchText();
 
 		ReferencePresenter.create(view, model);
 

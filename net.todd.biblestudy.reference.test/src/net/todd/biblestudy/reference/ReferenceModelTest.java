@@ -39,6 +39,15 @@ public class ReferenceModelTest {
 	}
 
 	@Test
+	public void gettingSearchTextNeverReturnsNull() {
+		assertEquals("", testObject.getSearchText());
+
+		testObject.setSearchText(null);
+
+		assertEquals("", testObject.getSearchText());
+	}
+
+	@Test
 	public void searchTextListenersAreNotifiedOnlyOnceWhenSearchTextIsSet() {
 		IListener listener = mock(IListener.class);
 		testObject.addListener(listener, IReferenceModel.SEARCH_TEXT);

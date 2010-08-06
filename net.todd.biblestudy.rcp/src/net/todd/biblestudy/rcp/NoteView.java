@@ -62,7 +62,7 @@ public class NoteView extends AbstractMvpView implements INoteView {
 		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
 
-		noteContentText = new StyledText(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		noteContentText = new StyledText(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(noteContentText);
 		noteContentText.addModifyListener(new ModifyListener() {
 			@Override

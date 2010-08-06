@@ -17,8 +17,6 @@ public interface IReferenceView extends IMvpEventer {
 
 	String getLookupText();
 
-	void setSearchText(String lookupText);
-
 	void setSearchResults(List<Verse> results);
 
 	void displayErrorMessage(final String message);
@@ -26,8 +24,6 @@ public interface IReferenceView extends IMvpEventer {
 	void displayLimitResultsMessage(int totalSize);
 
 	void hideLimitResultsMessage();
-
-	String getKeywordOrReference();
 
 	Verse getSelectedVerse();
 
