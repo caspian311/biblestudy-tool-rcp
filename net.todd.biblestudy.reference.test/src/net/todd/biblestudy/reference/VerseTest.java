@@ -26,10 +26,12 @@ public class VerseTest {
 	}
 
 	@Test
-	public void john316() throws SQLException {
-		Verse[] lookup = entityManager.find(Verse.class, "where book = ? and chapter = ? and verse = ?", "john", 3, 16);
-
+	public void hebrews71() throws SQLException {
+		Verse[] lookup = entityManager.find(Verse.class, "book = ? and chapter = ? and verse = ?", "Hebrews", 7, 1);
 		assertEquals(1, lookup.length);
-		assertTrue(lookup[0].getText().startsWith("For God so loved the world"));
+
+		Verse verse = lookup[0];
+		String text = verse.getText();
+		assertTrue(text.toLowerCase().contains("melchizedek, king of salem"));
 	}
 }

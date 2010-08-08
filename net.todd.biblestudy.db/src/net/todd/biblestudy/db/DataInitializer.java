@@ -18,12 +18,14 @@ import org.apache.commons.logging.LogFactory;
 public class DataInitializer {
 	private static final Log LOG = LogFactory.getLog(DataInitializer.class);
 	private final Connection connection;
+	private static int line;
 
 	public DataInitializer(Connection connection) {
 		this.connection = connection;
 	}
 
 	public void processSQLFile(File file) {
+		LOG.debug("process sql file: " + file.getName());
 		try {
 			processSQLFile(new FileInputStream(file));
 		} catch (Exception e) {
@@ -84,6 +86,7 @@ public class DataInitializer {
 				Statement statement = null;
 
 				for (String queryToExecute : batchQueries) {
+					System.out.println("Processing SQL line: " + ++line);
 					statement = connection.createStatement();
 					statement.execute(queryToExecute);
 					statement.close();
