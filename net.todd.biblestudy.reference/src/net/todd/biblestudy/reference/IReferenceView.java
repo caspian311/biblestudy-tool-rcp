@@ -13,7 +13,6 @@ public interface IReferenceView extends IMvpEventer {
 	Type LOOKUP_BUTTON = Type.LOOKUP_BUTTON;
 	Type SHOW_ENTIRE_CHAPTER = Type.SHOW_ENTIRE_CHAPTER;
 	Type SEARCH_TEXT = Type.SEARCH_TEXT;
-	Type LOOK_UP_BUTTON = Type.LOOK_UP_BUTTON;
 
 	String getLookupText();
 

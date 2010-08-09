@@ -22,8 +22,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
@@ -207,22 +205,23 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 	}
 
 	private void redoTheText() {
-		GC gc = new GC(resultsTable);
-		FontMetrics fontMetrics = gc.getFontMetrics();
-		int averageCharWidth = fontMetrics.getAverageCharWidth();
-		gc.dispose();
-
-		for (TableItem item : resultsTable.getItems()) {
-			String columnText = item.getText(1);
-
-			int maxCharactersPerLine = TEXT_COLUMN_WIDTH / averageCharWidth;
-
-			String newColumnText = ScriptureTextUtil.addNewLines(columnText, maxCharactersPerLine);
-
-			item.setText(1, newColumnText);
-		}
-
-		resultsTable.layout();
+		// GC gc = new GC(resultsTable);
+		// FontMetrics fontMetrics = gc.getFontMetrics();
+		// int averageCharWidth = fontMetrics.getAverageCharWidth();
+		// gc.dispose();
+		//
+		// for (TableItem item : resultsTable.getItems()) {
+		// String columnText = item.getText(1);
+		//
+		// int maxCharactersPerLine = TEXT_COLUMN_WIDTH / averageCharWidth;
+		//
+		// String newColumnText = ScriptureTextUtil.addNewLines(columnText,
+		// maxCharactersPerLine);
+		//
+		// item.setText(1, newColumnText);
+		// }
+		//
+		// resultsTable.layout();
 	}
 
 	private void makeDragable() {

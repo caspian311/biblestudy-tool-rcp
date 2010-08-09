@@ -92,4 +92,16 @@ public class Reference {
 		}
 		return s;
 	}
+
+	public boolean isSingleVerse() {
+		return verses != null && verses.length == 1;
+	}
+
+	public boolean isWholeChapter() {
+		return verses == null && chapters != null && chapters.length == 1;
+	}
+
+	public boolean isWholeBook() {
+		return verses == null && chapters == null;
+	}
 }

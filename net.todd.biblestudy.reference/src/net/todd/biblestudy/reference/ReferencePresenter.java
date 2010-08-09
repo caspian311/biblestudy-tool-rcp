@@ -18,7 +18,7 @@ public class ReferencePresenter {
 			public void handleEvent() {
 				model.performSearch();
 			}
-		}, IReferenceView.LOOK_UP_BUTTON);
+		}, IReferenceView.LOOKUP_BUTTON);
 
 		model.addListener(new IListener() {
 			@Override

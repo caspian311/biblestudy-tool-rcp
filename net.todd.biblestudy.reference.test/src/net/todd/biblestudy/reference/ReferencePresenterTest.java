@@ -45,7 +45,7 @@ public class ReferencePresenterTest {
 		modelResultsChangedListener = modelResultsChangedListenerCaptor.getValue();
 
 		ArgumentCaptor<IListener> viewLoookUpButtonListenerCaptor = ArgumentCaptor.forClass(IListener.class);
-		verify(view).addListener(viewLoookUpButtonListenerCaptor.capture(), eq(IReferenceView.LOOK_UP_BUTTON));
+		verify(view).addListener(viewLoookUpButtonListenerCaptor.capture(), eq(IReferenceView.LOOKUP_BUTTON));
 		viewLookUpButtonListener = viewLoookUpButtonListenerCaptor.getValue();
 
 		reset(view, model);
