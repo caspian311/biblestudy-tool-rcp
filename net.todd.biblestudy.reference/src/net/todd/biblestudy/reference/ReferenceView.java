@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Text;
 public class ReferenceView extends AbstractMvpEventer implements IReferenceView {
 	protected static final String ID = "net.todd.biblestudy.reference.common.ReferenceView";
 
-	private static final int TEXT_COLUMN_WIDTH = 200;
+	// private static final int TEXT_COLUMN_WIDTH = 200;
 	private static final String TEXT_COLUMN_HEADER = "Text";
 	private static final String REFERENCE_COLUMN_HEADER = "Reference";
 	private static final int REFERENCE_COLUMN_WIDTH = 100;
