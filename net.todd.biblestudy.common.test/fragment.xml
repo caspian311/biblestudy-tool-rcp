@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<fragment>
+   <extension
+         point="net.todd.biblestudy.common.resource">
+      <resource
+            name="resource1"
+            resource="data/resource_provider/resource1.txt">
+      </resource>
+      <resource
+            name="resource2"
+            resource="data/resource_provider/resource2.txt">
+      </resource>
+   </extension>
+
+</fragment>

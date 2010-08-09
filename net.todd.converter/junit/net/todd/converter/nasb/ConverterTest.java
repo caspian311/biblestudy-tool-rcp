@@ -1,8 +1,6 @@
 package net.todd.converter.nasb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.util.List;
@@ -12,10 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ConverterTest {
-	private static final String SQL_PREFIX = "INSERT INTO BIBLE ("
-			+ ColumnNames.VERSION + ", " + ColumnNames.BOOK + ", "
-			+ ColumnNames.CHAPTER + ", " + ColumnNames.VERSE + ", "
-			+ ColumnNames.TEXT + ", " + ColumnNames.ORDER_ID + ") VALUES (";
+	private static final String SQL_PREFIX = "INSERT INTO verse (" + ColumnNames.VERSION + ", " + ColumnNames.BOOK
+			+ ", " + ColumnNames.CHAPTER + ", " + ColumnNames.VERSE + ", " + ColumnNames.TEXT + ", "
+			+ ColumnNames.ORDER_ID + ") VALUES (";
 	private Converter testObject;
 
 	@Before
@@ -30,11 +27,10 @@ public class ConverterTest {
 		ConvertedLineBean newLine = testObject.convertLine(oldLine);
 
 		assertNotNull(newLine);
-		assertEquals("Genesis", newLine.getBook());
-		assertEquals(
-				SQL_PREFIX
-						+ "'NASB', 'Genesis', 1, 1, 'In the beginning God created the heavens and the earth.', 1"
-						+ ");", newLine.getSql());
+		assertEquals("Genesis", newLine.getReference().getBook());
+		assertEquals(SQL_PREFIX
+				+ "'NASB', 'Genesis', 1, 1, 'In the beginning God created the heavens and the earth.', 1" + ");",
+				newLine.getSql(newLine));
 	}
 
 	@Test
@@ -43,11 +39,9 @@ public class ConverterTest {
 		ConvertedLineBean newLine = testObject.convertLine(oldLine);
 
 		assertNotNull(newLine);
-		assertEquals("Song of Solomon", newLine.getBook());
-		assertEquals(
-				SQL_PREFIX
-						+ "'NASB', 'Song of Solomon', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 1"
-						+ ");", newLine.getSql());
+		assertEquals("Song of Solomon", newLine.getReference().getBook());
+		assertEquals(SQL_PREFIX + "'NASB', 'Song of Solomon', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 1"
+				+ ");", newLine.getSql(newLine));
 	}
 
 	@Test
@@ -56,10 +50,9 @@ public class ConverterTest {
 		ConvertedLineBean newLine = testObject.convertLine(oldLine);
 
 		assertNotNull(newLine);
-		assertEquals("1 Chronicles", newLine.getBook());
-		assertEquals(SQL_PREFIX
-				+ "'NASB', '1 Chronicles', 1, 1, 'Adam, Seth, Enosh,', 1"
-				+ ");", newLine.getSql());
+		assertEquals("1 Chronicles", newLine.getReference().getBook());
+		assertEquals(SQL_PREFIX + "'NASB', '1 Chronicles', 1, 1, 'Adam, Seth, Enosh,', 1" + ");",
+				newLine.getSql(newLine));
 	}
 
 	@Test
@@ -80,7 +73,8 @@ public class ConverterTest {
 	@Test
 	public void convertFileWithMultipleVerses() throws Exception {
 		InputStream input = getClass().getResourceAsStream("sample_text.txt");
-		Map<String, List<String>> sqlLines = testObject.convertFile(input);
+		testObject.convertFile(input);
+		Map<String, List<String>> sqlLines = testObject.getBooksAndText();
 
 		assertEquals(1, sqlLines.keySet().size());
 		List<String> listOfVerses = sqlLines.get("Genesis");
@@ -102,7 +96,8 @@ public class ConverterTest {
 	@Test
 	public void convertFileWithMultipleBooks() throws Exception {
 		InputStream input = getClass().getResourceAsStream("sample_verse.txt");
-		Map<String, List<String>> sqlLines = testObject.convertFile(input);
+		testObject.convertFile(input);
+		Map<String, List<String>> sqlLines = testObject.getBooksAndText();
 
 		assertEquals(3, sqlLines.keySet().size());
 
@@ -110,12 +105,10 @@ public class ConverterTest {
 				+ "'NASB', 'Genesis', 1, 1, 'In the beginning God created the heavens and the earth.', 1);";
 		assertEquals(line1, sqlLines.get("Genesis").get(0));
 
-		String line2 = SQL_PREFIX
-				+ "'NASB', '1 Chronicles', 1, 1, 'Adam, Seth, Enosh,', 2);";
+		String line2 = SQL_PREFIX + "'NASB', '1 Chronicles', 1, 1, 'Adam, Seth, Enosh,', 2);";
 		assertEquals(line2, sqlLines.get("1 Chronicles").get(0));
 
-		String line3 = SQL_PREFIX
-				+ "'NASB', 'Song of Solomon', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 3);";
+		String line3 = SQL_PREFIX + "'NASB', 'Song of Solomon', 1, 1, 'The Song of Songs, which is Solomon\\\'s.', 3);";
 		assertEquals(line3, sqlLines.get("Song of Solomon").get(0));
 	}
 }

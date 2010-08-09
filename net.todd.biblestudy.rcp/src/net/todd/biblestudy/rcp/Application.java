@@ -1,6 +1,7 @@
 package net.todd.biblestudy.rcp;
 
 import net.todd.biblestudy.common.ExceptionHandlerFactory;
+import net.todd.biblestudy.common.ResourceSetup;
 import net.todd.biblestudy.db.DatabaseSetup;
 
 import org.eclipse.equinox.app.IApplication;
@@ -16,6 +17,7 @@ public class Application implements IApplication {
 
 		Display display = PlatformUI.createDisplay();
 
+		new ResourceSetup().setupResources();
 		new DatabaseSetup().setupDatabase();
 
 		try {

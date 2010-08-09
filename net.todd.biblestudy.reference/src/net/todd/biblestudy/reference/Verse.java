@@ -27,8 +27,4 @@ public interface Verse extends Entity {
 
 	@SQLType(precision = 32000, value = Types.VARCHAR)
 	void setText(String text);
-
-	int getOrderId();
-
-	void setOrderId(int orderId);
 }

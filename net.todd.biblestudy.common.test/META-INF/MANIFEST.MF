@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common Test
-Bundle-SymbolicName: net.todd.biblestudy.common.test
+Bundle-SymbolicName: net.todd.biblestudy.common.test;singleton:=true
 Bundle-Version: 1.0.0
 Fragment-Host: net.todd.biblestudy.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.3.1"
+Require-Bundle: org.junit4;bundle-version="4.3.1",
+ org.mockito;bundle-version="1.8.4"

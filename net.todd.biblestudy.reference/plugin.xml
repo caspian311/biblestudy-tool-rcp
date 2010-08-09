@@ -53,4 +53,11 @@
          </sqlFile>
       </dataObject>
    </extension>
+   <extension
+         point="net.todd.biblestudy.common.resource">
+      <resource
+            name="nasb-bulk-load.txt"
+            resource="resources/nasb-bulk-load.txt">
+      </resource>
+   </extension>
 </plugin>

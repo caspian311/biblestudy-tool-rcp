@@ -19,25 +19,28 @@ public class DatabaseSetup {
 	private static final String DERBY_SYSTEM_HOME = "derby.system.home";
 
 	static {
-		String dataFilesLocation = DirectoryProvider.getDirectory(DirectoryProvider.DATA_FILES);
+		String dataFilesLocation = new DirectoryProvider().getDirectoryLocation(DirectoryProvider.DATA_FILES);
 		System.getProperties().put(DERBY_SYSTEM_HOME, dataFilesLocation);
 	}
 
 	public void setupDatabase() {
 		try {
 			List<Class<? extends RawEntity<?>>> allDataObjectClasses = new ArrayList<Class<? extends RawEntity<?>>>();
-			List<File> sqlFilesToProcess = new ArrayList<File>();
+			List<String> allSql = new ArrayList<String>();
 			for (DataObject dataObject : new DataObjectProvider().getDataObjectClasses()) {
 				Class<? extends RawEntity<?>> dataObjectClass = dataObject.getDataObjectClass();
 				if (!isDatabaseSetup(dataObjectClass)) {
 					allDataObjectClasses.add(dataObjectClass);
-					sqlFilesToProcess.addAll(dataObject.getSqlFiles());
+					for (File sqlFileToProcess : dataObject.getSqlFiles()) {
+						SQLFileParser sqlFileParser = new SQLFileParser();
+						List<String> sqlFromFile = sqlFileParser.parseSQLFile(sqlFileToProcess);
+						allSql.addAll(sqlFromFile);
+					}
 				}
 			}
+
 			createDatabaseTable(allDataObjectClasses);
-			for (File sqlFileToProcess : sqlFilesToProcess) {
-				processSqlFile(sqlFileToProcess);
-			}
+			processSqlFile(allSql);
 		} catch (Exception e) {
 			LOG.error(e);
 			throw new RuntimeException();
@@ -50,11 +53,22 @@ public class DatabaseSetup {
 		EntityManagerProvider.getEntityManager(true).migrate(allDataObjectClasses.toArray(asArray));
 	}
 
-	private void processSqlFile(File sqlFile) {
+	private void processSqlFile(List<String> allSqlInFile) {
 		Connection connection = EntityManagerProvider.getConnection();
-		DataInitializer dataInitializer = new DataInitializer(connection);
-		dataInitializer.processSQLFile(sqlFile);
-		dataInitializer.closeConnection();
+		try {
+			SqlProcessor sqlProcessor = new SqlProcessor(connection);
+			int counter = 0;
+			for (String sql : allSqlInFile) {
+				LOG.debug("executing sql: " + ++counter);
+				sqlProcessor.processSql(sql);
+			}
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				LOG.error(e);
+			}
+		}
 	}
 
 	private boolean isDatabaseSetup(Class<? extends RawEntity<?>> dataObjectClass) {
