@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-<appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
+			<param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n" />
 		</layout>
 	</appender>
 
-	<appender name="FileAppender" class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="biblestudy.log"/>
-		<param name="Append" value="true"/>
-		<param name="MaxFileSize" value="5MB"/>
-		<param name="MaxBackupIndex" value="10"/>
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="biblestudy.log" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="10" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
+			<param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n" />
 		</layout>
 	</appender>
 
-	<category name="net.todd">
-		<priority value="ALL"/>
-		<appender-ref ref="ConsoleAppender"/>
-		<appender-ref ref="FileAppender"/>
-	</category>
+	<!-- <category name="net.todd"> <priority value="all" /> <appender-ref ref="console" 
+		/> <appender-ref ref="file" /> </category> -->
 
 	<root>
-		<priority value="ALL"/>
-		<appender-ref ref="ConsoleAppender"/>
+		<priority value="all" />
+		<appender-ref ref="console" />
+		<appender-ref ref="file" />
 	</root>
 
 </log4j:configuration>
