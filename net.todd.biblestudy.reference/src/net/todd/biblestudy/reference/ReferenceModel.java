@@ -11,6 +11,7 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 	private List<Verse> searchResults;
 	private final ReferenceFactory referenceFactory;
 	private final SearchEngine searchEngine;
+	private String errorMessage;
 
 	public ReferenceModel(SearchEngine searchEngine, ReferenceFactory referenceFactory) {
 		this.searchEngine = searchEngine;
@@ -22,11 +23,15 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 		try {
 			Reference reference = referenceFactory.getReference(searchText);
 			searchResults = searchEngine.referenceLookup(reference);
+			if (searchResults.size() == 0) {
+				searchResults = searchEngine.keywordLookup(searchText);
+			}
+			notifyListeners(RESULTS_CHANGED);
+			errorMessage = null;
 		} catch (InvalidReferenceException e) {
-			searchResults = searchEngine.keywordLookup(searchText);
+			errorMessage = e.getMessage();
 		}
-
-		notifyListeners(RESULTS_CHANGED);
+		notifyListeners(ERROR);
 	}
 
 	@Override
@@ -45,5 +50,10 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 	@Override
 	public List<Verse> getSearchResults() {
 		return searchResults;
+	}
+
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 }

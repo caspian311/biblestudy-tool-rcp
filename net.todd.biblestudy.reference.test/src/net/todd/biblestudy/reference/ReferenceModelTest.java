@@ -1,6 +1,7 @@
 package net.todd.biblestudy.reference;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -15,12 +16,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class ReferenceModelTest {
-	private IReferenceModel testObject;
-
 	@Mock
 	private SearchEngine searchEngine;
 	@Mock
 	private ReferenceFactory referenceFactory;
+
+	private IReferenceModel testObject;
 
 	@Before
 	public void setUp() {
@@ -82,7 +83,22 @@ public class ReferenceModelTest {
 		String searchText = UUID.randomUUID().toString();
 		testObject.setSearchText(searchText);
 
-		doThrow(new InvalidReferenceException("")).when(referenceFactory).getReference(searchText);
+		String errorMessage = UUID.randomUUID().toString();
+
+		doThrow(new InvalidReferenceException(errorMessage)).when(referenceFactory).getReference(searchText);
+
+		testObject.performSearch();
+
+		assertEquals(errorMessage, testObject.getErrorMessage());
+	}
+
+	@Test
+	public void whenReferenceSearchDoesNotReturnAnyResultsThenAKeywordSearchIsPerformedAndSearchResultsAreReturned()
+			throws InvalidReferenceException {
+		String searchText = UUID.randomUUID().toString();
+		testObject.setSearchText(searchText);
+
+		doReturn(Arrays.asList()).when(searchEngine).referenceLookup(any(Reference.class));
 
 		List<Verse> searchResults = Arrays.asList(mock(Verse.class));
 		doReturn(searchResults).when(searchEngine).keywordLookup(searchText);
@@ -96,6 +112,42 @@ public class ReferenceModelTest {
 	public void whenSearchIsPerformedResultsChangedListenersAreNotified() {
 		IListener listener = mock(IListener.class);
 		testObject.addListener(listener, IReferenceModel.RESULTS_CHANGED);
+
+		testObject.performSearch();
+
+		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void whenAnInValidReferenceIsGivenDoNotNotifyResultsChangedListeners() throws InvalidReferenceException {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IReferenceModel.RESULTS_CHANGED);
+
+		doThrow(new InvalidReferenceException("")).when(referenceFactory).getReference(anyString());
+
+		testObject.performSearch();
+
+		verify(listener, never()).handleEvent();
+	}
+
+	@Test
+	public void whenAnValidReferenceIsGivenRemoveTheErrorMessageAndNotifyErrorListeners()
+			throws InvalidReferenceException {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IReferenceModel.ERROR);
+
+		testObject.performSearch();
+
+		verify(listener).handleEvent();
+		assertNull(testObject.getErrorMessage());
+	}
+
+	@Test
+	public void whenAnInValidReferenceIsGivenNotifyErrorListeners() throws InvalidReferenceException {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IReferenceModel.ERROR);
+
+		doThrow(new InvalidReferenceException("")).when(referenceFactory).getReference(anyString());
 
 		testObject.performSearch();
 

@@ -18,11 +18,9 @@ public interface IReferenceView extends IMvpEventer {
 
 	void setSearchResults(List<Verse> results);
 
-	void displayErrorMessage(final String message);
+	void displayErrorMessage(String message);
 
-	void displayLimitResultsMessage(int totalSize);
-
-	void hideLimitResultsMessage();
+	void hideErrorMessage();
 
 	Verse getSelectedVerse();
 

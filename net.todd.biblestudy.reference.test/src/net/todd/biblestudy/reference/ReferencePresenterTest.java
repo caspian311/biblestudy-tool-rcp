@@ -25,6 +25,7 @@ public class ReferencePresenterTest {
 	private IListener modelSearchTextListener;
 	private IListener modelResultsChangedListener;
 	private IListener viewLookUpButtonListener;
+	private IListener modelErrorListener;
 
 	@Before
 	public void setUp() throws Exception {
@@ -47,6 +48,10 @@ public class ReferencePresenterTest {
 		ArgumentCaptor<IListener> viewLoookUpButtonListenerCaptor = ArgumentCaptor.forClass(IListener.class);
 		verify(view).addListener(viewLoookUpButtonListenerCaptor.capture(), eq(IReferenceView.LOOKUP_BUTTON));
 		viewLookUpButtonListener = viewLoookUpButtonListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> modelErrorListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(model).addListener(modelErrorListenerCaptor.capture(), eq(IReferenceModel.ERROR));
+		modelErrorListener = modelErrorListenerCaptor.getValue();
 
 		reset(view, model);
 	}
@@ -179,5 +184,43 @@ public class ReferencePresenterTest {
 		ReferencePresenter.create(view, model);
 
 		verify(view).setLookupButtonEnabled(true);
+	}
+
+	@Test
+	public void ifInitiallyNoErrorMessageIsAvailableOnTheModelThenHideTheErrorMessageOnTheView() {
+		doReturn(null).when(model).getErrorMessage();
+
+		ReferencePresenter.create(view, model);
+
+		verify(view).hideErrorMessage();
+	}
+
+	@Test
+	public void ifInitiallyAnErrorMessageIsAvailableOnTheModelThenDisplayTheErrorMessageOnTheView() {
+		String errorMessage = UUID.randomUUID().toString();
+		doReturn(errorMessage).when(model).getErrorMessage();
+
+		ReferencePresenter.create(view, model);
+
+		verify(view).displayErrorMessage(errorMessage);
+	}
+
+	@Test
+	public void whenErrorOccurrsAndNoErrorMessageIsAvailableOnTheModelThenHideTheErrorMessageOnTheView() {
+		doReturn(null).when(model).getErrorMessage();
+
+		modelErrorListener.handleEvent();
+
+		verify(view).hideErrorMessage();
+	}
+
+	@Test
+	public void whenErrorOccurrsAndAnErrorMessageIsAvailableOnTheModelThenDisplayTheErrorMessageOnTheView() {
+		String errorMessage = UUID.randomUUID().toString();
+		doReturn(errorMessage).when(model).getErrorMessage();
+
+		modelErrorListener.handleEvent();
+
+		verify(view).displayErrorMessage(errorMessage);
 	}
 }

@@ -91,7 +91,7 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 
 	private void createResultsArea(Composite composite) {
 		resultsMessage = new Label(composite, SWT.NORMAL);
-		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(composite);
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(resultsMessage);
 
 		resultsTableViewer = new TableViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.SHADOW_ETCHED_IN
 				| SWT.FULL_SELECTION | SWT.MULTI);
@@ -300,18 +300,14 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 	}
 
 	@Override
-	public void displayLimitResultsMessage(final int totalSize) {
-		resultsMessage.setText("Only displaying 100 of " + totalSize + " results.");
-	}
-
-	@Override
-	public void displayErrorMessage(final String message) {
+	public void displayErrorMessage(String message) {
 		resultsMessage.setText(message);
+		resultsMessage.setVisible(true);
 	}
 
 	@Override
-	public void hideLimitResultsMessage() {
-		resultsMessage.setText("");
+	public void hideErrorMessage() {
+		resultsMessage.setVisible(false);
 	}
 
 	@Override

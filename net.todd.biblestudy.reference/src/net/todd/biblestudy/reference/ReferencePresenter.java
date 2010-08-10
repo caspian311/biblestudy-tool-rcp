@@ -41,6 +41,14 @@ public class ReferencePresenter {
 			}
 		}, IReferenceModel.RESULTS_CHANGED);
 
+		model.addListener(new IListener() {
+			@Override
+			public void handleEvent() {
+				updateErrorMessage(view, model);
+			}
+		}, IReferenceModel.ERROR);
+
+		view.setSearchText(model.getSearchText());
 		view.setSearchResults(model.getSearchResults());
 		if (StringUtils.isEmpty(model.getSearchText())) {
 			view.setViewTitle("Reference Search");
@@ -49,6 +57,14 @@ public class ReferencePresenter {
 			view.setViewTitle(model.getSearchText());
 			view.setLookupButtonEnabled(true);
 		}
-		view.setSearchText(model.getSearchText());
+		updateErrorMessage(view, model);
+	}
+
+	private static void updateErrorMessage(final IReferenceView view, final IReferenceModel model) {
+		if (model.getErrorMessage() != null) {
+			view.displayErrorMessage(model.getErrorMessage());
+		} else {
+			view.hideErrorMessage();
+		}
 	}
 }

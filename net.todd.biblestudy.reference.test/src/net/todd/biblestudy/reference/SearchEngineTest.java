@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import net.java.ao.EntityManager;
 
@@ -31,9 +32,9 @@ public class SearchEngineTest {
 		Verse verse1 = mock(Verse.class);
 		Verse verse2 = mock(Verse.class);
 		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class,
-				"book = ? and chapter = ? and verse = ?", "John", 3, 16);
+				"lcase(book) = ? and chapter = ? and verse = ?", "john", 3, 16);
 
-		Reference reference = new ReferenceFactory().getReference("John 3:16");
+		Reference reference = new ReferenceFactory().getReference("JoHN 3:16");
 
 		List<Verse> verses = testObject.referenceLookup(reference);
 
@@ -44,10 +45,10 @@ public class SearchEngineTest {
 	public void searchByReferenceWithABookAndChapterDoesADatabaseQuery() throws Exception {
 		Verse verse1 = mock(Verse.class);
 		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "book = ? and chapter = ?",
-				"John", 3);
+		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class,
+				"lcase(book) = ? and chapter = ?", "john", 3);
 
-		Reference reference = new ReferenceFactory().getReference("John 3");
+		Reference reference = new ReferenceFactory().getReference("JoHn 3");
 
 		List<Verse> verses = testObject.referenceLookup(reference);
 
@@ -58,11 +59,25 @@ public class SearchEngineTest {
 	public void searchByReferenceWithABookDoesADatabaseQuery() throws Exception {
 		Verse verse1 = mock(Verse.class);
 		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "book = ?", "John");
+		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "lcase(book) = ?", "john");
 
-		Reference reference = new ReferenceFactory().getReference("John");
+		Reference reference = new ReferenceFactory().getReference("JohN");
 
 		List<Verse> verses = testObject.referenceLookup(reference);
+
+		assertEquals(Arrays.asList(verse1, verse2), verses);
+	}
+
+	@Test
+	public void searchByKeywordWithAnyTextDoesADatabaseQuery() throws Exception {
+		String searchText = UUID.randomUUID().toString();
+
+		Verse verse1 = mock(Verse.class);
+		Verse verse2 = mock(Verse.class);
+		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "lcase(text) like ?",
+				"%" + searchText.toLowerCase() + "%");
+
+		List<Verse> verses = testObject.keywordLookup(searchText.toUpperCase());
 
 		assertEquals(Arrays.asList(verse1, verse2), verses);
 	}
