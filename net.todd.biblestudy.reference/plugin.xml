@@ -59,5 +59,9 @@
             name="nasb-bulk-load.txt"
             resource="resources/nasb-bulk-load.txt">
       </resource>
+      <resource
+            name="nasb-lucene-index"
+            resource="resources/nasb-lucene-index/">
+      </resource>
    </extension>
 </plugin>
