@@ -2,8 +2,8 @@ package net.todd.biblestudy.reference;
 
 public class Reference {
 	private String book;
-	private Integer[] chapters;
-	private Integer[] verses;
+	private int[] chapters;
+	private int[] verses;
 
 	public String getBook() {
 		return book;
@@ -13,19 +13,19 @@ public class Reference {
 		this.book = book;
 	}
 
-	public Integer[] getChapters() {
+	public int[] getChapters() {
 		return chapters;
 	}
 
-	public void setChapters(Integer[] chapters) {
+	public void setChapters(int[] chapters) {
 		this.chapters = chapters;
 	}
 
-	public Integer[] getVerses() {
+	public int[] getVerses() {
 		return verses;
 	}
 
-	public void setVerses(Integer[] verses) {
+	public void setVerses(int[] verses) {
 		this.verses = verses;
 	}
 

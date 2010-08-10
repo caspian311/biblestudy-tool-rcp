@@ -21,19 +21,34 @@ public class SearchEngine {
 		Verse[] searchResults = null;
 		try {
 			if (reference.isSingleVerse()) {
-				searchResults = entityManager.find(Verse.class, "lcase(book) = ? and chapter = ? and verse = ?",
-						reference.getBook().toLowerCase(), reference.getChapters()[0], reference.getVerses()[0]);
+				searchResults = entityManager.find(Verse.class, "lcase(book) like ? and chapter = ? and verse = ?",
+						getBookClause(reference), reference.getChapters()[0], reference.getVerses()[0]);
 			} else if (reference.isWholeChapter()) {
-				searchResults = entityManager.find(Verse.class, "lcase(book) = ? and chapter = ?", reference.getBook()
-						.toLowerCase(), reference.getChapters()[0]);
+				searchResults = entityManager.find(Verse.class, "lcase(book) like ? and chapter = ?",
+						getBookClause(reference), reference.getChapters()[0]);
 			} else if (reference.isWholeBook()) {
-				searchResults = entityManager.find(Verse.class, "lcase(book) = ?", reference.getBook().toLowerCase());
+				searchResults = entityManager.find(Verse.class, "lcase(book) like ?", getBookClause(reference));
+			} else {
+				searchResults = entityManager.find(Verse.class, "lcase(book) like ? and chapter <= ? and chapter >= ?",
+						getBookClause(reference), getMaximumChapter(reference), getMinimumChapter(reference));
 			}
 		} catch (Exception e) {
 			LOG.error(e);
 			throw new RuntimeException(e);
 		}
 		return Arrays.asList(searchResults);
+	}
+
+	private String getBookClause(Reference reference) {
+		return reference.getBook().toLowerCase() + "%";
+	}
+
+	private Object getMaximumChapter(Reference reference) {
+		return reference.getChapters()[reference.getChapters().length - 1];
+	}
+
+	private int getMinimumChapter(Reference reference) {
+		return reference.getChapters()[0];
 	}
 
 	public List<Verse> keywordLookup(String searchText) {

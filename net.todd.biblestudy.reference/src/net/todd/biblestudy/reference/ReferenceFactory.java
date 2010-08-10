@@ -37,12 +37,12 @@ public class ReferenceFactory {
 
 		if (StringUtils.isEmpty(ref) == false) {
 			if (StringUtils.contains(ref, "-") || StringUtils.contains(ref, ",")) {
-				Integer[] verses = getMixedNumberArray(ref);
+				int[] verses = getMixedNumberArray(ref);
 
 				reference.setVerses(verses);
 			} else {
 				try {
-					reference.setVerses(new Integer[] { Integer.parseInt(ref) });
+					reference.setVerses(new int[] { Integer.parseInt(ref) });
 				} catch (NumberFormatException e) {
 					throw new InvalidReferenceException("Invalid Reference: incorrect verse");
 				}
@@ -50,7 +50,7 @@ public class ReferenceFactory {
 		}
 	}
 
-	private Integer[] getMixedNumberArray(String ref) {
+	private int[] getMixedNumberArray(String ref) {
 		List<Integer> numberList = new ArrayList<Integer>();
 
 		StringTokenizer tokenizer = new StringTokenizer(ref, ",");
@@ -66,8 +66,10 @@ public class ReferenceFactory {
 			}
 		}
 
-		Integer[] numbers = new Integer[numberList.size()];
-		numberList.toArray(numbers);
+		int[] numbers = new int[numberList.size()];
+		for (int i = 0; i < numberList.size(); i++) {
+			numbers[i] = numberList.get(i);
+		}
 
 		return numbers;
 	}
@@ -79,7 +81,7 @@ public class ReferenceFactory {
 		if (StringUtils.isEmpty(ref) == false) {
 			if (StringUtils.isNumeric(ref)) {
 				try {
-					reference.setChapters(new Integer[] { Integer.parseInt(ref) });
+					reference.setChapters(new int[] { Integer.parseInt(ref) });
 				} catch (NumberFormatException e) {
 					throw new InvalidReferenceException("Invalid Reference: incorrect chapter");
 				}
@@ -90,14 +92,14 @@ public class ReferenceFactory {
 				String chapterStr = tokenizer.nextToken();
 
 				try {
-					reference.setChapters(new Integer[] { Integer.parseInt(chapterStr) });
+					reference.setChapters(new int[] { Integer.parseInt(chapterStr) });
 				} catch (NumberFormatException e) {
 					throw new InvalidReferenceException("Invalid Reference: incorrect chapter");
 				}
 
 				lastPoint = reference.getBook().length() + chapterStr.length() + 2;
 			} else if (StringUtils.contains(ref, "-") || StringUtils.contains(ref, ",")) {
-				Integer[] numbers = getMixedNumberArray(ref);
+				int[] numbers = getMixedNumberArray(ref);
 
 				reference.setChapters(numbers);
 				lastPoint = reference.getBook().length() + ref.length() + 1;

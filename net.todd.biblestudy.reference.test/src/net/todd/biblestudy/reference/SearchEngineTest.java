@@ -32,7 +32,7 @@ public class SearchEngineTest {
 		Verse verse1 = mock(Verse.class);
 		Verse verse2 = mock(Verse.class);
 		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class,
-				"lcase(book) = ? and chapter = ? and verse = ?", "john", 3, 16);
+				"lcase(book) like ? and chapter = ? and verse = ?", "john%", 3, 16);
 
 		Reference reference = new ReferenceFactory().getReference("JoHN 3:16");
 
@@ -46,9 +46,23 @@ public class SearchEngineTest {
 		Verse verse1 = mock(Verse.class);
 		Verse verse2 = mock(Verse.class);
 		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class,
-				"lcase(book) = ? and chapter = ?", "john", 3);
+				"lcase(book) like ? and chapter = ?", "john%", 3);
 
 		Reference reference = new ReferenceFactory().getReference("JoHn 3");
+
+		List<Verse> verses = testObject.referenceLookup(reference);
+
+		assertEquals(Arrays.asList(verse1, verse2), verses);
+	}
+
+	@Test
+	public void searchByReferenceWithABookAndMultipleChaptersDoesADatabaseQuery() throws Exception {
+		Verse verse1 = mock(Verse.class);
+		Verse verse2 = mock(Verse.class);
+		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class,
+				"lcase(book) like ? and chapter <= ? and chapter >= ?", "john%", 4, 3);
+
+		Reference reference = new ReferenceFactory().getReference("JoHn 3-4");
 
 		List<Verse> verses = testObject.referenceLookup(reference);
 
@@ -59,7 +73,7 @@ public class SearchEngineTest {
 	public void searchByReferenceWithABookDoesADatabaseQuery() throws Exception {
 		Verse verse1 = mock(Verse.class);
 		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "lcase(book) = ?", "john");
+		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "lcase(book) like ?", "john%");
 
 		Reference reference = new ReferenceFactory().getReference("JohN");
 
