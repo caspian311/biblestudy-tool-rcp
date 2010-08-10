@@ -1,13 +1,11 @@
 package net.todd.biblestudy.reference;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
+import java.io.File;
 import java.util.List;
-import java.util.UUID;
 
-import net.java.ao.EntityManager;
+import net.todd.biblestudy.common.BundleUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,83 +14,40 @@ import org.mockito.MockitoAnnotations;
 
 public class SearchEngineTest {
 	@Mock
-	private EntityManager entityManager;
-
 	private SearchEngine testObject;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		testObject = new SearchEngine(entityManager);
+		File luceneIndexLocation = new BundleUtil().getFileFromBundle("net.todd.biblestudy.reference",
+				"/resources/nasb-lucene-index");
+		testObject = new SearchEngine(luceneIndexLocation);
 	}
 
 	@Test
-	public void searchByReferenceWithASpecificVerseDoesADatabaseQuery() throws Exception {
-		Verse verse1 = mock(Verse.class);
-		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class,
-				"lcase(book) like ? and chapter = ? and verse = ?", "john%", 3, 16);
+	public void john316() {
+		List<Verse> results = testObject.keywordLookup("god loved world");
 
-		Reference reference = new ReferenceFactory().getReference("JoHN 3:16");
-
-		List<Verse> verses = testObject.referenceLookup(reference);
-
-		assertEquals(Arrays.asList(verse1, verse2), verses);
+		assertNotNull(findVerseInResults(results, "John", 3, 16));
 	}
 
 	@Test
-	public void searchByReferenceWithABookAndChapterDoesADatabaseQuery() throws Exception {
-		Verse verse1 = mock(Verse.class);
-		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class,
-				"lcase(book) like ? and chapter = ?", "john%", 3);
+	public void romans323() {
+		List<Verse> results = testObject.keywordLookup("all have sinned");
 
-		Reference reference = new ReferenceFactory().getReference("JoHn 3");
-
-		List<Verse> verses = testObject.referenceLookup(reference);
-
-		assertEquals(Arrays.asList(verse1, verse2), verses);
+		assertNotNull(findVerseInResults(results, "Romans", 3, 23));
 	}
 
-	@Test
-	public void searchByReferenceWithABookAndMultipleChaptersDoesADatabaseQuery() throws Exception {
-		Verse verse1 = mock(Verse.class);
-		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class,
-				"lcase(book) like ? and chapter <= ? and chapter >= ?", "john%", 4, 3);
-
-		Reference reference = new ReferenceFactory().getReference("JoHn 3-4");
-
-		List<Verse> verses = testObject.referenceLookup(reference);
-
-		assertEquals(Arrays.asList(verse1, verse2), verses);
-	}
-
-	@Test
-	public void searchByReferenceWithABookDoesADatabaseQuery() throws Exception {
-		Verse verse1 = mock(Verse.class);
-		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "lcase(book) like ?", "john%");
-
-		Reference reference = new ReferenceFactory().getReference("JohN");
-
-		List<Verse> verses = testObject.referenceLookup(reference);
-
-		assertEquals(Arrays.asList(verse1, verse2), verses);
-	}
-
-	@Test
-	public void searchByKeywordWithAnyTextDoesADatabaseQuery() throws Exception {
-		String searchText = UUID.randomUUID().toString();
-
-		Verse verse1 = mock(Verse.class);
-		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "lcase(text) like ?",
-				"%" + searchText.toLowerCase() + "%");
-
-		List<Verse> verses = testObject.keywordLookup(searchText.toUpperCase());
-
-		assertEquals(Arrays.asList(verse1, verse2), verses);
+	private Verse findVerseInResults(List<Verse> results, String book, int chapter, int verse) {
+		Verse target = null;
+		for (Verse verseObject : results) {
+			if (verseObject.getBook().equals(book) && verseObject.getChapter() == chapter
+					&& verseObject.getVerse() == verse) {
+				target = verseObject;
+				break;
+			}
+		}
+		return target;
 	}
 }

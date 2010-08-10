@@ -3,7 +3,6 @@ package net.todd.biblestudy.common;
 import java.io.File;
 import java.io.IOException;
 
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +30,11 @@ public class ResourceSetup {
 				File sourceFile = resource.getResourceFile();
 				File destinationFile = new File(destinationDirectory, sourceFile.getName());
 				if (!destinationFile.exists()) {
-					FileUtils.copyFile(sourceFile, destinationFile);
+					if (!sourceFile.isDirectory()) {
+						FileUtils.copyFile(sourceFile, destinationFile);
+					} else {
+						FileUtils.copyDirectory(sourceFile, destinationFile);
+					}
 				}
 			}
 		} catch (IOException e) {

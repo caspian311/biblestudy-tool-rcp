@@ -17,9 +17,11 @@ import org.mockito.MockitoAnnotations;
 
 public class ReferenceModelTest {
 	@Mock
-	private SearchEngine searchEngine;
+	private ReferenceLookup referenceLookup;
 	@Mock
 	private ReferenceFactory referenceFactory;
+	@Mock
+	private SearchEngine searchEngine;
 
 	private IReferenceModel testObject;
 
@@ -27,7 +29,7 @@ public class ReferenceModelTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		testObject = new ReferenceModel(searchEngine, referenceFactory);
+		testObject = new ReferenceModel(referenceLookup, searchEngine, referenceFactory);
 	}
 
 	@Test
@@ -70,7 +72,7 @@ public class ReferenceModelTest {
 		doReturn(reference).when(referenceFactory).getReference(searchText);
 
 		List<Verse> searchResults = Arrays.asList(mock(Verse.class));
-		doReturn(searchResults).when(searchEngine).referenceLookup(reference);
+		doReturn(searchResults).when(referenceLookup).referenceLookup(reference);
 
 		testObject.performSearch();
 
@@ -98,7 +100,7 @@ public class ReferenceModelTest {
 		String searchText = UUID.randomUUID().toString();
 		testObject.setSearchText(searchText);
 
-		doReturn(Arrays.asList()).when(searchEngine).referenceLookup(any(Reference.class));
+		doReturn(Arrays.asList()).when(referenceLookup).referenceLookup(any(Reference.class));
 
 		List<Verse> searchResults = Arrays.asList(mock(Verse.class));
 		doReturn(searchResults).when(searchEngine).keywordLookup(searchText);

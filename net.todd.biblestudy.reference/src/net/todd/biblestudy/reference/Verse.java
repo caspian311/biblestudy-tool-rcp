@@ -16,7 +16,7 @@ public interface Verse extends Entity {
 
 	int getChapter();
 
-	void setChapter(String chapter);
+	void setChapter(int chapter);
 
 	int getVerse();
 

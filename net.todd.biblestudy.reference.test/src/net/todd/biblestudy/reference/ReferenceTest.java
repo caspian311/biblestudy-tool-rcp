@@ -9,19 +9,19 @@ public class ReferenceTest {
 	public void testReferenceToString() throws Exception {
 		Reference reference = new Reference();
 		reference.setBook("John");
-		reference.setChapters(new Integer[] { 1 });
-		reference.setVerses(new Integer[] { 1 });
+		reference.setChapters(new int[] { 1 });
+		reference.setVerses(new int[] { 1 });
 		assertEquals("John 1:1", reference.toString());
 
 		reference = new Reference();
 		reference.setBook("John");
-		reference.setChapters(new Integer[] { 1, 2 });
+		reference.setChapters(new int[] { 1, 2 });
 		assertEquals("John 1-2", reference.toString());
 
 		reference = new Reference();
 		reference.setBook("John");
-		reference.setChapters(new Integer[] { 1 });
-		reference.setVerses(new Integer[] { 1, 2 });
+		reference.setChapters(new int[] { 1 });
+		reference.setVerses(new int[] { 1, 2 });
 		assertEquals("John 1:1-2", reference.toString());
 	}
 
@@ -52,8 +52,8 @@ public class ReferenceTest {
 	public void testReferenceWithNonSequentialVersesToString() throws Exception {
 		Reference reference = new Reference();
 		reference.setBook("John");
-		reference.setChapters(new Integer[] { 1 });
-		reference.setVerses(new Integer[] { 1, 3 });
+		reference.setChapters(new int[] { 1 });
+		reference.setVerses(new int[] { 1, 3 });
 		assertEquals("John 1:1,3", reference.toString());
 	}
 
@@ -61,8 +61,8 @@ public class ReferenceTest {
 	public void testReferenceWithAMixOfSequentialAndNonSequentialVersesToString() throws Exception {
 		Reference reference = new Reference();
 		reference.setBook("John");
-		reference.setChapters(new Integer[] { 1 });
-		reference.setVerses(new Integer[] { 1, 2, 3, 5 });
+		reference.setChapters(new int[] { 1 });
+		reference.setVerses(new int[] { 1, 2, 3, 5 });
 		assertEquals("John 1:1-3,5", reference.toString());
 	}
 

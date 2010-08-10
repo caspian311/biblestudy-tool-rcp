@@ -10,10 +10,12 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 	private String searchText;
 	private List<Verse> searchResults;
 	private final ReferenceFactory referenceFactory;
-	private final SearchEngine searchEngine;
+	private final ReferenceLookup referenceLookup;
 	private String errorMessage;
+	private final SearchEngine searchEngine;
 
-	public ReferenceModel(SearchEngine searchEngine, ReferenceFactory referenceFactory) {
+	public ReferenceModel(ReferenceLookup referenceLookup, SearchEngine searchEngine, ReferenceFactory referenceFactory) {
+		this.referenceLookup = referenceLookup;
 		this.searchEngine = searchEngine;
 		this.referenceFactory = referenceFactory;
 	}
@@ -22,7 +24,7 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 	public void performSearch() {
 		try {
 			Reference reference = referenceFactory.getReference(searchText);
-			searchResults = searchEngine.referenceLookup(reference);
+			searchResults = referenceLookup.referenceLookup(reference);
 			if (searchResults.size() == 0) {
 				searchResults = searchEngine.keywordLookup(searchText);
 			}

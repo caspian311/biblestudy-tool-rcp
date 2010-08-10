@@ -1,5 +1,8 @@
 package net.todd.biblestudy.reference;
 
+import java.io.File;
+
+import net.todd.biblestudy.common.DirectoryProvider;
 import net.todd.biblestudy.db.EntityManagerProvider;
 
 import org.eclipse.swt.SWT;
@@ -13,8 +16,11 @@ public class ReferenceViewPart extends ViewPart {
 	public void createPartControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		IReferenceView referenceView = new ReferenceView(composite, this);
-		IReferenceModel referenceModel = new ReferenceModel(new SearchEngine(EntityManagerProvider.getEntityManager()),
-				new ReferenceFactory());
+		File luceneIndexLocation = new File(new DirectoryProvider().getDirectory(DirectoryProvider.RESOURCE_FILES),
+				"nasb-lucene-index");
+		SearchEngine searchEngine = new SearchEngine(luceneIndexLocation);
+		ReferenceLookup referenceLookup = new ReferenceLookup(EntityManagerProvider.getEntityManager());
+		IReferenceModel referenceModel = new ReferenceModel(referenceLookup, searchEngine, new ReferenceFactory());
 		ReferencePresenter.create(referenceView, referenceModel);
 	}
 
