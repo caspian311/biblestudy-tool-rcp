@@ -4,12 +4,13 @@ import net.todd.biblestudy.db.EntityManagerProvider;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 public class ExportNotesDialog extends Dialog {
-	private IExportNotesDialogView view;
+	private Composite composite;
 
 	public ExportNotesDialog(Shell shell) {
 		super(shell);
@@ -24,21 +25,35 @@ public class ExportNotesDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
+		composite = new Composite(parent, SWT.NONE);
+		return composite;
+	}
 
-		view = new ExportNotesDialogView(composite);
+	@Override
+	protected Control createContents(Composite parent) {
+		Control control = super.createContents(parent);
+		IExportNotesDialogView view = new ExportNotesDialogView(composite, this);
 		IExportNoteLauncher exportNoteLauncher = new ExportNoteLauncher();
 		IExportNotesDialogModel model = new ExportNoteDialogsModel(EntityManagerProvider.getEntityManager(),
 				exportNoteLauncher);
 		IFileDialogLauncher fileDialogLauncher = new FileDialogLauncher();
-		new ExportNotesDialogPresenter(view, model, fileDialogLauncher);
+		ExportNotesDialogPresenter.create(view, model, fileDialogLauncher);
 
-		return parent;
+		return control;
 	}
 
 	@Override
-	protected void okPressed() {
-		view.okPressed();
-		super.okPressed();
+	protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
+		Button button = null;
+		if (id == OK) {
+			super.createButton(parent, id, "Export", defaultButton);
+		} else {
+			button = super.createButton(parent, id, label, defaultButton);
+		}
+		return button;
+	}
+
+	public Button getExportButton() {
+		return getButton(OK);
 	}
 }

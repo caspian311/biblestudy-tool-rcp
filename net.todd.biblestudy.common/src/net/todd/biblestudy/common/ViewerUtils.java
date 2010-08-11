@@ -1,8 +1,12 @@
 package net.todd.biblestudy.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
@@ -33,5 +37,17 @@ public class ViewerUtils {
 			selectedObject = clazz.cast(structuredSelection.getFirstElement());
 		}
 		return selectedObject;
+	}
+
+	public static <T> List<T> getListSelection(TableViewer structuredViewer, Class<T> clazz) {
+		StructuredSelection structuredSelection = (StructuredSelection) structuredViewer.getSelection();
+		List<?> selection = structuredSelection.toList();
+
+		List<T> castedSelection = new ArrayList<T>();
+		for (Object object : selection) {
+			castedSelection.add(clazz.cast(object));
+		}
+
+		return castedSelection;
 	}
 }

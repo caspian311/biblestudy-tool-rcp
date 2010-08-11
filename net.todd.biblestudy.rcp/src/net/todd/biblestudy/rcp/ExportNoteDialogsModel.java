@@ -10,10 +10,8 @@ import net.todd.biblestudy.common.AbstractMvpEventer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ExportNoteDialogsModel extends AbstractMvpEventer implements
-		IExportNotesDialogModel {
-	private static final Log LOG = LogFactory
-			.getLog(ExportNoteDialogsModel.class);
+public class ExportNoteDialogsModel extends AbstractMvpEventer implements IExportNotesDialogModel {
+	private static final Log LOG = LogFactory.getLog(ExportNoteDialogsModel.class);
 
 	private final EntityManager entityManager;
 	private final IExportNoteLauncher exportNoteLauncher;
@@ -21,8 +19,7 @@ public class ExportNoteDialogsModel extends AbstractMvpEventer implements
 	private String zipFilename;
 	private List<Note> notesToExport;
 
-	public ExportNoteDialogsModel(EntityManager entityManager,
-			IExportNoteLauncher exportNoteLauncher) {
+	public ExportNoteDialogsModel(EntityManager entityManager, IExportNoteLauncher exportNoteLauncher) {
 		this.entityManager = entityManager;
 		this.exportNoteLauncher = exportNoteLauncher;
 	}
@@ -43,13 +40,13 @@ public class ExportNoteDialogsModel extends AbstractMvpEventer implements
 	}
 
 	@Override
-	public void setFileToExportTo(String filename) {
+	public void setExportFileLocation(String filename) {
 		this.zipFilename = filename;
 		notifyListeners(EXPORT_FILE_LOCATION);
 	}
 
 	@Override
-	public List<Note> getNotesToExport() {
+	public List<Note> getSelectedNotes() {
 		return notesToExport;
 	}
 
@@ -61,5 +58,15 @@ public class ExportNoteDialogsModel extends AbstractMvpEventer implements
 	@Override
 	public String getExportFileLocation() {
 		return zipFilename;
+	}
+
+	@Override
+	public void selectAll() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void selectNone() {
+		// TODO Auto-generated method stub
 	}
 }

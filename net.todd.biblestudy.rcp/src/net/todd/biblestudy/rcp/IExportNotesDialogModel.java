@@ -6,10 +6,11 @@ import net.todd.biblestudy.common.IMvpEventer;
 
 public interface IExportNotesDialogModel extends IMvpEventer {
 	enum Type {
-		EXPORT_FILE_LOCATION
+		EXPORT_FILE_LOCATION, SELECTION
 	}
 
 	Type EXPORT_FILE_LOCATION = Type.EXPORT_FILE_LOCATION;
+	Type SELECTION = Type.SELECTION;
 
 	/**
 	 * Get all notes in the application
@@ -24,7 +25,7 @@ public interface IExportNotesDialogModel extends IMvpEventer {
 	 * 
 	 * @param notes
 	 */
-	public List<Note> getNotesToExport();
+	public List<Note> getSelectedNotes();
 
 	/**
 	 * This is the output file for the job created in createExportJob. It will
@@ -33,11 +34,15 @@ public interface IExportNotesDialogModel extends IMvpEventer {
 	 * @param filename
 	 *            for resulting zip file
 	 */
-	public void setFileToExportTo(String filename);
+	public void setExportFileLocation(String filename);
 
 	public String getExportFileLocation();
 
 	public void doExport();
 
 	void setNotesToExport(List<Note> noteToExport);
+
+	public void selectAll();
+
+	public void selectNone();
 }
