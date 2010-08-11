@@ -223,4 +223,11 @@ public class ReferencePresenterTest {
 
 		verify(view).displayErrorMessage(errorMessage);
 	}
+
+	@Test
+	public void initiallySetTheFocusOnTheSearchBox() {
+		ReferencePresenter.create(view, model);
+
+		verify(view).setFocusOnSearchBox();
+	}
 }

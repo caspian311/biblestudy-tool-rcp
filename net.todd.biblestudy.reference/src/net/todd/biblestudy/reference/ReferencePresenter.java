@@ -58,6 +58,7 @@ public class ReferencePresenter {
 			view.setLookupButtonEnabled(true);
 		}
 		updateErrorMessage(view, model);
+		view.setFocusOnSearchBox();
 	}
 
 	private static void updateErrorMessage(final IReferenceView view, final IReferenceModel model) {

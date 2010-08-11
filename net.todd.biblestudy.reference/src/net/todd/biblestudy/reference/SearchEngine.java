@@ -1,9 +1,14 @@
 package net.todd.biblestudy.reference;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import net.java.ao.EntityManager;
+import net.todd.biblestudy.db.EntityManagerProvider;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,51 +24,24 @@ import org.apache.lucene.util.Version;
 
 public class SearchEngine {
 	private static class SearchResult implements Comparable<SearchResult> {
+		private int id;
 		private float score;
-		private int verse;
-		private int chapter;
-		private String book;
-		private String text;
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
 
 		public void setScore(float score) {
 			this.score = score;
 		}
 
-		public int getVerse() {
-			return verse;
-		}
-
-		public void setVerse(int verse) {
-			this.verse = verse;
-		}
-
-		public int getChapter() {
-			return chapter;
-		}
-
-		public void setChapter(int chapter) {
-			this.chapter = chapter;
-		}
-
-		public String getBook() {
-			return book;
-		}
-
-		public void setBook(String book) {
-			this.book = book;
-		}
-
-		public String getText() {
-			return text;
-		}
-
-		public void setText(String text) {
-			this.text = text;
-		}
-
 		@Override
 		public int compareTo(SearchResult that) {
-			return new Float(this.score).compareTo(new Float(that.score));
+			return new Float(this.score).compareTo(that.score);
 		}
 	}
 
@@ -90,17 +68,11 @@ public class SearchEngine {
 					Document document = searcher.doc(topMatchingDocs.scoreDocs[i].doc);
 					SearchResult searchResult = new SearchResult();
 
-					String book = document.get("book");
-					Integer chapter = new Integer(document.get("chapter"));
-					Integer verse = new Integer(document.get("verse"));
-					String text = document.get("text");
+					Integer id = new Integer(document.get("id"));
 					float score = topMatchingDocs.scoreDocs[i].score;
 
 					searchResult.setScore(score);
-					searchResult.setBook(book);
-					searchResult.setChapter(chapter);
-					searchResult.setVerse(verse);
-					searchResult.setText(text);
+					searchResult.setId(id);
 
 					results.add(searchResult);
 				}
@@ -116,15 +88,32 @@ public class SearchEngine {
 	}
 
 	private List<Verse> convertToVerses(List<SearchResult> results) {
-		List<Verse> verses = new ArrayList<Verse>();
+		List<Integer> ids = new ArrayList<Integer>();
 		for (SearchResult searchResult : results) {
-			VerseImpl verse = new VerseImpl();
-			verse.setBook(searchResult.getBook());
-			verse.setChapter(searchResult.getChapter());
-			verse.setVerse(searchResult.getVerse());
-			verse.setText(searchResult.getText());
-			verses.add(verse);
+			ids.add(searchResult.getId());
 		}
+
+		List<Verse> verses = new ArrayList<Verse>();
+
+		if (!ids.isEmpty()) {
+			try {
+				StringBuffer whereCriteria = new StringBuffer("id in (");
+				for (int i = 0; i < ids.size(); i++) {
+					whereCriteria.append("?");
+					if (i < ids.size() - 1) {
+						whereCriteria.append(",");
+					}
+				}
+				whereCriteria.append(")");
+				EntityManager entityManager = EntityManagerProvider.getEntityManager();
+				Object[] idsArray = ids.toArray();
+				Verse[] verseArray = entityManager.find(Verse.class, whereCriteria.toString(), idsArray);
+				verses.addAll(Arrays.asList(verseArray));
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
 		return verses;
 	}
 

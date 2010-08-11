@@ -325,4 +325,9 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 	public void setViewTitle(String title) {
 		referenceViewPart.setPartName(title);
 	}
+
+	@Override
+	public void setFocusOnSearchBox() {
+		lookupText.setFocus();
+	}
 }

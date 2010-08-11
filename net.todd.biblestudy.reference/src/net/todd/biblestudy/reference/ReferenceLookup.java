@@ -28,15 +28,28 @@ public class ReferenceLookup {
 						getBookClause(reference), reference.getChapters()[0]);
 			} else if (reference.isWholeBook()) {
 				searchResults = entityManager.find(Verse.class, "lcase(book) like ?", getBookClause(reference));
-			} else {
+			} else if (reference.getChapters().length > 1) {
 				searchResults = entityManager.find(Verse.class, "lcase(book) like ? and chapter <= ? and chapter >= ?",
 						getBookClause(reference), getMaximumChapter(reference), getMinimumChapter(reference));
+			} else if (reference.getVerses().length > 1) {
+				searchResults = entityManager.find(Verse.class,
+						"lcase(book) like ? and  chapter = ? and verse <= ? and verse >= ?", getBookClause(reference),
+						reference.getChapters()[0], getMaximumVerse(reference), getMinimumVerse(reference));
+
 			}
 		} catch (Exception e) {
 			LOG.error(e);
 			throw new RuntimeException(e);
 		}
 		return Arrays.asList(searchResults);
+	}
+
+	private int getMinimumVerse(Reference reference) {
+		return reference.getVerses()[0];
+	}
+
+	private int getMaximumVerse(Reference reference) {
+		return reference.getVerses()[reference.getVerses().length - 1];
 	}
 
 	private String getBookClause(Reference reference) {

@@ -31,4 +31,6 @@ public interface IReferenceView extends IMvpEventer {
 	void setSearchText(String searchText);
 
 	void setLookupButtonEnabled(boolean enabled);
+
+	void setFocusOnSearchBox();
 }
