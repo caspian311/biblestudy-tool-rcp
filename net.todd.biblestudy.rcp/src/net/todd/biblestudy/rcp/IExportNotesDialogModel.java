@@ -40,7 +40,7 @@ public interface IExportNotesDialogModel extends IMvpEventer {
 
 	public void doExport();
 
-	void setNotesToExport(List<Note> noteToExport);
+	void setSelectedNotes(List<Note> noteToExport);
 
 	public void selectAll();
 

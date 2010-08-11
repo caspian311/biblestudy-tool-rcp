@@ -15,7 +15,7 @@ public class ExportNotesDialogPresenter {
 		view.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
-				model.setNotesToExport(view.getSelectedNotes());
+				model.setSelectedNotes(view.getSelectedNotes());
 			}
 		}, IExportNotesDialogView.SELECTION);
 

@@ -1,6 +1,7 @@
 package net.todd.biblestudy.rcp;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class ExportNoteDialogsModel extends AbstractMvpEventer implements IExpor
 	private final IExportNoteLauncher exportNoteLauncher;
 
 	private String zipFilename;
-	private List<Note> notesToExport;
+	private final List<Note> selectedNotes = new ArrayList<Note>();
 
 	public ExportNoteDialogsModel(EntityManager entityManager, IExportNoteLauncher exportNoteLauncher) {
 		this.entityManager = entityManager;
@@ -35,8 +36,12 @@ public class ExportNoteDialogsModel extends AbstractMvpEventer implements IExpor
 	}
 
 	@Override
-	public void setNotesToExport(List<Note> noteToExport) {
-		this.notesToExport = noteToExport;
+	public void setSelectedNotes(List<Note> selectedNotes) {
+		this.selectedNotes.clear();
+		if (selectedNotes != null) {
+			this.selectedNotes.addAll(selectedNotes);
+		}
+		notifyListeners(SELECTION);
 	}
 
 	@Override
@@ -47,12 +52,12 @@ public class ExportNoteDialogsModel extends AbstractMvpEventer implements IExpor
 
 	@Override
 	public List<Note> getSelectedNotes() {
-		return notesToExport;
+		return selectedNotes;
 	}
 
 	@Override
 	public void doExport() {
-		exportNoteLauncher.launchExportNotes(zipFilename, notesToExport);
+		exportNoteLauncher.launchExportNotes(zipFilename, selectedNotes);
 	}
 
 	@Override
@@ -62,11 +67,11 @@ public class ExportNoteDialogsModel extends AbstractMvpEventer implements IExpor
 
 	@Override
 	public void selectAll() {
-		// TODO Auto-generated method stub
+		setSelectedNotes(getAllNotes());
 	}
 
 	@Override
 	public void selectNone() {
-		// TODO Auto-generated method stub
+		setSelectedNotes(Arrays.<Note> asList());
 	}
 }
