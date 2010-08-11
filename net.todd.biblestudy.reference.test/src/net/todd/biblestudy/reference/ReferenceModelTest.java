@@ -12,6 +12,7 @@ import net.todd.biblestudy.common.IListener;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -152,6 +153,59 @@ public class ReferenceModelTest {
 		doThrow(new InvalidReferenceException("")).when(referenceFactory).getReference(anyString());
 
 		testObject.performSearch();
+
+		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void whenLookingUpAnEntireChapterLookUpRequestsEntireChapter() throws InvalidReferenceException {
+		Verse verse = mock(Verse.class);
+		doReturn("John").when(verse).getBook();
+		doReturn(3).when(verse).getChapter();
+		testObject.setSelectedVerse(verse);
+
+		Reference expectedReference = mock(Reference.class);
+		doReturn(expectedReference).when(referenceFactory).getReference("John 3");
+
+		testObject.lookupEnitreChapter();
+
+		ArgumentCaptor<Reference> referenceCaptor = ArgumentCaptor.forClass(Reference.class);
+		verify(referenceLookup).referenceLookup(referenceCaptor.capture());
+		Reference actualReference = referenceCaptor.getValue();
+
+		assertEquals(expectedReference, actualReference);
+	}
+
+	@Test
+	public void whenLookingUpAnEntireChapterNotifyResultsChangedListeners() {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IReferenceModel.RESULTS_CHANGED);
+		testObject.setSelectedVerse(mock(Verse.class));
+
+		testObject.lookupEnitreChapter();
+
+		verify(listener).handleEvent();
+	}
+
+	@Test
+	public void whenLookingUpAnEntireChapterCurrentReferenceChanges() {
+		Verse verse = mock(Verse.class);
+		doReturn("John").when(verse).getBook();
+		doReturn(3).when(verse).getChapter();
+		testObject.setSelectedVerse(verse);
+
+		testObject.lookupEnitreChapter();
+
+		assertEquals("John 3", testObject.getSearchText());
+	}
+
+	@Test
+	public void whenLookingUpAnEntireChapterNotifySearchTextChangedListeners() {
+		IListener listener = mock(IListener.class);
+		testObject.addListener(listener, IReferenceModel.SEARCH_TEXT);
+		testObject.setSelectedVerse(mock(Verse.class));
+
+		testObject.lookupEnitreChapter();
 
 		verify(listener).handleEvent();
 	}

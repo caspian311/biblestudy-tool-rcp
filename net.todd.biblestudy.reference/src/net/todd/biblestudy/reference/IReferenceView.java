@@ -6,13 +6,14 @@ import net.todd.biblestudy.common.IMvpEventer;
 
 public interface IReferenceView extends IMvpEventer {
 	enum Type {
-		RIGHT_CLICK, LOOKUP_BUTTON, SHOW_ENTIRE_CHAPTER, SEARCH_TEXT, LOOK_UP_BUTTON
+		RIGHT_CLICK, LOOKUP_BUTTON, SHOW_ENTIRE_CHAPTER, SEARCH_TEXT, LOOK_UP_BUTTON, SELECTION
 	}
 
 	Type RIGHT_CLICK = Type.RIGHT_CLICK;
 	Type LOOKUP_BUTTON = Type.LOOKUP_BUTTON;
 	Type SHOW_ENTIRE_CHAPTER = Type.SHOW_ENTIRE_CHAPTER;
 	Type SEARCH_TEXT = Type.SEARCH_TEXT;
+	Type SELECTION = Type.SELECTION;
 
 	String getLookupText();
 

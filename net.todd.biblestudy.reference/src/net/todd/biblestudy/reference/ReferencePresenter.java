@@ -20,6 +20,27 @@ public class ReferencePresenter {
 			}
 		}, IReferenceView.LOOKUP_BUTTON);
 
+		view.addListener(new IListener() {
+			@Override
+			public void handleEvent() {
+				view.showRightClickMenu();
+			}
+		}, IReferenceView.RIGHT_CLICK);
+
+		view.addListener(new IListener() {
+			@Override
+			public void handleEvent() {
+				model.lookupEnitreChapter();
+			}
+		}, IReferenceView.SHOW_ENTIRE_CHAPTER);
+
+		view.addListener(new IListener() {
+			@Override
+			public void handleEvent() {
+				model.setSelectedVerse(view.getSelectedVerse());
+			}
+		}, IReferenceView.SELECTION);
+
 		model.addListener(new IListener() {
 			@Override
 			public void handleEvent() {
@@ -58,7 +79,6 @@ public class ReferencePresenter {
 			view.setLookupButtonEnabled(true);
 		}
 		updateErrorMessage(view, model);
-		view.setFocusOnSearchBox();
 	}
 
 	private static void updateErrorMessage(final IReferenceView view, final IReferenceModel model) {

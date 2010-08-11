@@ -26,6 +26,9 @@ public class ReferencePresenterTest {
 	private IListener modelResultsChangedListener;
 	private IListener viewLookUpButtonListener;
 	private IListener modelErrorListener;
+	private IListener viewRightClickListener;
+	private IListener viewShowEntireChapterListener;
+	private IListener viewSelectionListener;
 
 	@Before
 	public void setUp() throws Exception {
@@ -52,6 +55,18 @@ public class ReferencePresenterTest {
 		ArgumentCaptor<IListener> modelErrorListenerCaptor = ArgumentCaptor.forClass(IListener.class);
 		verify(model).addListener(modelErrorListenerCaptor.capture(), eq(IReferenceModel.ERROR));
 		modelErrorListener = modelErrorListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> viewRightClickListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(viewRightClickListenerCaptor.capture(), eq(IReferenceView.RIGHT_CLICK));
+		viewRightClickListener = viewRightClickListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> viewShowEntireChapterListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(viewShowEntireChapterListenerCaptor.capture(), eq(IReferenceView.SHOW_ENTIRE_CHAPTER));
+		viewShowEntireChapterListener = viewShowEntireChapterListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> viewSelectionListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(viewSelectionListenerCaptor.capture(), eq(IReferenceView.SELECTION));
+		viewSelectionListener = viewSelectionListenerCaptor.getValue();
 
 		reset(view, model);
 	}
@@ -225,9 +240,26 @@ public class ReferencePresenterTest {
 	}
 
 	@Test
-	public void initiallySetTheFocusOnTheSearchBox() {
-		ReferencePresenter.create(view, model);
+	public void whenSelectionChangesGetSelectionFromViewAndPutItOnTheModel() {
+		Verse verse = mock(Verse.class);
+		doReturn(verse).when(view).getSelectedVerse();
 
-		verify(view).setFocusOnSearchBox();
+		viewSelectionListener.handleEvent();
+
+		verify(model).setSelectedVerse(verse);
+	}
+
+	@Test
+	public void whenRightClickOccursOpenRightClickMenu() {
+		viewRightClickListener.handleEvent();
+
+		verify(view).showRightClickMenu();
+	}
+
+	@Test
+	public void whenEntireChapterIsShownModelIsNotified() {
+		viewShowEntireChapterListener.handleEvent();
+
+		verify(model).lookupEnitreChapter();
 	}
 }

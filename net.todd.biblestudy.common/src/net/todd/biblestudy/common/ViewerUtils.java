@@ -25,4 +25,13 @@ public class ViewerUtils {
 
 		return Math.max(minimumSize, widthHint);
 	}
+
+	public static <T> T getSelection(StructuredViewer structuredViewer, Class<T> clazz) {
+		StructuredSelection structuredSelection = (StructuredSelection) structuredViewer.getSelection();
+		T selectedObject = null;
+		if (structuredSelection != null) {
+			selectedObject = clazz.cast(structuredSelection.getFirstElement());
+		}
+		return selectedObject;
+	}
 }

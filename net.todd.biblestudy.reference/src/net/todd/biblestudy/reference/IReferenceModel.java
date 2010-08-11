@@ -22,4 +22,8 @@ public interface IReferenceModel extends IMvpEventer {
 	void performSearch();
 
 	public String getErrorMessage();
+
+	public void lookupEnitreChapter();
+
+	public void setSelectedVerse(Verse verse);
 }

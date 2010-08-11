@@ -1,6 +1,5 @@
 package net.todd.biblestudy.reference;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.todd.biblestudy.common.AbstractMvpEventer;
@@ -11,11 +10,6 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceAdapter;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -58,8 +52,6 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 	private Menu rightClickMenu;
 
 	private Point lastRightClickPosition;
-
-	private TableItem[] currentSelection;
 
 	private final ReferenceViewPart referenceViewPart;
 
@@ -123,12 +115,9 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 		});
 
 		resultsTable.addSelectionListener(new SelectionAdapter() {
-
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				TableItem[] selection = resultsTable.getSelection();
-
-				currentSelection = selection;
+				notifyListeners(SELECTION);
 			}
 		});
 
@@ -190,18 +179,12 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 		textColumn.setWidth(200);
 		textColumn.setResizable(true);
 
-		makeDragable();
+		// makeDragable();
 	}
 
 	@Override
 	public Verse getSelectedVerse() {
-		Verse selectedVerse = null;
-
-		if (currentSelection != null && currentSelection.length > 0) {
-			selectedVerse = (Verse) currentSelection[0].getData();
-		}
-
-		return selectedVerse;
+		return ViewerUtils.getSelection(resultsTableViewer, Verse.class);
 	}
 
 	private void redoTheText() {
@@ -224,34 +207,32 @@ public class ReferenceView extends AbstractMvpEventer implements IReferenceView 
 		// resultsTable.layout();
 	}
 
-	private void makeDragable() {
-		DragSource dragSource = new DragSource(resultsTableViewer.getTable(), DND.DROP_MOVE);
-		dragSource.setTransfer(new Transfer[] { ReferenceTransfer.getInstance() });
-		dragSource.addDragListener(new DragSourceAdapter() {
-			@Override
-			public void dragSetData(DragSourceEvent event) {
-				if (ReferenceTransfer.getInstance().isSupportedType(event.dataType)) {
-					List<Verse> verses = new ArrayList<Verse>();
-
-					TableItem[] selectionList = getCurrentSelection();
-
-					if (selectionList != null) {
-						for (TableItem selectedItem : selectionList) {
-							Verse verse = (Verse) selectedItem.getData();
-
-							verses.add(verse);
-						}
-					}
-
-					event.data = verses;
-				}
-			}
-		});
-	}
-
-	private TableItem[] getCurrentSelection() {
-		return currentSelection;
-	}
+	// private void makeDragable() {
+	// DragSource dragSource = new DragSource(resultsTableViewer.getTable(),
+	// DND.DROP_MOVE);
+	// dragSource.setTransfer(new Transfer[] { ReferenceTransfer.getInstance()
+	// });
+	// dragSource.addDragListener(new DragSourceAdapter() {
+	// @Override
+	// public void dragSetData(DragSourceEvent event) {
+	// if (ReferenceTransfer.getInstance().isSupportedType(event.dataType)) {
+	// List<Verse> verses = new ArrayList<Verse>();
+	//
+	// TableItem[] selectionList = getCurrentSelection();
+	//
+	// if (selectionList != null) {
+	// for (TableItem selectedItem : selectionList) {
+	// Verse verse = (Verse) selectedItem.getData();
+	//
+	// verses.add(verse);
+	// }
+	// }
+	//
+	// event.data = verses;
+	// }
+	// }
+	// });
+	// }
 
 	@Override
 	public void setLookupButtonEnabled(boolean enabled) {

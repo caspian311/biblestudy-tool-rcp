@@ -13,6 +13,7 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 	private final ReferenceLookup referenceLookup;
 	private String errorMessage;
 	private final SearchEngine searchEngine;
+	private Verse selectedVerse;
 
 	public ReferenceModel(ReferenceLookup referenceLookup, SearchEngine searchEngine, ReferenceFactory referenceFactory) {
 		this.referenceLookup = referenceLookup;
@@ -57,5 +58,18 @@ public class ReferenceModel extends AbstractMvpEventer implements IReferenceMode
 	@Override
 	public String getErrorMessage() {
 		return errorMessage;
+	}
+
+	@Override
+	public void lookupEnitreChapter() {
+		searchText = selectedVerse.getBook() + " " + selectedVerse.getChapter();
+		notifyListeners(SEARCH_TEXT);
+
+		performSearch();
+	}
+
+	@Override
+	public void setSelectedVerse(Verse verse) {
+		this.selectedVerse = verse;
 	}
 }
