@@ -9,12 +9,14 @@ import org.eclipse.ui.PlatformUI;
 public class ReferenceViewLauncher {
 	private static final Log LOG = LogFactory.getLog(ReferenceViewLauncher.class);
 
+	private static int referenceIdentifier;
+
 	public void openReferenceView(Reference reference) {
 		try {
-			String referenceIdentifier = reference == null ? "Reference" : reference.toString();
+			referenceIdentifier++;
 
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-					.showView(ReferenceViewPart.ID, referenceIdentifier, IWorkbenchPage.VIEW_ACTIVATE);
+					.showView(ReferenceViewPart.ID, "" + referenceIdentifier, IWorkbenchPage.VIEW_ACTIVATE);
 
 		} catch (PartInitException e) {
 			LOG.error(e);
