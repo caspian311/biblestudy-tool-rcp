@@ -69,15 +69,11 @@ public class ReferenceLookupTest {
 	}
 
 	@Test
-	public void searchByReferenceWithABookDoesADatabaseQuery() throws Exception {
-		Verse verse1 = mock(Verse.class);
-		Verse verse2 = mock(Verse.class);
-		doReturn(new Verse[] { verse1, verse2 }).when(entityManager).find(Verse.class, "lcase(book) like ?", "john%");
-
-		Reference reference = new ReferenceFactory().getReference("JohN");
+	public void searchByReferenceWithABookIsIgnored() throws Exception {
+		Reference reference = new ReferenceFactory().getReference("john");
 
 		List<Verse> verses = testObject.referenceLookup(reference);
 
-		assertEquals(Arrays.asList(verse1, verse2), verses);
+		assertTrue(verses.isEmpty());
 	}
 }

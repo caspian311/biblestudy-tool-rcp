@@ -18,7 +18,7 @@ public class ReferenceLookup {
 	}
 
 	public List<Verse> referenceLookup(Reference reference) {
-		Verse[] searchResults = null;
+		Verse[] searchResults = new Verse[0];
 		try {
 			if (reference.isSingleVerse()) {
 				searchResults = entityManager.find(Verse.class, "lcase(book) like ? and chapter = ? and verse = ?",
@@ -26,16 +26,13 @@ public class ReferenceLookup {
 			} else if (reference.isWholeChapter()) {
 				searchResults = entityManager.find(Verse.class, "lcase(book) like ? and chapter = ?",
 						getBookClause(reference), reference.getChapters()[0]);
-			} else if (reference.isWholeBook()) {
-				searchResults = entityManager.find(Verse.class, "lcase(book) like ?", getBookClause(reference));
-			} else if (reference.getChapters().length > 1) {
+			} else if (reference.getChapters() != null && reference.getChapters().length > 1) {
 				searchResults = entityManager.find(Verse.class, "lcase(book) like ? and chapter <= ? and chapter >= ?",
 						getBookClause(reference), getMaximumChapter(reference), getMinimumChapter(reference));
-			} else if (reference.getVerses().length > 1) {
+			} else if (reference.getVerses() != null && reference.getVerses().length > 1) {
 				searchResults = entityManager.find(Verse.class,
 						"lcase(book) like ? and  chapter = ? and verse <= ? and verse >= ?", getBookClause(reference),
 						reference.getChapters()[0], getMaximumVerse(reference), getMinimumVerse(reference));
-
 			}
 		} catch (Exception e) {
 			LOG.error(e);

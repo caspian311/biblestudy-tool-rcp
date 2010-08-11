@@ -23,28 +23,6 @@ import org.apache.lucene.store.SimpleFSDirectory;
 import org.apache.lucene.util.Version;
 
 public class SearchEngine {
-	private static class SearchResult implements Comparable<SearchResult> {
-		private int id;
-		private float score;
-
-		public int getId() {
-			return id;
-		}
-
-		public void setId(int id) {
-			this.id = id;
-		}
-
-		public void setScore(float score) {
-			this.score = score;
-		}
-
-		@Override
-		public int compareTo(SearchResult that) {
-			return new Float(this.score).compareTo(that.score);
-		}
-	}
-
 	private static final Log LOG = LogFactory.getLog(SearchEngine.class);
 	private static final int MAX_RESULTS = 100;
 
@@ -128,5 +106,27 @@ public class SearchEngine {
 			throw new RuntimeException(e);
 		}
 		return query;
+	}
+
+	private static class SearchResult implements Comparable<SearchResult> {
+		private int id;
+		private float score;
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
+		public void setScore(float score) {
+			this.score = score;
+		}
+
+		@Override
+		public int compareTo(SearchResult that) {
+			return new Float(this.score).compareTo(that.score);
+		}
 	}
 }
