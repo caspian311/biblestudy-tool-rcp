@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.java.ao.EntityManager;
 import net.todd.biblestudy.db.EntityManagerProvider;
@@ -71,28 +73,51 @@ public class SearchEngine {
 			ids.add(searchResult.getId());
 		}
 
-		List<Verse> verses = new ArrayList<Verse>();
+		List<Verse> versesFromDatabase = pullVersesFromDatabase(ids);
+		Map<Integer, Verse> versesById = generateVerseMap(versesFromDatabase);
 
-		if (!ids.isEmpty()) {
-			try {
-				StringBuffer whereCriteria = new StringBuffer("id in (");
-				for (int i = 0; i < ids.size(); i++) {
-					whereCriteria.append("?");
-					if (i < ids.size() - 1) {
-						whereCriteria.append(",");
-					}
-				}
-				whereCriteria.append(")");
-				EntityManager entityManager = EntityManagerProvider.getEntityManager();
-				Object[] idsArray = ids.toArray();
-				Verse[] verseArray = entityManager.find(Verse.class, whereCriteria.toString(), idsArray);
-				verses.addAll(Arrays.asList(verseArray));
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
+		List<Verse> verses = new ArrayList<Verse>();
+		for (Integer id : ids) {
+			verses.add(versesById.get(id));
 		}
 
 		return verses;
+	}
+
+	private Map<Integer, Verse> generateVerseMap(List<Verse> versesFromDatabase) {
+		Map<Integer, Verse> map = new HashMap<Integer, Verse>();
+		for (Verse verse : versesFromDatabase) {
+			map.put(verse.getID(), verse);
+		}
+		return map;
+	}
+
+	private List<Verse> pullVersesFromDatabase(List<Integer> ids) {
+		Verse[] verseArray = new Verse[0];
+
+		if (!ids.isEmpty()) {
+			EntityManager entityManager = EntityManagerProvider.getEntityManager();
+			try {
+				verseArray = entityManager.find(Verse.class, createWhereClause(ids), ids.toArray());
+			} catch (SQLException e) {
+				LOG.error(e);
+				throw new RuntimeException(e);
+			}
+		}
+		return Arrays.asList(verseArray);
+	}
+
+	private String createWhereClause(List<Integer> ids) {
+		StringBuffer whereCriteriaBuffer = new StringBuffer("id in (");
+		for (int i = 0; i < ids.size(); i++) {
+			whereCriteriaBuffer.append("?");
+			if (i < ids.size() - 1) {
+				whereCriteriaBuffer.append(",");
+			}
+		}
+		whereCriteriaBuffer.append(")");
+		String whereCriteria = whereCriteriaBuffer.toString();
+		return whereCriteria;
 	}
 
 	private Query generateQuery(String queryString) {
