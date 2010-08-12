@@ -10,9 +10,9 @@ the scriptures.
                                  Requirements
 --------------------------------------------------------------------------------
 
-This needs MySQL server installed and running when the app starts up.  Derby is
-used for the Bible text but MySQL is used for the Notes.  I'd like to remove 
-that dependency, but for now, just have MySQL installed and running when .
+This requires a JRE installed somewhere on your system and the java executable 
+be available on the PATH.  The backing database used by the product is an 
+embedded derby database and it will be setup and managed by the product.
 
 --------------------------------------------------------------------------------
                                  Installation
