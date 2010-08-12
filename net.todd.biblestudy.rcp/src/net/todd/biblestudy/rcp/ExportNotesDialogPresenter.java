@@ -23,6 +23,7 @@ public class ExportNotesDialogPresenter {
 			@Override
 			public void handleEvent() {
 				view.setSelectedNotes(model.getSelectedNotes());
+				view.setExportButtonEnabled(!model.getSelectedNotes().isEmpty());
 			}
 		}, IExportNotesDialogModel.SELECTION);
 

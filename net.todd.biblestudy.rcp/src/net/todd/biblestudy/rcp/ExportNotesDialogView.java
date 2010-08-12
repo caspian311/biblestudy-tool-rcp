@@ -66,8 +66,8 @@ public class ExportNotesDialogView extends AbstractMvpEventer implements IExport
 		});
 		GridDataFactory.swtDefaults().span(3, 1).applyTo(selectNoneButton);
 
-		notesTableViewer = new TableViewer(composite, SWT.CHECK | SWT.V_SCROLL | SWT.BORDER | SWT.SHADOW_ETCHED_IN
-				| SWT.FULL_SELECTION);
+		notesTableViewer = new TableViewer(composite, SWT.V_SCROLL | SWT.BORDER | SWT.SHADOW_ETCHED_IN
+				| SWT.FULL_SELECTION | SWT.MULTI);
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
 		notesTableViewer.setLabelProvider(new ExportNoteLabelProvider());
 		notesTableViewer.setSorter(new ViewerSorter());
@@ -152,7 +152,7 @@ public class ExportNotesDialogView extends AbstractMvpEventer implements IExport
 
 	@Override
 	public void setSelectedNotes(List<Note> selectedNotes) {
-		ViewerUtils.setSelection(notesTableViewer, selectedNotes);
+		ViewerUtils.setSelectionList(notesTableViewer, selectedNotes);
 	}
 
 	private class ExportNoteLabelProvider extends LabelProvider implements ITableLabelProvider {

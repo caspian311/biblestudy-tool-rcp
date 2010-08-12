@@ -13,9 +13,15 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Button;
 
 public class ViewerUtils {
-	public static <T> void setSelection(StructuredViewer structuredViewer, T element) {
+	public static <T> void setSingleSelection(StructuredViewer structuredViewer, T element) {
 		if (element != null) {
 			structuredViewer.setSelection(new StructuredSelection(element));
+		}
+	}
+
+	public static <T> void setSelectionList(StructuredViewer structuredViewer, List<T> elements) {
+		if (elements != null) {
+			structuredViewer.setSelection(new StructuredSelection(elements));
 		}
 	}
 

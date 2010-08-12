@@ -180,7 +180,7 @@ public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteD
 
 	@Override
 	public void selectFirstNote() {
-		ViewerUtils.setSelection(notesTableViewer, notesTableViewer.getElementAt(0));
+		ViewerUtils.setSingleSelection(notesTableViewer, notesTableViewer.getElementAt(0));
 	}
 
 	@Override
