@@ -8,15 +8,16 @@ import org.apache.commons.lang.StringUtils;
 
 public class NoteModel extends AbstractMvpEventer implements INoteModel {
 	private final Note note;
+	private final NoteController noteController;
 
 	// private final List<Link> links = new ArrayList<Link>();
 
 	private boolean contentHasChanged;
-
 	private int currentCarretPosition;
 
-	public NoteModel(Note note) {
+	public NoteModel(Note note, NoteController noteController) {
 		this.note = note;
+		this.noteController = noteController;
 	}
 
 	@Override
@@ -279,5 +280,10 @@ public class NoteModel extends AbstractMvpEventer implements INoteModel {
 			this.currentCarretPosition = offset;
 			notifyListeners(CHANGED);
 		}
+	}
+
+	@Override
+	public void setSelfAsCurrentNote() {
+		noteController.setCurrentNoteName(getNoteName());
 	}
 }

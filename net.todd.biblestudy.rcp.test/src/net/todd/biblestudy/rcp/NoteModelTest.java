@@ -19,6 +19,8 @@ import org.mockito.MockitoAnnotations;
 public class NoteModelTest {
 	@Mock
 	private Note note;
+	@Mock
+	private NoteController noteController;
 
 	private INoteModel testObject;
 
@@ -31,7 +33,7 @@ public class NoteModelTest {
 		noteName = UUID.randomUUID().toString();
 		doReturn(noteName).when(note).getName();
 
-		testObject = new NoteModel(note);
+		testObject = new NoteModel(note, noteController);
 	}
 
 	@Test
@@ -136,5 +138,12 @@ public class NoteModelTest {
 		testObject.setCurrentCarretPosition(offset);
 
 		assertEquals(offset, testObject.getCurrentCarretPosition());
+	}
+
+	@Test
+	public void whenModelIsSetAsCurrentNoteThenNoteNameIsSetOnTheNoteController() {
+		testObject.setSelfAsCurrentNote();
+
+		verify(noteController).setCurrentNoteName(noteName);
 	}
 }

@@ -36,6 +36,13 @@ public class NotePresenter {
 				model.setCurrentCarretPosition(view.getCurrentCarretPosition());
 			}
 		}, INoteView.CONTENT);
+
+		view.addListener(new IListener() {
+			@Override
+			public void handleEvent() {
+				model.setSelfAsCurrentNote();
+			}
+		}, INoteView.FOCUS_RECEIVED);
 	}
 
 	// public void handleEvent(ViewEvent event) {

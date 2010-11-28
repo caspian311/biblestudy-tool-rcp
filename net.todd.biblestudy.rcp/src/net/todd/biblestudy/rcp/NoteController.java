@@ -27,7 +27,7 @@ public class NoteController implements INoteController {
 	public INoteModel getCurrentNoteModel() {
 		INoteModel currentNote = noteModels.get(currentNoteName);
 		if (currentNote == null) {
-			currentNote = new NoteModel(getNoteByCurrentNoteName());
+			currentNote = new NoteModel(getNoteByCurrentNoteName(), this);
 			noteModels.put(currentNoteName, currentNote);
 		}
 		return currentNote;

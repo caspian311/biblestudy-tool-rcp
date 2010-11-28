@@ -3,8 +3,7 @@ package net.todd.biblestudy.rcp;
 import net.todd.biblestudy.common.IListener;
 
 public class ImportNotesDialogPresenter {
-	public ImportNotesDialogPresenter(final IImportNotesDialogView view,
-			final IImportNotesDialogModel model,
+	public static void create(final IImportNotesDialogView view, final IImportNotesDialogModel model,
 			final IImportFileDialogLauncher importFileDialog) {
 		view.addListener(new IListener() {
 			@Override

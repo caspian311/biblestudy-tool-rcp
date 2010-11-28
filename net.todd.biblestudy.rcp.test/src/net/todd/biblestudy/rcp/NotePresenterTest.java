@@ -29,6 +29,7 @@ public class NotePresenterTest {
 	private IListener modelChangedListener;
 	private IListener viewChangedListener;
 	private IListener disposeListener;
+	private IListener focusReceivedListener;
 
 	@Before
 	public void setup() throws Exception {
@@ -47,6 +48,10 @@ public class NotePresenterTest {
 		ArgumentCaptor<IListener> disposeListenerCaptor = ArgumentCaptor.forClass(IListener.class);
 		verify(view).addDisposeListener(disposeListenerCaptor.capture());
 		disposeListener = disposeListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> focusReceivedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(focusReceivedListenerCaptor.capture(), eq(INoteView.FOCUS_RECEIVED));
+		focusReceivedListener = focusReceivedListenerCaptor.getValue();
 
 		reset(model, view);
 	}
@@ -104,5 +109,12 @@ public class NotePresenterTest {
 
 		verify(model).setContent(content);
 		verify(model).setCurrentCarretPosition(offset);
+	}
+
+	@Test
+	public void whenFocusIsReceivedModelSetsSelfAsCurrentNote() {
+		focusReceivedListener.handleEvent();
+
+		verify(model).setSelfAsCurrentNote();
 	}
 }

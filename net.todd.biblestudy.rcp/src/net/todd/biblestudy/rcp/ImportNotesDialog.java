@@ -1,16 +1,14 @@
 package net.todd.biblestudy.rcp;
 
-import net.java.ao.EntityManager;
-import net.todd.biblestudy.db.EntityManagerProvider;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 public class ImportNotesDialog extends Dialog {
-	private IImportNotesDialogView view;
+	private Composite composite;
 
 	public ImportNotesDialog(Shell shell) {
 		super(shell);
@@ -24,21 +22,24 @@ public class ImportNotesDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-
-		view = new ImportNotesDialogView(composite);
-		EntityManager entityManager = EntityManagerProvider.getEntityManager();
-		ImportJobExecutor importJob = new ImportJobExecutor();
-		IImportNotesDialogModel model = new ImportNotesDialogModel(entityManager, importJob);
-		IImportFileDialogLauncher importFileDialog = new ImportFileDialogLauncher(composite.getShell());
-		new ImportNotesDialogPresenter(view, model, importFileDialog);
-
+		composite = new Composite(parent, SWT.NONE);
 		return composite;
 	}
 
 	@Override
-	protected void okPressed() {
-		view.okPressed();
-		super.okPressed();
+	protected Control createContents(Composite parent) {
+		Control control = super.createContents(parent);
+
+		IImportNotesDialogView view = new ImportNotesDialogView(composite, this);
+		ImportJobExecutor importJob = new ImportJobExecutor();
+		IImportNotesDialogModel model = new ImportNotesDialogModel(importJob);
+		IImportFileDialogLauncher importFileDialog = new ImportFileDialogLauncher(composite.getShell());
+		ImportNotesDialogPresenter.create(view, model, importFileDialog);
+
+		return control;
+	}
+
+	protected Button getOkButton() {
+		return getButton(OK);
 	}
 }

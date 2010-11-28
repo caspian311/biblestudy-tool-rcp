@@ -6,6 +6,7 @@ import org.eclipse.ui.part.ViewPart;
 public class NoteViewPart extends ViewPart {
 	public static final String ID = "net.todd.biblestudy.rcp.NoteView";
 	private final INoteModel noteModel;
+	private INoteView noteView;
 
 	public NoteViewPart() {
 		super();
@@ -15,7 +16,7 @@ public class NoteViewPart extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		INoteView noteView = new NoteView(parent, this);
+		noteView = new NoteView(parent, this);
 		ICreateLinkToDialogLauncher createLinkToDialogLauncher = new CreateLinkToDialogLauncher();
 		IDeleteConfirmationLauncher deleteConfirmationDialogLauncher = new DeleteConfirmationLauncher();
 		INoteController noteController = NoteControllerProvider.getNoteController();
@@ -25,7 +26,7 @@ public class NoteViewPart extends ViewPart {
 
 	@Override
 	public void setFocus() {
-		NoteControllerProvider.getNoteController().setCurrentNoteName(noteModel.getNoteName());
+		noteView.focusReceived();
 	}
 
 	@Override

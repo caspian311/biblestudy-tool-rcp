@@ -31,8 +31,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-public class ImportNotesDialogView extends AbstractMvpEventer implements
-		IImportNotesDialogView {
+public class ImportNotesDialogView extends AbstractMvpEventer implements IImportNotesDialogView {
 	private static final String NOTE_NAME_COLUMN_HEADER = "Note";
 	private static final String LAST_MODIFIED_COLUMN_HEADER = "Last modified";
 	private static final String CREATED_COLUMN_HEADER = "Created on";
@@ -45,10 +44,9 @@ public class ImportNotesDialogView extends AbstractMvpEventer implements
 	private final Text importFileLocationText;
 	private final Button importFileBrowserButton;
 
-	public ImportNotesDialogView(Composite composite) {
+	public ImportNotesDialogView(Composite composite, ImportNotesDialog importNotesDialog) {
 		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
-		GridDataFactory.fillDefaults().grab(true, true).hint(450, 200)
-				.applyTo(composite);
+		GridDataFactory.fillDefaults().grab(true, true).hint(450, 200).applyTo(composite);
 
 		Composite otherComposite = new Composite(composite, SWT.NONE);
 		FillLayout layout = new FillLayout(SWT.HORIZONTAL);
@@ -81,8 +79,7 @@ public class ImportNotesDialogView extends AbstractMvpEventer implements
 			}
 		});
 
-		notesTableViewer = new TableViewer(composite, SWT.CHECK | SWT.V_SCROLL
-				| SWT.BORDER | SWT.SHADOW_ETCHED_IN);
+		notesTableViewer = new TableViewer(composite, SWT.CHECK | SWT.V_SCROLL | SWT.BORDER | SWT.SHADOW_ETCHED_IN);
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
 		notesTableViewer.setLabelProvider(new ImportNoteLabelProvider());
 		notesTableViewer.setSorter(new ViewerSorter());
@@ -171,8 +168,7 @@ public class ImportNotesDialogView extends AbstractMvpEventer implements
 
 	@Override
 	public List<Note> getSelectedNotes() {
-		StructuredSelection selection = (StructuredSelection) notesTableViewer
-				.getSelection();
+		StructuredSelection selection = (StructuredSelection) notesTableViewer.getSelection();
 		List<Note> notes = new ArrayList<Note>();
 		for (Object o : selection.toArray()) {
 			notes.add((Note) o);
@@ -190,8 +186,7 @@ public class ImportNotesDialogView extends AbstractMvpEventer implements
 		notifyListeners(OK);
 	}
 
-	private class ImportNoteLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
+	private class ImportNoteLabelProvider extends LabelProvider implements ITableLabelProvider {
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;

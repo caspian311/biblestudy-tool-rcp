@@ -76,4 +76,6 @@ public interface INoteModel extends IMvpEventer {
 	int getCurrentCarretPosition();
 
 	void setCurrentCarretPosition(int offset);
+
+	void setSelfAsCurrentNote();
 }

@@ -2,20 +2,15 @@ package net.todd.biblestudy.rcp;
 
 import java.util.List;
 
-import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.AbstractMvpEventer;
 
-public class ImportNotesDialogModel extends AbstractMvpEventer implements
-		IImportNotesDialogModel {
+public class ImportNotesDialogModel extends AbstractMvpEventer implements IImportNotesDialogModel {
 	private List<Note> selectedNotes;
 	private final ImportJobExecutor importJob;
-	private final EntityManager entityManager;
 
 	private String filename;
 
-	public ImportNotesDialogModel(EntityManager entityManager,
-			ImportJobExecutor importJob) {
-		this.entityManager = entityManager;
+	public ImportNotesDialogModel(ImportJobExecutor importJob) {
 		this.importJob = importJob;
 	}
 
@@ -33,12 +28,11 @@ public class ImportNotesDialogModel extends AbstractMvpEventer implements
 
 	@Override
 	public void doImport() {
-		importJob.importNotes();
+		importJob.importNotes(filename);
 	}
 
 	@Override
 	public List<Note> getAllNotes() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
