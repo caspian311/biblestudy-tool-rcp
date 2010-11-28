@@ -11,8 +11,9 @@ public class DataObject {
 	private final Class<? extends RawEntity<?>> dataObjectClass;
 	private final List<File> sqlFiles = new ArrayList<File>();
 
-	public DataObject(Class<? extends RawEntity<?>> dataObjectClass) {
-		this.dataObjectClass = dataObjectClass;
+	@SuppressWarnings("unchecked")
+	public DataObject(Class<?> dataObjectClass) {
+		this.dataObjectClass = (Class<? extends RawEntity<?>>) dataObjectClass;
 	}
 
 	public Class<? extends RawEntity<?>> getDataObjectClass() {

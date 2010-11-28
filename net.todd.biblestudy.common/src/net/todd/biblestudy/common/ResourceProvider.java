@@ -21,7 +21,7 @@ public class ResourceProvider {
 				String name = configurationElement.getAttribute("name");
 				String resourceLocation = configurationElement.getAttribute("resource");
 				String providingBundleId = configurationElement.getContributor().getName();
-				File resourceFile = new BundleUtil().getFileFromBundle(providingBundleId, resourceLocation);
+				File resourceFile = BundleUtils.getFileFromBundle(providingBundleId, resourceLocation);
 
 				resources.add(new Resource(name, resourceFile));
 			}

@@ -2,25 +2,57 @@ package net.todd.biblestudy.db;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import net.java.ao.EntityManager;
+import net.todd.biblestudy.common.BundleUtils;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DatabaseSetupTest {
-	@BeforeClass
-	public static void setupDatabase() {
-		new DatabaseSetup().setupDatabase();
-	}
-
+	private DataObjectProvider dataObjectProvider;
 	private EntityManager entityManager;
+	private File tempDirectory;
+	private DatabaseSetup testObject;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
+		tempDirectory = File.createTempFile(getClass().getName(), "directory");
+		tempDirectory.delete();
+		tempDirectory.mkdir();
+
+		DataObject carDataObject = new DataObject(Car.class);
+		File carsSqlFile = BundleUtils.getFileFromClass(getClass(), "/data/cars.sql");
+		carDataObject.addSqlFile(carsSqlFile);
+
+		DataObject driversDataObject = new DataObject(Driver.class);
+		File driversSqlFile = BundleUtils.getFileFromClass(getClass(), "/data/drivers.sql");
+		driversDataObject.addSqlFile(driversSqlFile);
+
+		final List<DataObject> dataObjects = new ArrayList<DataObject>();
+		dataObjects.add(carDataObject);
+		dataObjects.add(driversDataObject);
+		dataObjectProvider = new DataObjectProvider() {
+			@Override
+			public List<DataObject> getDataObjects() {
+				return dataObjects;
+			}
+		};
+
+		testObject = new DatabaseSetup(dataObjectProvider, tempDirectory);
+		testObject.setupDatabase();
+
 		entityManager = EntityManagerProvider.getEntityManager();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		BundleUtils.forceDelete(tempDirectory);
 	}
 
 	@Test
@@ -89,16 +121,16 @@ public class DatabaseSetupTest {
 
 	@Test
 	public void dataPersistenceWhenDatabaseStartupCalledMultipleTimes() throws Exception {
-		new DatabaseSetup().setupDatabase();
-		new DatabaseSetup().setupDatabase();
+		testObject.setupDatabase();
+		testObject.setupDatabase();
 
 		EntityManager entityManager = EntityManagerProvider.getEntityManager();
 		Car Car = entityManager.create(Car.class);
 		Car.setName(UUID.randomUUID().toString());
 		Car.save();
 
-		new DatabaseSetup().setupDatabase();
-		new DatabaseSetup().setupDatabase();
+		testObject.setupDatabase();
+		testObject.setupDatabase();
 
 		EntityManager entityManager2 = EntityManagerProvider.getEntityManager();
 		assertEquals(1, entityManager2.find(Car.class).length);

@@ -15,19 +15,24 @@ import org.apache.commons.logging.LogFactory;
 
 public class DatabaseSetup {
 	private static final Log LOG = LogFactory.getLog(DatabaseSetup.class);
-
 	private static final String DERBY_SYSTEM_HOME = "derby.system.home";
 
-	static {
-		String dataFilesLocation = new DirectoryProvider().getDirectoryLocation(DirectoryProvider.DATA_FILES);
-		System.getProperties().put(DERBY_SYSTEM_HOME, dataFilesLocation);
+	private final DataObjectProvider dataObjectProvider;
+
+	public DatabaseSetup() {
+		this(new DataObjectProvider(), new DirectoryProvider().getDirectory(DirectoryProvider.DATA_FILES));
+	}
+
+	public DatabaseSetup(DataObjectProvider dataObjectProvider, File dataFilesLocation) {
+		System.getProperties().put(DERBY_SYSTEM_HOME, dataFilesLocation.getAbsolutePath());
+		this.dataObjectProvider = dataObjectProvider;
 	}
 
 	public void setupDatabase() {
 		try {
 			List<Class<? extends RawEntity<?>>> allDataObjectClasses = new ArrayList<Class<? extends RawEntity<?>>>();
 			List<String> allSql = new ArrayList<String>();
-			for (DataObject dataObject : new DataObjectProvider().getDataObjectClasses()) {
+			for (DataObject dataObject : dataObjectProvider.getDataObjects()) {
 				Class<? extends RawEntity<?>> dataObjectClass = dataObject.getDataObjectClass();
 				if (!isDatabaseSetup(dataObjectClass)) {
 					allDataObjectClasses.add(dataObjectClass);
@@ -42,8 +47,7 @@ public class DatabaseSetup {
 			createDatabaseTable(allDataObjectClasses);
 			processSqlFile(allSql);
 		} catch (Exception e) {
-			LOG.error(e);
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 	}
 

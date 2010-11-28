@@ -4,12 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class SqlProcessor {
-	private static final Log LOG = LogFactory.getLog(SqlProcessor.class);
-
 	private final Connection connection;
 
 	public SqlProcessor(Connection connection) {
@@ -22,7 +17,6 @@ public class SqlProcessor {
 			statement.execute(sql);
 			statement.close();
 		} catch (SQLException e) {
-			LOG.error(e);
 			throw new RuntimeException(e);
 		}
 	}
