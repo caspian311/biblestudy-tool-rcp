@@ -8,9 +8,11 @@ import java.util.UUID;
 
 import net.todd.biblestudy.common.IListener;
 
+import org.eclipse.swt.graphics.Point;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -20,25 +22,22 @@ public class NotePresenterTest {
 	@Mock
 	private INoteView view;
 	@Mock
-	private ICreateLinkToDialogLauncher createLinkToDialogLauncher;
-	@Mock
-	private IDeleteConfirmationLauncher deleteConfirmationDialogLauncher;
-	@Mock
-	private INoteController noteController;
+	private IRightClickMenuLauncher rightClickMenuLauncher;
 
 	private IListener modelChangedListener;
 	private IListener viewChangedListener;
 	private IListener disposeListener;
 	private IListener focusReceivedListener;
+	private IListener rightClickListener;
 
 	@Before
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		NotePresenter.create(view, model, createLinkToDialogLauncher, deleteConfirmationDialogLauncher, noteController);
+		NotePresenter.create(view, model, rightClickMenuLauncher);
 
 		ArgumentCaptor<IListener> modelChangedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
-		verify(model).addListener(modelChangedListenerCaptor.capture(), eq(INoteModel.CHANGED));
+		verify(model).addListener(modelChangedListenerCaptor.capture(), eq(INoteModel.CONTENT_CHANGED));
 		modelChangedListener = modelChangedListenerCaptor.getValue();
 
 		ArgumentCaptor<IListener> viewChangedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
@@ -52,6 +51,10 @@ public class NotePresenterTest {
 		ArgumentCaptor<IListener> focusReceivedListenerCaptor = ArgumentCaptor.forClass(IListener.class);
 		verify(view).addListener(focusReceivedListenerCaptor.capture(), eq(INoteView.FOCUS_RECEIVED));
 		focusReceivedListener = focusReceivedListenerCaptor.getValue();
+
+		ArgumentCaptor<IListener> rightClickListenerCaptor = ArgumentCaptor.forClass(IListener.class);
+		verify(view).addListener(rightClickListenerCaptor.capture(), eq(INoteView.RIGHT_CLICK));
+		rightClickListener = rightClickListenerCaptor.getValue();
 
 		reset(model, view);
 	}
@@ -70,7 +73,7 @@ public class NotePresenterTest {
 		String noteName = UUID.randomUUID().toString();
 		doReturn(noteName).when(model).getNoteName();
 
-		NotePresenter.create(view, model, createLinkToDialogLauncher, deleteConfirmationDialogLauncher, noteController);
+		NotePresenter.create(view, model, rightClickMenuLauncher);
 
 		verify(view).setTitle(noteName);
 		verify(view).setContent(content);
@@ -116,5 +119,17 @@ public class NotePresenterTest {
 		focusReceivedListener.handleEvent();
 
 		verify(model).setSelfAsCurrentNote();
+	}
+
+	@Test
+	public void whenMouseGetsRightClickThenLaunchTheRightClickMenu() {
+		Point point = new Point(1, 2);
+		doReturn(point).when(view).getLastClickedCoordinates();
+
+		rightClickListener.handleEvent();
+
+		InOrder inOrder = inOrder(model, rightClickMenuLauncher);
+		inOrder.verify(model).setRightClickedCooardinates(point);
+		inOrder.verify(rightClickMenuLauncher).launch();
 	}
 }

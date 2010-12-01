@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.todd.biblestudy.common.IListener;
 
+import org.eclipse.swt.graphics.Point;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,7 +40,7 @@ public class NoteModelTest {
 	@Test
 	public void modelNotifiesListenersWhenContentChanges() {
 		IListener listener = mock(IListener.class);
-		testObject.addListener(listener, INoteModel.CHANGED);
+		testObject.addListener(listener, INoteModel.CONTENT_CHANGED);
 		String content = UUID.randomUUID().toString();
 
 		testObject.setContent(content);
@@ -53,7 +54,7 @@ public class NoteModelTest {
 		doReturn(content).when(note).getText();
 
 		IListener listener = mock(IListener.class);
-		testObject.addListener(listener, INoteModel.CHANGED);
+		testObject.addListener(listener, INoteModel.CONTENT_CHANGED);
 
 		testObject.setContent(content);
 
@@ -125,7 +126,7 @@ public class NoteModelTest {
 	@Test
 	public void savingModelNotifiesChangeListeners() {
 		IListener listener = mock(IListener.class);
-		testObject.addListener(listener, INoteModel.CHANGED);
+		testObject.addListener(listener, INoteModel.CONTENT_CHANGED);
 
 		testObject.save();
 
@@ -145,5 +146,13 @@ public class NoteModelTest {
 		testObject.setSelfAsCurrentNote();
 
 		verify(noteController).setCurrentNoteName(noteName);
+	}
+
+	@Test
+	public void rightClickCoordinatesGetterAndSettersWorkCorrectly() {
+		Point point = new Point(1, 2);
+		testObject.setRightClickedCooardinates(point);
+
+		assertSame(point, testObject.getRightClickCoordinates());
 	}
 }

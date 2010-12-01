@@ -10,44 +10,20 @@ public interface INoteView extends IMvpView {
 	}
 
 	Type CONTENT = Type.CONTENT;
-	Type CREATE_LINK = Type.CREATE_LINK;
-	// Type CREATE_REFERENCE = Type.CREATE_REFERENCE;
 	Type RIGHT_CLICK = Type.RIGHT_CLICK;
 	Type LEFT_CLICK = Type.LEFT_CLICK;
 	Type MOUSE_HOVER = Type.MOUSE_HOVER;
 	Type FOCUS_RECEIVED = Type.FOCUS_RECEIVED;
 
-	// Type CONTENT_DROPPED = Type.CONTENT_DROPPED;
-	// Type INSERT_LINK_TO_REFERENCE = Type.INSERT_LINK_TO_REFERENCE;
-	// Type DROP_REFERENCE_OPTION = Type.DROP_REFERENCE_OPTION;
-	// Type DROP_REFERENCE_OPTION_WITH_TEXT =
-	// Type.DROP_REFERENCE_OPTION_WITH_TEXT;
-
-	// void changeCursorToPointer();
-
-	// void changeCursorToText();
-
 	Point getLastClickedCoordinates();
 
 	int getCurrentCarretPosition();
-
-	void showRightClickPopup(int x, int y);
 
 	void setContent(String content);
 
 	String getContent();
 
 	String getSelectedContent();
-
-	// void replaceNoteStyles(List<NoteStyle> styleList);
-
-	// void removeNoteStyles();
-
-	// void showDropReferenceMenu(int x, int y);
-
-	// Point getDropCoordinates();
-
-	// List<Verse> getDroppedVerses();
 
 	Point getCurrentMouseLocation();
 
@@ -57,3 +33,19 @@ public interface INoteView extends IMvpView {
 
 	void focusReceived();
 }
+
+// Type CREATE_LINK = Type.CREATE_LINK;
+// Type CREATE_REFERENCE = Type.CREATE_REFERENCE;
+// Type CONTENT_DROPPED = Type.CONTENT_DROPPED;
+// Type INSERT_LINK_TO_REFERENCE = Type.INSERT_LINK_TO_REFERENCE;
+// Type DROP_REFERENCE_OPTION = Type.DROP_REFERENCE_OPTION;
+// Type DROP_REFERENCE_OPTION_WITH_TEXT =
+// Type.DROP_REFERENCE_OPTION_WITH_TEXT;
+
+// void changeCursorToPointer();
+// void changeCursorToText();
+// void replaceNoteStyles(List<NoteStyle> styleList);
+// void removeNoteStyles();
+// void showDropReferenceMenu(int x, int y);
+// Point getDropCoordinates();
+// List<Verse> getDroppedVerses();

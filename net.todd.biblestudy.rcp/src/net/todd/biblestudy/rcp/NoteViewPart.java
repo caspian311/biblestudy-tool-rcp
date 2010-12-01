@@ -17,11 +17,8 @@ public class NoteViewPart extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		noteView = new NoteView(parent, this);
-		ICreateLinkToDialogLauncher createLinkToDialogLauncher = new CreateLinkToDialogLauncher();
-		IDeleteConfirmationLauncher deleteConfirmationDialogLauncher = new DeleteConfirmationLauncher();
-		INoteController noteController = NoteControllerProvider.getNoteController();
-		NotePresenter.create(noteView, noteModel, createLinkToDialogLauncher, deleteConfirmationDialogLauncher,
-				noteController);
+		IRightClickMenuLauncher rightClickMenuLauncher = new RightClickMenuLauncher(parent, noteModel);
+		NotePresenter.create(noteView, noteModel, rightClickMenuLauncher);
 	}
 
 	@Override

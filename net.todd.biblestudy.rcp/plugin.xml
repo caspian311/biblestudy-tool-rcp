@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="noteMenuItem" name="noteMenuItem" schema="schema/noteMenuItem.exsd"/>
    <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
@@ -181,5 +182,12 @@
       <dataObject
             class="net.todd.biblestudy.rcp.Link">
       </dataObject>
+   </extension>
+   <extension
+         point="net.todd.biblestudy.rcp.noteMenuItem">
+      <MenuItem
+            handler="net.todd.biblestudy.rcp.CreateNoteLinkHandler"
+            label="Create Link to Note">
+      </MenuItem>
    </extension>
 </plugin>
