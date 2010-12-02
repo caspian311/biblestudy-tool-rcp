@@ -1,19 +1,46 @@
 package net.todd.biblestudy.rcp;
 
-public class CreateLinkToNoteDialogModel extends AbstractCreateLinkToDialogModel implements ICreateLinkToDialogModel {
+import net.todd.biblestudy.common.IListener;
+
+public class CreateLinkToNoteDialogModel implements ICreateLinkToDialogModel {
+	public CreateLinkToNoteDialogModel(INoteModel noteModel) {
+	}
+
 	@Override
-	public boolean isValidState() {
-		return true;
+	public void addListener(IListener listener) {
+	}
+
+	@Override
+	public void notifyListeners() {
+	}
+
+	@Override
+	public void addListener(IListener listener, Enum<?> type) {
+	}
+
+	@Override
+	public void removeListener(IListener listener) {
+	}
+
+	@Override
+	public void notifyListeners(Enum<?> type) {
 	}
 
 	@Override
 	public void createLink() {
-		// String linkText = getLinkText();
-		// Point selection = noteView.getSelectionPoint();
-		//
-		// int start = selection.x;
-		// int stop = selection.y;
-		//
-		// noteModel.addLinkToNote(linkText, start, stop);
+	}
+
+	@Override
+	public void setLinkText(String linkText) {
+	}
+
+	@Override
+	public boolean isValidState() {
+		return false;
+	}
+
+	@Override
+	public String getLinkText() {
+		return null;
 	}
 }

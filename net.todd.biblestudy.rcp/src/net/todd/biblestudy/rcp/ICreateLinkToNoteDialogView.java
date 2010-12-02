@@ -2,7 +2,7 @@ package net.todd.biblestudy.rcp;
 
 import net.todd.biblestudy.common.IMvpEventer;
 
-public interface ICreateLinkDialogView extends IMvpEventer {
+public interface ICreateLinkToNoteDialogView extends IMvpEventer {
 	enum Type {
 		LINKED_TEXT, OK_PRESSED
 	}
@@ -17,8 +17,6 @@ public interface ICreateLinkDialogView extends IMvpEventer {
 	void showErrorMessage();
 
 	void hideErrorMessage();
-
-	void okPressed();
 
 	void setOkButtonEnabled(boolean isEnabled);
 }

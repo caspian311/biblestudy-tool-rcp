@@ -8,26 +8,25 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class CreateLinkDialogView extends AbstractMvpEventer implements
-		ICreateLinkDialogView {
+public class CreateLinkToNoteDialogView extends AbstractMvpEventer implements ICreateLinkToNoteDialogView {
 	private final Text linkTextField;
 	private final Label errorLabel;
-	private final CreateLinkToDialog parentDialog;
+	private final CreateLinkToNoteDialog parentDialog;
 
-	public CreateLinkDialogView(Composite composite,
-			CreateLinkToDialog parentDialog) {
+	public CreateLinkToNoteDialogView(Composite composite, CreateLinkToNoteDialog parentDialog) {
 		this.parentDialog = parentDialog;
 
-		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
+		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
 
 		linkTextField = new Text(composite, SWT.NORMAL | SWT.BORDER);
-		GridDataFactory.swtDefaults().grab(true, true).hint(200, SWT.DEFAULT)
-				.applyTo(linkTextField);
+		GridDataFactory.swtDefaults().hint(200, SWT.DEFAULT).applyTo(linkTextField);
 		linkTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -39,6 +38,13 @@ public class CreateLinkDialogView extends AbstractMvpEventer implements
 		errorLabel.setText("Invalid Link");
 		GridDataFactory.swtDefaults().grab(true, false).applyTo(errorLabel);
 		errorLabel.setVisible(false);
+
+		parentDialog.getButton(Dialog.OK).addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				notifyListeners(OK_PRESSED);
+			}
+		});
 	}
 
 	@Override
@@ -49,11 +55,6 @@ public class CreateLinkDialogView extends AbstractMvpEventer implements
 	@Override
 	public String getLinkText() {
 		return linkTextField.getText();
-	}
-
-	@Override
-	public void okPressed() {
-		notifyListeners(OK_PRESSED);
 	}
 
 	@Override
