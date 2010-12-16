@@ -40,7 +40,7 @@ public class OpenNoteDialog extends TrayDialog {
 
 		INoteController noteController = NoteControllerProvider.getNoteController();
 		EntityManager entityManager = EntityManagerProvider.getEntityManager();
-		IOpenNoteDialogModel model = new OpenNoteDialogModel(entityManager, noteController);
+		IOpenNoteDialogModel model = new OpenNoteDialogModel(new NoteProvider(entityManager), noteController);
 		IDeleteConfirmationLauncher deleteConfirmationLauncher = new DeleteConfirmationLauncher();
 		OpenNoteDialogPresenter.create(view, model, deleteConfirmationLauncher);
 

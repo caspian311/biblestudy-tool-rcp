@@ -6,9 +6,9 @@ import static org.mockito.Mockito.*;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
-import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.IListener;
 
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class OpenNoteDialogModelTest {
 	@Mock
 	private INoteController noteController;
 	@Mock
-	private EntityManager entityManager;
+	private NoteProvider noteProvider;
 
 	private IOpenNoteDialogModel testObject;
 
@@ -30,7 +30,7 @@ public class OpenNoteDialogModelTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 
-		testObject = new OpenNoteDialogModel(entityManager, noteController);
+		testObject = new OpenNoteDialogModel(noteProvider, noteController);
 	}
 
 	@Test
@@ -68,11 +68,10 @@ public class OpenNoteDialogModelTest {
 
 	@Test
 	public void getAllNotesPullsFromEntityManager() throws SQLException {
-		Note note1 = mock(Note.class);
-		Note note2 = mock(Note.class);
-		doReturn(new Note[] { note1, note2 }).when(entityManager).find(Note.class);
+		List<Note> notes = Arrays.asList(mock(Note.class), mock(Note.class));
+		doReturn(notes).when(noteProvider).getAllNotes();
 
-		assertEquals(Arrays.asList(note1, note2), testObject.getAllNotes());
+		assertEquals(notes, testObject.getAllNotes());
 	}
 
 	@Test
@@ -103,9 +102,9 @@ public class OpenNoteDialogModelTest {
 
 		testObject.deleteSelectedNote();
 
-		InOrder inOrder = inOrder(entityManager, allNotesListener, selectionListener);
+		InOrder inOrder = inOrder(noteProvider, allNotesListener, selectionListener);
 
-		inOrder.verify(entityManager).delete(note);
+		inOrder.verify(noteProvider).deleteNote(note);
 		inOrder.verify(allNotesListener).handleEvent();
 		inOrder.verify(selectionListener).handleEvent();
 

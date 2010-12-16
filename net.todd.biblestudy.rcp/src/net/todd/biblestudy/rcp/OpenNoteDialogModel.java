@@ -1,41 +1,26 @@
 package net.todd.biblestudy.rcp;
 
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import net.java.ao.EntityManager;
 import net.todd.biblestudy.common.AbstractMvpEventer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class OpenNoteDialogModel extends AbstractMvpEventer implements IOpenNoteDialogModel {
-	private static Log LOG = LogFactory.getLog(OpenNoteDialogModel.class);
-
-	private final EntityManager entityManager;
+	private final INoteProvider noteProvider;
 	private final INoteController noteController;
 
 	private Note selectedNote;
-
 	private String filter;
-
 	private String newNoteName;
 
-	public OpenNoteDialogModel(EntityManager entityManager, INoteController noteController) {
-		this.entityManager = entityManager;
+	public OpenNoteDialogModel(INoteProvider noteProvider, INoteController noteController) {
+		this.noteProvider = noteProvider;
 		this.noteController = noteController;
 	}
 
 	@Override
 	public List<Note> getAllNotes() {
-		try {
-			return Arrays.asList(entityManager.find(Note.class));
-		} catch (SQLException e) {
-			LOG.error(e);
-			throw new RuntimeException(e);
-		}
+		return noteProvider.getAllNotes();
 	}
 
 	@Override
@@ -73,12 +58,7 @@ public class OpenNoteDialogModel extends AbstractMvpEventer implements IOpenNote
 
 	@Override
 	public void deleteSelectedNote() {
-		try {
-			entityManager.delete(selectedNote);
-		} catch (SQLException e) {
-			LOG.error(e);
-			throw new RuntimeException(e);
-		}
+		noteProvider.deleteNote(selectedNote);
 		selectedNote = null;
 		notifyListeners(ALL_NOTES);
 		notifyListeners(SELECTION);

@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 public class CreateLinkToNoteDialogModel extends AbstractMvpEventer implements ICreateLinkToNoteDialogModel {
 	private String linkText;
 
-	public CreateLinkToNoteDialogModel(INoteModel noteModel) {
+	public CreateLinkToNoteDialogModel(INoteModel noteModel, INoteProvider noteProvider) {
 	}
 
 	@Override

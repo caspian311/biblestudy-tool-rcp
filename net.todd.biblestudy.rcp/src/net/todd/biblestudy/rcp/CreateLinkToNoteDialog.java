@@ -1,5 +1,7 @@
 package net.todd.biblestudy.rcp;
 
+import net.todd.biblestudy.db.EntityManagerProvider;
+
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -39,7 +41,8 @@ public class CreateLinkToNoteDialog extends TitleAreaDialog {
 		Control createButtonBar = super.createButtonBar(parent);
 
 		createLinkToNoteDialogView = new CreateLinkToNoteDialogView(composite, this);
-		ICreateLinkToNoteDialogModel model = new CreateLinkToNoteDialogModel(noteModel);
+		ICreateLinkToNoteDialogModel model = new CreateLinkToNoteDialogModel(noteModel, new NoteProvider(
+				EntityManagerProvider.getEntityManager()));
 		CreateLinkToNoteDialogPresenter.create(createLinkToNoteDialogView, model);
 
 		return createButtonBar;
