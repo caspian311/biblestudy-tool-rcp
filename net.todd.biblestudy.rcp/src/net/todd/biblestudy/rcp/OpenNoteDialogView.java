@@ -79,8 +79,6 @@ public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteD
 		notesTableViewer.setContentProvider(new ArrayContentProvider());
 		notesTableViewer.setLabelProvider(new NoteLabelProvider());
 
-		notesTableViewer.setSorter(new ViewerSorter());
-
 		notesTable = notesTableViewer.getTable();
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(notesTable);
 		notesTable.setHeaderVisible(true);

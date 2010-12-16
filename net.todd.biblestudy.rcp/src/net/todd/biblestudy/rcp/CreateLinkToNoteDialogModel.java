@@ -1,46 +1,41 @@
 package net.todd.biblestudy.rcp;
 
-import net.todd.biblestudy.common.IListener;
+import net.todd.biblestudy.common.AbstractMvpEventer;
 
-public class CreateLinkToNoteDialogModel implements ICreateLinkToDialogModel {
+import org.apache.commons.lang.StringUtils;
+
+public class CreateLinkToNoteDialogModel extends AbstractMvpEventer implements ICreateLinkToNoteDialogModel {
+	private String linkText;
+
 	public CreateLinkToNoteDialogModel(INoteModel noteModel) {
 	}
 
 	@Override
-	public void addListener(IListener listener) {
-	}
-
-	@Override
-	public void notifyListeners() {
-	}
-
-	@Override
-	public void addListener(IListener listener, Enum<?> type) {
-	}
-
-	@Override
-	public void removeListener(IListener listener) {
-	}
-
-	@Override
-	public void notifyListeners(Enum<?> type) {
-	}
-
-	@Override
 	public void createLink() {
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void setLinkText(String linkText) {
+		if (!StringUtils.equals(this.linkText, linkText)) {
+			this.linkText = linkText;
+			notifyListeners(LINK_TEXT);
+			notifyListeners(VALID_STATE);
+		}
 	}
 
 	@Override
 	public boolean isValidState() {
-		return false;
+		return !StringUtils.isEmpty(linkText);
 	}
 
 	@Override
 	public String getLinkText() {
-		return null;
+		return linkText;
+	}
+
+	@Override
+	public String getErrorMessage() {
+		return isValidState() ? null : EMPTY_LINK_TEXT_ERROR_MESSAGE;
 	}
 }

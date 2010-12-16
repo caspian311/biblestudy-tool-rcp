@@ -1,13 +1,15 @@
 package net.todd.biblestudy.rcp;
 
-import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-public class CreateLinkToNoteDialog extends Dialog {
+public class CreateLinkToNoteDialog extends TitleAreaDialog {
 	private ICreateLinkToNoteDialogView createLinkToNoteDialogView;
 	private final INoteModel noteModel;
 	private Composite composite;
@@ -27,19 +29,20 @@ public class CreateLinkToNoteDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		composite = new Composite(parent, SWT.NONE);
-
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
+		GridLayoutFactory.fillDefaults().applyTo(composite);
 		return composite;
 	}
 
 	@Override
-	protected Control createContents(Composite parent) {
-		Control createContents = super.createContents(parent);
+	protected Control createButtonBar(Composite parent) {
+		Control createButtonBar = super.createButtonBar(parent);
 
 		createLinkToNoteDialogView = new CreateLinkToNoteDialogView(composite, this);
-		ICreateLinkToDialogModel model = new CreateLinkToNoteDialogModel(noteModel);
+		ICreateLinkToNoteDialogModel model = new CreateLinkToNoteDialogModel(noteModel);
 		CreateLinkToNoteDialogPresenter.create(createLinkToNoteDialogView, model);
 
-		return createContents;
+		return createButtonBar;
 	}
 
 	@Override

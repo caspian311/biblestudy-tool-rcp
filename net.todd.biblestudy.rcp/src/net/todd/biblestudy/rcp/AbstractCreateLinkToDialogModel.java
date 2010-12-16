@@ -3,7 +3,7 @@ package net.todd.biblestudy.rcp;
 import net.todd.biblestudy.common.AbstractMvpEventer;
 
 public abstract class AbstractCreateLinkToDialogModel extends
-		AbstractMvpEventer implements ICreateLinkToDialogModel {
+		AbstractMvpEventer implements ICreateLinkToNoteDialogModel {
 	private String linkText;
 
 	@Override

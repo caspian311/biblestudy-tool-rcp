@@ -2,9 +2,12 @@ package net.todd.biblestudy.rcp;
 
 import net.todd.biblestudy.common.AbstractMvpEventer;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -12,32 +15,58 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 public class CreateLinkToNoteDialogView extends AbstractMvpEventer implements ICreateLinkToNoteDialogView {
 	private final Text linkTextField;
-	private final Label errorLabel;
 	private final CreateLinkToNoteDialog parentDialog;
+	private final TableViewer noteViewer;
 
-	public CreateLinkToNoteDialogView(Composite composite, CreateLinkToNoteDialog parentDialog) {
+	public CreateLinkToNoteDialogView(Composite parent, CreateLinkToNoteDialog parentDialog) {
 		this.parentDialog = parentDialog;
 
+		Composite composite = new Composite(parent, SWT.NONE);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
-		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
+		GridLayoutFactory.fillDefaults().margins(10, 10).spacing(5, 5).numColumns(2).equalWidth(false)
+				.applyTo(composite);
 
-		linkTextField = new Text(composite, SWT.NORMAL | SWT.BORDER);
-		GridDataFactory.swtDefaults().hint(200, SWT.DEFAULT).applyTo(linkTextField);
+		Label linkTextLabel = new Label(composite, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).applyTo(linkTextLabel);
+		linkTextLabel.setText("Link text:");
+
+		linkTextField = new Text(composite, SWT.BORDER);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(linkTextField);
 		linkTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				notifyListeners(LINKED_TEXT);
+				notifyListeners(LINK_TEXT);
 			}
 		});
 
-		errorLabel = new Label(composite, SWT.NORMAL);
-		errorLabel.setText("Invalid Link");
-		GridDataFactory.swtDefaults().grab(true, false).applyTo(errorLabel);
-		errorLabel.setVisible(false);
+		Label noteLabel = new Label(composite, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.END, SWT.BEGINNING).applyTo(noteLabel);
+		noteLabel.setText("Note:");
+
+		noteViewer = new TableViewer(composite, SWT.BORDER);
+		GridDataFactory.fillDefaults().hint(SWT.DEFAULT, 200).grab(true, true).applyTo(noteViewer.getControl());
+		noteViewer.setLabelProvider(new NoteLabelProvider());
+		noteViewer.setContentProvider(new ArrayContentProvider());
+
+		noteViewer.getTable().setHeaderVisible(true);
+		noteViewer.getTable().setLinesVisible(true);
+
+		TableColumn titleColumn = new TableColumn(noteViewer.getTable(), SWT.LEFT);
+		titleColumn.setText("Name");
+		titleColumn.setWidth(200);
+
+		TableColumn lastModifiedColumn = new TableColumn(noteViewer.getTable(), SWT.LEFT);
+		lastModifiedColumn.setText("Last modified");
+		lastModifiedColumn.setWidth(100);
+
+		TableColumn dateCreatedColumn = new TableColumn(noteViewer.getTable(), SWT.LEFT);
+		dateCreatedColumn.setText("Date created");
+		dateCreatedColumn.setWidth(100);
 
 		parentDialog.getButton(Dialog.OK).addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -45,11 +74,18 @@ public class CreateLinkToNoteDialogView extends AbstractMvpEventer implements IC
 				notifyListeners(OK_PRESSED);
 			}
 		});
+
+		parentDialog.setTitle("Link to Note");
+		parentDialog.setMessage("Select the note that you wish to link to and the text of that link.");
 	}
 
 	@Override
-	public void setLinkText(String selectionText) {
-		linkTextField.setText(selectionText);
+	public void setLinkText(String linkText) {
+		if (StringUtils.isEmpty(linkText)) {
+			linkTextField.setText("");
+		} else {
+			linkTextField.setText(linkText);
+		}
 	}
 
 	@Override
@@ -58,17 +94,12 @@ public class CreateLinkToNoteDialogView extends AbstractMvpEventer implements IC
 	}
 
 	@Override
-	public void showErrorMessage() {
-		errorLabel.setVisible(true);
+	public void showErrorMessage(String message) {
+		parentDialog.setErrorMessage(message);
 	}
 
 	@Override
 	public void setOkButtonEnabled(boolean isEnabled) {
 		parentDialog.getButton(Dialog.OK).setEnabled(isEnabled);
-	}
-
-	@Override
-	public void hideErrorMessage() {
-		errorLabel.setVisible(false);
 	}
 }
