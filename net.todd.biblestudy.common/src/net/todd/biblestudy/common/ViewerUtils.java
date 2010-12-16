@@ -13,13 +13,13 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Button;
 
 public class ViewerUtils {
-	public static <T> void setSingleSelection(StructuredViewer structuredViewer, T element) {
+	public static <T> void setSelection(StructuredViewer structuredViewer, T element) {
 		if (element != null) {
 			structuredViewer.setSelection(new StructuredSelection(element));
 		}
 	}
 
-	public static <T> void setSelectionList(StructuredViewer structuredViewer, List<T> elements) {
+	public static <T> void setSelection(StructuredViewer structuredViewer, List<T> elements) {
 		if (elements != null) {
 			structuredViewer.setSelection(new StructuredSelection(elements));
 		}
@@ -45,7 +45,7 @@ public class ViewerUtils {
 		return selectedObject;
 	}
 
-	public static <T> List<T> getListSelection(TableViewer structuredViewer, Class<T> clazz) {
+	public static <T> List<T> getSelectedItems(TableViewer structuredViewer, Class<T> clazz) {
 		StructuredSelection structuredSelection = (StructuredSelection) structuredViewer.getSelection();
 		List<?> selection = structuredSelection.toList();
 

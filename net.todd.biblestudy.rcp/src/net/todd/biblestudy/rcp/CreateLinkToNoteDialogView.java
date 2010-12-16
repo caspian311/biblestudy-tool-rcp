@@ -1,12 +1,17 @@
 package net.todd.biblestudy.rcp;
 
+import java.util.List;
+
 import net.todd.biblestudy.common.AbstractMvpEventer;
+import net.todd.biblestudy.common.ViewerUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -52,9 +57,14 @@ public class CreateLinkToNoteDialogView extends AbstractMvpEventer implements IC
 		GridDataFactory.fillDefaults().hint(SWT.DEFAULT, 200).grab(true, true).applyTo(noteViewer.getControl());
 		noteViewer.setLabelProvider(new NoteLabelProvider());
 		noteViewer.setContentProvider(new ArrayContentProvider());
-
 		noteViewer.getTable().setHeaderVisible(true);
 		noteViewer.getTable().setLinesVisible(true);
+		noteViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				notifyListeners(SELECTED_NOTE);
+			}
+		});
 
 		TableColumn titleColumn = new TableColumn(noteViewer.getTable(), SWT.LEFT);
 		titleColumn.setText("Name");
@@ -101,5 +111,20 @@ public class CreateLinkToNoteDialogView extends AbstractMvpEventer implements IC
 	@Override
 	public void setOkButtonEnabled(boolean isEnabled) {
 		parentDialog.getButton(Dialog.OK).setEnabled(isEnabled);
+	}
+
+	@Override
+	public void setAllNotes(List<Note> notes) {
+		noteViewer.setInput(notes);
+	}
+
+	@Override
+	public Note getSelectedNote() {
+		return ViewerUtils.getSelection(noteViewer, Note.class);
+	}
+
+	@Override
+	public void setSelectedNote(Note note) {
+		ViewerUtils.setSelection(noteViewer, note);
 	}
 }

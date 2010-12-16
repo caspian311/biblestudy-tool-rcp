@@ -147,12 +147,12 @@ public class ExportNotesDialogView extends AbstractMvpEventer implements IExport
 
 	@Override
 	public List<Note> getSelectedNotes() {
-		return ViewerUtils.getListSelection(notesTableViewer, Note.class);
+		return ViewerUtils.getSelectedItems(notesTableViewer, Note.class);
 	}
 
 	@Override
 	public void setSelectedNotes(List<Note> selectedNotes) {
-		ViewerUtils.setSelectionList(notesTableViewer, selectedNotes);
+		ViewerUtils.setSelection(notesTableViewer, selectedNotes);
 	}
 
 	private class ExportNoteLabelProvider extends LabelProvider implements ITableLabelProvider {
