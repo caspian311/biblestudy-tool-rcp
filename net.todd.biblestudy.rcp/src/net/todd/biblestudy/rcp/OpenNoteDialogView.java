@@ -35,19 +35,17 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteDialogView {
-	private final OpenNoteDialog openNoteDialog;
 
-	public static final String NOTE_NAME_COLUMN_HEADER = "Note";
+	private static final String NOTE_NAME_COLUMN_HEADER = "Note";
 	private static final int NOTE_NAME_COLUMN_WIDTH = 200;
-	public static final String LAST_MODIFIED_COLUMN_HEADER = "Last Modified";
+	private static final String LAST_MODIFIED_COLUMN_HEADER = "Last Modified";
 	private static final int LAST_MODIFIED_COLUMN_WIDTH = 100;
-	public static final String CREATED_COLUMN_HEADER = "Created On";
+	private static final String CREATED_COLUMN_HEADER = "Created On";
 	private static final int CREATED_COLUMN_WIDTH = 100;
 
+	private final OpenNoteDialog openNoteDialog;
 	private final Text filterText;
-
 	private final TableViewer notesTableViewer;
-
 	private final TableColumn noteNameColumn;
 	private final TableColumn lastModifiedColumn;
 	private final TableColumn createdColumn;
@@ -55,13 +53,15 @@ public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteD
 	private final Button renameButton;
 	private final Button deleteButton;
 	private final TableEditor notesTableEditor;
+
 	private String renamedNoteName;
 
-	public OpenNoteDialogView(Composite composite, final OpenNoteDialog openNoteDialog) {
+	public OpenNoteDialogView(Composite parent, final OpenNoteDialog openNoteDialog) {
 		this.openNoteDialog = openNoteDialog;
 
-		GridDataFactory.fillDefaults().grab(true, true).hint(450, 200).applyTo(composite);
-		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(composite);
+		Composite composite = new Composite(parent, SWT.None);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
+		GridLayoutFactory.fillDefaults().margins(10, 10).spacing(0, 0).applyTo(composite);
 
 		filterText = new Text(composite, SWT.BORDER);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(filterText);
@@ -136,8 +136,8 @@ public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteD
 		createdColumn.setResizable(true);
 
 		Composite extraButtonsComposite = new Composite(composite, SWT.NONE);
-		GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).applyTo(extraButtonsComposite);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(extraButtonsComposite);
+		GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).margins(0, 10).applyTo(extraButtonsComposite);
 
 		renameButton = new Button(extraButtonsComposite, SWT.PUSH);
 		renameButton.setText("Rename");
@@ -159,6 +159,9 @@ public class OpenNoteDialogView extends AbstractMvpEventer implements IOpenNoteD
 				notifyListeners(DELETE_BUTTON);
 			}
 		});
+
+		openNoteDialog.setTitle("Open an existing note");
+		openNoteDialog.setMessage("Choose an existing note to view, rename or delete.");
 	}
 
 	@Override
