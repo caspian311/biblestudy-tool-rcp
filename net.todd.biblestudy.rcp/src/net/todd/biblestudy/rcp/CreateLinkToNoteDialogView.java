@@ -53,7 +53,7 @@ public class CreateLinkToNoteDialogView extends AbstractMvpEventer implements IC
 		GridDataFactory.swtDefaults().align(SWT.END, SWT.BEGINNING).applyTo(noteLabel);
 		noteLabel.setText("Note:");
 
-		noteViewer = new TableViewer(composite, SWT.BORDER);
+		noteViewer = new TableViewer(composite, SWT.V_SCROLL | SWT.BORDER | SWT.SHADOW_ETCHED_IN | SWT.FULL_SELECTION);
 		GridDataFactory.fillDefaults().hint(SWT.DEFAULT, 200).grab(true, true).applyTo(noteViewer.getControl());
 		noteViewer.setLabelProvider(new NoteLabelProvider());
 		noteViewer.setContentProvider(new ArrayContentProvider());
